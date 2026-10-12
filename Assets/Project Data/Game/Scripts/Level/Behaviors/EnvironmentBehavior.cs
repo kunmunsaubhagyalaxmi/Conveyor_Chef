@@ -147,6 +147,7 @@ namespace Watermelon
 
             if (WaitingBus != null) WaitingBus.Clear();
             if (CollectingBus != null) CollectingBus.Clear();
+            BusBehavior.ClearAllLive();      // also a tray still driving away with its dishes
 
             WaitingBus = null;
             CollectingBus = null;

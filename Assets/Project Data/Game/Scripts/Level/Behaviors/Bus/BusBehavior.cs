@@ -219,11 +219,63 @@ namespace Watermelon
             Type = type;
         }
 
+        // Trays in use this level, including one still driving away after it filled up.
+        // EnvironmentBehavior clears all of them when a level unloads; before, only the
+        // waiting and collecting trays were cleared, so a tray leaving at the moment the
+        // level was won went back to the pool with its 3 dishes still sitting in it, and
+        // the next level's customer arrived with them already "served".
+        private static readonly List<BusBehavior> live = new List<BusBehavior>();
+
+        public static void ClearAllLive()
+        {
+            for (int i = live.Count - 1; i >= 0; i--)
+            {
+                if (i < live.Count && live[i] != null)
+                    live[i].Clear();
+            }
+            live.Clear();
+        }
+
         public void Spawn()
         {
-            transform.position = LevelController.Environment.BusSpawnPos;
+            if (moveCase != null && !moveCase.IsComplete())
+                moveCase.Kill();
 
+            // a pooled tray must start empty
+            ReleasePassengers();
+            IsAvailableToEnter = false;
+
+            if (!live.Contains(this))
+                live.Add(this);
+
+            transform.position = LevelController.Environment.BusSpawnPos;
+        }
+
+        // Puts every dish this tray holds (or that is still parented to a seat) back in its pool.
+        private void ReleasePassengers()
+        {
+            for (int i = 0; i < passengers.Count; i++)
+            {
+                if (passengers[i] == null)
+                    continue;
+                passengers[i].transform.SetParent(null);
+                passengers[i].gameObject.SetActive(false);
+            }
             passengers.Clear();
+
+            for (int s = 0; s < seats.Count; s++)
+            {
+                if (seats[s] == null)
+                    continue;
+                for (int c = seats[s].childCount - 1; c >= 0; c--)
+                {
+                    Transform child = seats[s].GetChild(c);
+                    if (child.GetComponent<BaseCharacterBehavior>() == null)
+                        continue;
+                    child.SetParent(null);
+                    child.gameObject.SetActive(false);
+                }
+            }
         }
 
         public void MoveToWaitingPos()
@@ -255,6 +307,13 @@ namespace Watermelon
 
             passenger.MoveTo(new Vector3[] { enterPosition.transform.position }, false, () =>
             {
+                // The tray was cleared (level ended) while this dish was still on its way.
+                if (!passengers.Contains(passenger))
+                {
+                    passenger.gameObject.SetActive(false);
+                    return;
+                }
+
                 var sit = seats[sitIndex];
                 passenger.transform.SetParent(sit);
                 passenger.transform.position = sit.position;
@@ -354,12 +413,8 @@ namespace Watermelon
                 moveCase.Kill();
             IsAvailableToEnter = false;
 
-            for (int i = 0; i < passengers.Count; i++)
-            {
-                passengers[i].transform.SetParent(null);
-                passengers[i].gameObject.SetActive(false);
-            }
-            passengers.Clear();
+            ReleasePassengers();
+            live.Remove(this);
 
             stateMachine.StopMachine();
 

@@ -32,14 +32,42 @@ namespace Watermelon.BusStop
 
         }
 
+        // Fast lookup by level index (1050 levels; every map screen asks for many of them).
+        // Not saved; rebuilt whenever the saved list changes size.
+        [System.NonSerialized] private Dictionary<int, LevelProgressData> lookup;
+        [System.NonSerialized] private int lookupCount = -1;
+
         public LevelProgressData GetLevelProgress(int levelIndex)
         {
-            for (int i = 0; i < levelProgress.Count; i++)
+            if (levelProgress == null)
+                return null;
+
+            if (lookup == null || lookupCount != levelProgress.Count)
             {
-                if (levelProgress[i].levelIndex == levelIndex)
-                    return levelProgress[i];
+                lookup = new Dictionary<int, LevelProgressData>(levelProgress.Count);
+                for (int i = 0; i < levelProgress.Count; i++)
+                {
+                    LevelProgressData d = levelProgress[i];
+                    if (d != null && !lookup.ContainsKey(d.levelIndex))
+                        lookup.Add(d.levelIndex, d);
+                }
+                lookupCount = levelProgress.Count;
             }
-            return null;
+
+            return lookup.TryGetValue(levelIndex, out LevelProgressData data) ? data : null;
+        }
+
+        /// <summary>Clears all level progress (used once when the world moved to 30 levels per country).</summary>
+        public void ResetLevelProgress()
+        {
+            levelProgress.Clear();
+            lookup = null;
+            lookupCount = -1;
+            RealLevelNumber = 0;
+            DisplayLevelNumber = 0;
+            selectedLevelIndex = 0;
+            ReplayingLevelAgain = false;
+            isPlayingFromLevelSelection = false;
         }
 
         public int GetTotalStars()

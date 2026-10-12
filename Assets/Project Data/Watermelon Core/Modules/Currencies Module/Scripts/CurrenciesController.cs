@@ -113,17 +113,27 @@ namespace Watermelon
 
         public static void SubscribeGlobalCallback(CurrencyChangeDelegate currencyChange)
         {
+            if (currencies == null)
+                return;
+
             for(int i = 0; i < currencies.Length; i++)
             {
-                currencies[i].OnCurrencyChanged += currencyChange;
+                if (currencies[i] != null)
+                    currencies[i].OnCurrencyChanged += currencyChange;
             }
         }
 
+        // Screens unsubscribe in OnDestroy, which can run after the currencies were torn down
+        // (leaving Play mode, changing scene): nothing to unsubscribe from then.
         public static void UnsubscribeGlobalCallback(CurrencyChangeDelegate currencyChange)
         {
+            if (currencies == null)
+                return;
+
             for (int i = 0; i < currencies.Length; i++)
             {
-                currencies[i].OnCurrencyChanged -= currencyChange;
+                if (currencies[i] != null)
+                    currencies[i].OnCurrencyChanged -= currencyChange;
             }
         }
 
@@ -149,6 +159,6 @@ namespace Watermelon
 
 // Changelog
 // v 1.1
-// • Added manageable default amount
+// ï¿½ Added manageable default amount
 // v 1.0
-// • Basic logic
+// ï¿½ Basic logic

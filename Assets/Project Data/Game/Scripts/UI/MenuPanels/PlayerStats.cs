@@ -127,22 +127,10 @@ namespace Watermelon
         public static int LevelsCompleted { get { GetProgress(out int c, out _, out _); return c; } }
         public static int StarsEarned { get { GetProgress(out _, out int s, out _); return s; } }
 
+        // Same rule as the World Map, Country Map and Level Selection (GameProgress).
         public static int GetCountryLevelsCompleted(int country)
         {
-            LevelSave save = GetLevelSave();
-            if (save == null || save.levelProgress == null)
-                return 0;
-
-            int first = country * CountryCatalog.LevelsPerCountry;
-            int count = 0;
-            for (int i = 0; i < save.levelProgress.Count; i++)
-            {
-                LevelProgressData progress = save.levelProgress[i];
-                if (progress != null && progress.isCompleted &&
-                    progress.levelIndex >= first && progress.levelIndex < first + CountryCatalog.LevelsPerCountry)
-                    count++;
-            }
-            return count;
+            return WorldCatalog.IsValidCountry(country) ? WorldCatalog.CountryLevelsCompleted(country) : 0;
         }
 
         public static int GetCountryStars(int country)

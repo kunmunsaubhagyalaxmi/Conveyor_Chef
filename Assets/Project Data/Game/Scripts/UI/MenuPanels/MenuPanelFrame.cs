@@ -31,6 +31,7 @@ namespace Watermelon
         {
             { "story",        new Layout(71, 236, 866, 1567, 877, 128, 46) },
             { "challenges",   new Layout(71, 222, 870, 1576, 874, 119, 56) },
+            { "collection",   new Layout(71, 222, 870, 1576, 874, 119, 56) },   // the challenges picture, retitled
             { "customize",    new Layout(74, 241, 867, 1549, 874, 137, 58) },
             { "shop",         new Layout(72, 263, 868, 1555, 868, 146, 50) },
             { "achievements", new Layout(78, 250, 860, 1531, 860, 136, 52) },

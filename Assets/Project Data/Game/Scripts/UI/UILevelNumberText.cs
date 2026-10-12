@@ -63,7 +63,7 @@ namespace Watermelon
 
         private void UpdateLevelNumber()
         {
-            levelNumberText.text = string.Format(LEVEL_LABEL, LevelController.DisplayLevelNumber + 1);
+            levelNumberText.text = string.Format(LEVEL_LABEL, WorldCatalog.LevelInCountry(LevelController.DisplayLevelNumber) + 1);
         }
 
     }

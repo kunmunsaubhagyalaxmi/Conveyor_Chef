@@ -291,6 +291,7 @@ MonoBehaviour:
   pinImage: {fileID: 1197582430}
   glowImage: {fileID: 1901902001}
   mapLabel: {fileID: 708513241}
+  artworkShowsName: 1
   cardButton: {fileID: 1933132231}
   cardFrameImage: {fileID: 1933132232}
   cardLabel: {fileID: 2019513203}
@@ -1808,6 +1809,7 @@ MonoBehaviour:
   pinImage: {fileID: 149743196}
   glowImage: {fileID: 1351644968}
   mapLabel: {fileID: 916372890}
+  artworkShowsName: 1
   cardButton: {fileID: 2059195987}
   cardFrameImage: {fileID: 2059195988}
   cardLabel: {fileID: 358533896}
@@ -3033,7 +3035,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &428766221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3054,7 +3056,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "UNLOCKED  \u2022  15 LEVELS"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 61122b25489847f59c583d1b8607f30b, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 61122b25489847f59c583d1b8607f30b, type: 2}
@@ -3326,6 +3328,7 @@ MonoBehaviour:
   pinImage: {fileID: 1950472570}
   glowImage: {fileID: 743186395}
   mapLabel: {fileID: 375684140}
+  artworkShowsName: 1
   cardButton: {fileID: 1936658529}
   cardFrameImage: {fileID: 1936658530}
   cardLabel: {fileID: 1021094097}
@@ -3759,8 +3762,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -33.026516, y: 0}
-  m_SizeDelta: {x: 66.0531, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &498594230
 MonoBehaviour:
@@ -10523,6 +10526,7 @@ MonoBehaviour:
   pinImage: {fileID: 1977297681}
   glowImage: {fileID: 998492634}
   mapLabel: {fileID: 1234333125}
+  artworkShowsName: 1
   cardButton: {fileID: 1012558578}
   cardFrameImage: {fileID: 1012558579}
   cardLabel: {fileID: 2104358524}
@@ -10957,7 +10961,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1707139313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11248,6 +11252,7 @@ MonoBehaviour:
   pinImage: {fileID: 522727108}
   glowImage: {fileID: 1884734974}
   mapLabel: {fileID: 1292548944}
+  artworkShowsName: 1
   cardButton: {fileID: 118629307}
   cardFrameImage: {fileID: 118629308}
   cardLabel: {fileID: 1050440400}
@@ -13756,6 +13761,7 @@ MonoBehaviour:
   pinImage: {fileID: 1228110709}
   glowImage: {fileID: 2040001282}
   mapLabel: {fileID: 1670140792}
+  artworkShowsName: 1
   cardButton: {fileID: 555490640}
   cardFrameImage: {fileID: 555490641}
   cardLabel: {fileID: 860337084}
@@ -14269,7 +14275,7 @@ MonoBehaviour:
   backButton: {fileID: 2090883496}
   settingsButton: {fileID: 1980368477}
   selectedChapterText: {fileID: 1707139313}
-  statusText: {fileID: 428766221}
+  statusText: {fileID: 0}
   dragHintCanvasGroup: {fileID: 0}
   settingsPanel: {fileID: 583401966}
   closeSettingsButton: {fileID: 1511332489}
@@ -14845,9 +14851,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 32}
-  m_SizeDelta: {x: 650, y: 220}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 146}
+  m_SizeDelta: {x: 700, y: 400}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2113321426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14868,7 +14874,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 10c5d44ed970eda4e8651ce4e089757c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e13db5b5df3d4209b340d9bd0be251ad, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -16395,7 +16401,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: 48
-  cells: 000000000000000000000000000000100000000000fff000000001ffe780000003fff38000000ff7f5e000001fdff6e80000197ff7fc0001dbdff07c0003c7852cd0000dc7e075e0000bcff9f7e0000fcffde7400007cff8ef000007fff4ee00100ffffc0800381fffff28001e1fffff71c03e1ffffc30e03f3fffff987c3fbfffff84fc3f3fffffb5fe3efffffef9fe3ffffffffdfe3ffffffff8f83ffffffffb783ffffffffd983ffffffff7b83fffffffffb43fffffffef8c7fffffffff983fffffffff0c0fffffffff6c1ffffffffe383fffffffff801fffffffffb01fffffffffa00ffffffffe00007dcfffff0000021fffffa0000337f61f20000067f01f20000001003900000001000400000000000000000000000000000000000000
+  cells: 000000000000000000000000000000007000000047fff8000001fffffc000007fffffe000007fffffe000007ffffff800003fffffdc00003ffff7ff00001c1f87ff00003c1fb7f800007e7f77ff0000b8fe3fdf0000f8fdcf7f0001fe7fde3c0000fe1ffc380001fe3ffbc00001ff7ff3c00007efffe9e0000fefeffdc0000fffffbf2000fffff3ff3881fffffdffbf81ffffffffdf83ffffffffffc1ffffffffffe1fbffffffd1c3ffffffffe383fffffffff8c3fffffffffce7ffeefffff9c3ffffffffdb07ffb7ffffe607fedfffffe603fcffffffe001ffffffff8801fffe3fff0801fefe3ffe6000bf7f9f70400015dddfe0000007007fe1000000003be00000000000f80000000000f0000000000060000000000000000000000000000
 --- !u!1 &327611326985164858
 GameObject:
   m_ObjectHideFlags: 0
@@ -19405,6 +19411,7 @@ MonoBehaviour:
   pinImage: {fileID: 52941540447313168}
   glowImage: {fileID: 4360495878309003590}
   mapLabel: {fileID: 2419902842744416456}
+  artworkShowsName: 1
   cardButton: {fileID: 1936658529}
   cardFrameImage: {fileID: 1936658530}
   cardLabel: {fileID: 1021094097}
@@ -19512,7 +19519,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: 48
-  cells: 000000000000000000000000000002780000000009fc0000000031fec000000033ffc00000002fff8dc0000047ffede000001fffedf00001bffffdf400007ffff1f00001fffff9fc0001fffff9f80001fffff5f80001fffff6f80003fffff6780002fffffe180000ffffff000000fffffc800001fffffe800001ffffff000023ffffff800067ffffffc000efffffffe0006ffffffff8061ffffffff8040ffffffff833effffffffc0ffffffffffe0ffffffffbfe3ffffffff7fe3fffffffbfe03fffffff7fc03fffffff7fc03fffffff7f002fffffff7c003ffffffef8003ffffffdf8003ffffffbf00007ffffffe0000bfffffde00009ffffffe00000ffffffc00000fffe118000003ffc000000003f78000000001c00000000000000000000
+  cells: 00000000000000000000100000023980f800001ffffffe00003ffffffe00007fffffff00007fffffffe0007fffffffe0007fffffffcc003fffffff0c001f7ffcfef80015fffe39f80001fffef9fc0000fffff1fc0001ffff63fc0001ffff72fe0000f9fffcfe000dfff9fdfe0007fffe7e3e0003ffc7fe1c0023fff7fccc0067fff7fcc0005fffefff80007fffefff00037fffefff800f7fff8fffd0077fffbffff4027fffbffff033fffffdfff83ffffffbfff81ffffffdc3fc7ffffffff7dc3fffffffffe03ffffff7ffe01fffffffffc007fffffdff0017fffffdfe007ffffff7f8001ffffffff00007fffffff00003ff7ffff00006ffffffe00000ffffcfc00000fffe0000000001f8000000000030000000000000000000000000000000
 --- !u!222 &1355430602127261446
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -19542,7 +19549,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: 48
-  cells: 000000000000000000780000000003fa000000000782000000001f38000000003d34000000003c08000000003f48000000017c04000000017fa0000000007c3800000002ff7800000002fcfc00000007ffffd8000007fffffc000001fffffc000001fffffc000003fffff8600001fffff5800003ffffe4380007fffff0780007fffffff00007ffffffe00007ffffffa8000fffffff78003fffffff70007fffffff70007ffffffe0000ffffffffe000ffffffffc805fffffffe7c07fffffffcf803fffffff1e007fffffffdf007ffffffe3f00fffffffffe007ffffffdb4003ffffffbf000fffffffff001ffffffdd80001ffffffc000017fffff0000007fffff000007fffffe000001dff7800000000f1c000000000018000000000000000000
+  cells: 00000000000000005e190000003ffbc7fc00007ffffffe0000ffffffff0000ffffffff0000ffffffff00007fffffff0000fffffffe00003fdff9ff00001fe180dc000003e0013a000001e80396000001fe0fac000001f807fc000001f0fff9800001bfffe3c00001bfffe7c000037bffefb00003f3ffff000001fbfffce00007fffff880000fdffffe20001fdfffffc400177fffffcc001f3ffffffc003eef7e7ff0007ffff9dec800ff3fd3671000ff3fdfdf0003fffff6fff803ffffff7ff803ffffff7ff007fbffe3ffe003f7fff7ffe003dfffffff8007dfffbffe7007ffffff39e003fffff6780003fdffbff00000fdffffe00000f9fffc0000017dfffc0000015bfff000000017ffc00000000fff0000000003e8000000000000000000
 --- !u!224 &1386067972734805742
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20790,7 +20797,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: 48
-  cells: 0000000000000000000001c00020000003e000700060033006fc01ec04380ffe03f40fd01ffe79f86fc83ffee85ccf8c3ffcdc1cdff03ffe9c3c3fe83fff1c7d3ff63fff0cfcbff63ffe21ffbff07fff23ff3fe03fff8ffeffc819ffffffffbe00ffffffff7e04fffffffffe01fffffffffe07fffffffffe0ffffffffffe1ffffffffffc03fffffffffc01fffffffffe0f2ffffffffe069ffffffffe18fffffffffe3efdfffffffe3efefffffffe1ffe7ffffffc1efe07d7fffc3efc07707ff81cf807743ff801f80c2e9ff803d21f8f3ff003c41f8e7fe001cc1f9e7fc000201f8f398000201f9f83c000000f9f81c00000033fcfc00000007fcfc000000073c1800000007be3000000001fc000000000070000000000020000000000000000
+  cells: 000000000000000187f18000000ffffff000007fe26bfe0000febff93f0000fcd7dfbf7003fdf7ffbfb80fffe123fed81ffffffff9d00ff1fcff838c7ffc02ce1f1e7ffe061f3c7e3fff9e1f83fe7ffe9c4f0ffc7fffc9ceafbe3fff13fe1ffe3fffdbffdffc3fffe7ffc5f43fff87ffbb203ffedfff3c603ffdffff3fe01c99fffffffc01f1cfefdffc01f7fff79ffc0ffff7ffcff60ffffeffffe017ffffffff9c103fffff3fbc318ffff77ffe3fe5fffffffe1ff3fffffffc0fffffff7ffc07f9ffbd1ff83bfefe1fdf703dfe08e1de600ffc60f9bfdc03fdc7f81fbe0df80f71c3a40fd81fe3ff0000dc13f17e4000000ff77e40000003f2f800000001f2e6000000007f90000000007f9000000000078000000000030000000000000000
 --- !u!114 &1866624189460295915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22489,7 +22496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: 48
-  cells: 00000000000000000000000000000000780000000003f8000000000fe0000000003fcec00000007f9e8800000fffac3c00001fff2dfc00003ffdcbf00001ffc1f3000001ffc021000003ffc0cb000001ffc1ef00000ffe03e000001ffe3fc000001ffe7fe000001ffffff800003ffffff00000ffffffe60001ffffffff0000ffffffff8000ffffffffe001ffffffffe000fffffffff0007ffffffff0007fffffffc000ffffffff9c005fffffdfbe001ffffe3ffc001ffffefff0000ffffffff0026fffff7fe0037ffffc7b00161ffff870003fbbfffd1c000bfbfefd780003f1fddd7c0003f1fbf7fb0005db87e7e20000e7068500000036011608000000015e10000000001c40000000000b0000000000070000000000000000000000000000
+  cells: 000000000000000300006000003ff7e7fe00007fffffff00007fffffff00007fffffffc0007ffffffff8003fffffff38003fffffff10000fe1ffff740007c483fdf800013fefdbf800007fffc5f80001ffff8ff80003fffd9f300013fffc7e400033ffe078400037ffce0200002fff806c00005ffffcec00007fffffe00000fffffdf3c001ffffffe7e001ffffffefe001fffffffc8401ffffffee1e00fffe7fffd801fbfffdbefc01fffffc3ff000efffc1fff0047ff7f3ffec193ffffffff03bdfdfcfbffc1fe7fe3e3ffc2feefff83df03beefff0738007fefcbb1d003ff7f9fe78081ffbffaa3c3003f7f397e00003e7c637c08003e70504060000e403580c000000005400000000000df00000000003c00000000000c000000000000000
 --- !u!1 &2383611765610855532
 GameObject:
   m_ObjectHideFlags: 0
@@ -26945,7 +26952,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: 48
-  cells: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000180000b300080800000800080c0000708021880000720581c800007f2103c00000ffa223e00000ff006380004ff3ccf040000fc0fff000060781fff0040fa103fff00c078007fffe3c03080ffffe7c0000e73fff3c0001bc3ffffc0a1ff87ffff00c1ff8ffffc0103fffffff80003fefffff0811ff07ffe60001fe7fe3df8007fc37f79bc007f0c7e7e00001f18f82f00011f24f00780008302c00780000202c003800000028000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  cells: 0000000000000000000000000000000000000000000000000003e7f3e00000041ddc1000000600009000000e000018000002000014000022a061400000620c0c22000003fc1c20600003f7f7e0e000844070c000028c01780f80038870303f800b8060f00e080bb060e3100801b061d000000332fbe440880b73fffdb0e8100ffff7c060101dffbf00d00188fe0300d000c1fc2103f81320fffc1f761300fff83c7c13c2fff05ebc07f7ffe0fe7806fe3fe7ff7020601fc7bfe028201fc1fde002011f05ff8812470607ff88180f823fff1000bfd03ffe00007f3037f0800006323fb0000003231e62000002001e04000004003800000000001000000000001c00000000000c0000000000040000000000000000000000000000000000000000
 --- !u!1 &3947396353787680025
 GameObject:
   m_ObjectHideFlags: 0
@@ -28442,7 +28449,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: 48
-  cells: 000000000000000000000000000000000000000000000000000000001c60000000131df80000006645fc0000007ee1f80000003ff0700000000ff88000000287f80000000787fdc0000007807cf4000007c01cf800000f800bfc0000130703fc0000679303fc00005fc301e000007e8000c00e00380e00c01fe07cff01801fffffff41200fffffff80f81fffffffc2901fffffff87003fffffff8e787fffffff85fe3fffffff000c7fffffff20e47ffffffe63ec3ffffffe41e83ffffff88d400ffffff34bb007fffff2832000ffffe41e00007fffd00c0000bfffc8e00000bfff80c000007fff8e70000063f31ff8000180f07ff0000007603fc000000600bf80000036001d8000001000080000000000000000000000000000000000000000
+  cells: 000000000000000000010000002870079200003ffffffe00003ffffffe0000ffffffff7000fffffffff8007ffffffff8007ffffffffc007ffffff9f8001fc3c7e5f00005003fdc100000003fdfb00000003fffc0000001bfefe007c101ffffe00ff06dffffe00fe67ffff83c07f63ffff0781bfffffffff807fffffffffc07ffffffff781ffffffff3f80fffffffff900fffffffff801fffffffff805fffffffffc63fffffffff947fffffffff943fffffffbf0c3fffffffff181ffffff7fe700ffffffff8800fffffdff31c00ffffff9338007fffffa410006fffdfe400006fffbf8000000fffbe9980000ffffc018000073ff16c0000000fe8e00000000fe0600000000fe04000000005000000000000000000000000000000000000000000
 --- !u!224 &4371321653767905737
 RectTransform:
   m_ObjectHideFlags: 0

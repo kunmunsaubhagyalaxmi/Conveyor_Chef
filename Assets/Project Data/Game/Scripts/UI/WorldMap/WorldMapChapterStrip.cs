@@ -138,7 +138,10 @@ namespace Watermelon.BusStop
                 }
 
                 if (card.progressText != null)
+                {
+                    FitNumber(card.progressText);
                     card.progressText.text = done + "/" + total;
+                }
             }
         }
 
@@ -151,5 +154,16 @@ namespace Watermelon.BusStop
             lockedCardSprite = locked;
         }
 #endif
+        // "30/30" / "150/150" are longer than the old "3/3": shrink to fit, authored size is the max.
+        private static void FitNumber(TMPro.TMP_Text text)
+        {
+            if (text == null || text.enableAutoSizing)
+                return;
+            text.fontSizeMax = text.fontSize;
+            text.fontSizeMin = UnityEngine.Mathf.Min(14f, text.fontSize);
+            text.textWrappingMode = TMPro.TextWrappingModes.NoWrap;
+            text.enableAutoSizing = true;
+        }
+
     }
 }

@@ -21,7 +21,10 @@ namespace Watermelon.BusStop
         private const string SelectedCountryLevelStartKey = "CC_CountryMap_SelectedLevelStart";
         private const string DiamondsKey = "CC_Diamonds";
         private const string DiamondCurrencyMigrationKey = "CC_DiamondCurrencyMigrated";
-        private const int LevelsPerCountry = 3;
+        private const int LevelsPerCountry = WorldCatalog.LevelsPerCountry;      // 30
+        private const int CardsPerPage = 3;      // the three cards in the scene show one page of levels
+        private const int Pages = (LevelsPerCountry + CardsPerPage - 1) / CardsPerPage;   // 10 pages
+        private const float PageSlideDuration = 0.22f;
 
         private const string CountrySubtitle = "FLAVORS, CULTURE, JOURNEY";
         private const string SelectedContinentKey = "CC_WorldMap_SelectedContinent";
@@ -80,7 +83,9 @@ namespace Watermelon.BusStop
         private LevelSave levelSave;
         private int selectedCountry;
         private int countryLevelStart;
-        private int selectedSlot;
+        private int selectedLevel;          // selected level in this country (0-29)
+        private Coroutine pageSlide;
+        private int CurrentPage => selectedLevel / CardsPerPage;
         private bool currencySubscribed;
         private int sceneCountry = -1;
 
@@ -125,6 +130,16 @@ namespace Watermelon.BusStop
 
             if (settingsPanel != null)
                 settingsPanel.SetActive(false);
+
+            // swipe left / right over the cards turns the page
+            if (levelCards != null && levelCards.Length > 0 && levelCards[0] != null &&
+                levelCards[0].transform.parent != null)
+            {
+                LevelSelectionSwipe swipe = levelCards[0].transform.parent.GetComponent<LevelSelectionSwipe>();
+                if (swipe == null)
+                    swipe = levelCards[0].transform.parent.gameObject.AddComponent<LevelSelectionSwipe>();
+                swipe.Bind(this);
+            }
         }
 
         private void Start()
@@ -144,7 +159,7 @@ namespace Watermelon.BusStop
             PlayerPrefs.SetInt(SelectedCountryLevelStartKey, countryLevelStart);
             PlayerPrefs.Save();
 
-            selectedSlot = ResolveInitialSelectedSlot();
+            selectedLevel = ResolveInitialSelectedLevel();
 
             ApplyCountryPresentation();
             RefreshAll();
@@ -186,22 +201,30 @@ namespace Watermelon.BusStop
             }
         }
 
-        private int ResolveInitialSelectedSlot()
+        // The next level to play (the last open level when the country is done).
+        private int ResolveInitialSelectedLevel()
         {
-            for (int slot = 0; slot < LevelsPerCountry; slot++)
+            for (int i = 0; i < LevelsPerCountry; i++)
             {
-                int levelIndex = countryLevelStart + slot;
+                int levelIndex = countryLevelStart + i;
                 if (IsLevelUnlocked(levelIndex) && !IsLevelCompleted(levelIndex))
-                    return slot;
+                    return i;
             }
 
-            for (int slot = LevelsPerCountry - 1; slot >= 0; slot--)
+            for (int i = LevelsPerCountry - 1; i >= 0; i--)
             {
-                if (IsLevelUnlocked(countryLevelStart + slot))
-                    return slot;
+                if (IsLevelUnlocked(countryLevelStart + i))
+                    return i;
             }
 
             return 0;
+        }
+
+        // Level shown by a card on the current page (-1 past the country's last level).
+        private int CardLevel(int slot)
+        {
+            int inCountry = CurrentPage * CardsPerPage + slot;
+            return inCountry < LevelsPerCountry ? inCountry : -1;
         }
 
         private void ApplyCountryPresentation()
@@ -219,7 +242,7 @@ namespace Watermelon.BusStop
                 descriptionText.text = country.Description;
 
             if (guideText != null)
-                guideText.text = "Complete all 3 missions\nto master " + countryName +
+                guideText.text = "Complete all " + LevelsPerCountry + " levels\nto master " + countryName +
                                  (countryName.EndsWith("s") ? "’" : "’s") + " flavors!";
 
             if (progressTitleText != null)
@@ -296,11 +319,12 @@ namespace Watermelon.BusStop
             RefreshProgress();
 
             if (leftArrowButton != null)
-                leftArrowButton.interactable = selectedSlot > 0;
+                leftArrowButton.interactable = CurrentPage > 0;
 
             if (rightArrowButton != null)
-                rightArrowButton.interactable = selectedSlot < LevelsPerCountry - 1;
+                rightArrowButton.interactable = CurrentPage < Pages - 1;
         }
+
 
         private void ApplyApprovedDiamondArtwork()
         {
@@ -374,46 +398,57 @@ namespace Watermelon.BusStop
             }
         }
 
+        // One card per level: the three scene cards show the current page (levels 1-3, 4-6 ...
+        // 28-30). Each card cycles through the country's three place pictures and is titled
+        // with that place, shows the level's number, its own stars and PLAY.
         private void RefreshCards()
         {
             if (levelCards == null)
                 return;
 
-            for (int slot = 0; slot < levelCards.Length && slot < LevelsPerCountry; slot++)
+            WorldCatalog.Country country = WorldCatalog.GetCountry(selectedCountry);
+            int places = country != null && country.Missions.Length > 0 ? country.Missions.Length : 3;
+
+            for (int slot = 0; slot < levelCards.Length && slot < CardsPerPage; slot++)
             {
                 LevelSelectionLevelCard card = levelCards[slot];
                 if (card == null)
                     continue;
 
-                int levelIndex = countryLevelStart + slot;
+                int inCountry = CardLevel(slot);
+                card.gameObject.SetActive(inCountry >= 0);
+                if (inCountry < 0)
+                    continue;
+
+                int levelIndex = countryLevelStart + inCountry;
                 bool unlocked = IsLevelUnlocked(levelIndex);
                 bool completed = IsLevelCompleted(levelIndex);
-                int stars = GetLevelStars(levelIndex);
+                int stars = completed ? Mathf.Max(1, GetLevelStars(levelIndex)) : 0;
 
-                // Null keeps the card's own thumbnail (a country scene's Hierarchy art).
-                Sprite thumbnail = UsesSceneArt ? null : WorldArt.ForCountry(selectedCountry, WorldArt.LevelThumbnail(slot));
-                if (thumbnail == null && !UsesSceneArt && indiaThumbnails != null && slot < indiaThumbnails.Length)
-                    thumbnail = indiaThumbnails[slot];
+                // Every level has its own picture (Resources/World/<continent>/<country>/level_N.png)
+                // and title (card_titles.txt). Until a picture exists the card falls back to the
+                // country's three place pictures (place == slot: pages are 3 long), and a country
+                // scene to the picture the card had in its Hierarchy.
+                int place = inCountry % places;
+                Sprite thumbnail = WorldArt.ForCountry(selectedCountry, WorldArt.LevelThumbnail(inCountry), false);
+                if (thumbnail == null)
+                    thumbnail = UsesSceneArt ? card.AuthoredThumbnail : WorldArt.ForCountry(selectedCountry, WorldArt.LevelThumbnail(place));
+                if (thumbnail == null && indiaThumbnails != null && place < indiaThumbnails.Length)
+                    thumbnail = indiaThumbnails[place];
 
-                WorldCatalog.Country country = WorldCatalog.GetCountry(selectedCountry);
-                string mission = country != null && slot < country.Missions.Length ? country.Missions[slot] : "Mission " + (slot + 1);
+                string title = WorldArt.CardTitle(levelIndex) ?? WorldCatalog.GetMissionName(selectedCountry, place);
 
-                card.Refresh(
-                    levelIndex,
-                    mission,
-                    thumbnail,
-                    unlocked,
-                    slot == selectedSlot,
-                    completed,
-                    stars);
+                card.Refresh(levelIndex, title, thumbnail, unlocked, inCountry == selectedLevel, completed, stars,
+                             completed ? "REPLAY" : "PLAY", inCountry + 1);
             }
 
             if (statusText != null)
             {
-                int levelIndex = countryLevelStart + selectedSlot;
-                statusText.text = IsLevelUnlocked(levelIndex)
-                    ? "MISSION " + (selectedSlot + 1) + " SELECTED"
-                    : "COMPLETE THE PREVIOUS MISSION TO UNLOCK";
+                int first = CurrentPage * CardsPerPage + 1;
+                int last = Mathf.Min(first + CardsPerPage - 1, LevelsPerCountry);
+                statusText.text = IsLevelUnlocked(countryLevelStart + selectedLevel)
+                    ? "LEVELS " + first + "\u2013" + last + " OF " + LevelsPerCountry
+                    : "FINISH LEVEL " + selectedLevel + " TO UNLOCK LEVEL " + (selectedLevel + 1);
             }
         }
 
@@ -446,16 +481,21 @@ namespace Watermelon.BusStop
 
         public void HandleCardPressed(int slot)
         {
-            slot = Mathf.Clamp(slot, 0, LevelsPerCountry - 1);
-            selectedSlot = slot;
+            int inCountry = CardLevel(Mathf.Clamp(slot, 0, CardsPerPage - 1));
+            if (inCountry < 0)
+                return;
+            selectedLevel = inCountry;
             PlayClick();
             RefreshAll();
         }
 
         public void HandlePlayPressed(int slot)
         {
-            slot = Mathf.Clamp(slot, 0, LevelsPerCountry - 1);
-            int levelIndex = countryLevelStart + slot;
+            int inCountry = CardLevel(Mathf.Clamp(slot, 0, CardsPerPage - 1));
+            if (inCountry < 0)
+                return;
+            selectedLevel = inCountry;
+            int levelIndex = countryLevelStart + inCountry;
 
             if (!IsLevelUnlocked(levelIndex))
             {
@@ -468,33 +508,73 @@ namespace Watermelon.BusStop
 
         public void HandleLockedPressed(int slot)
         {
-            selectedSlot = Mathf.Clamp(slot, 0, LevelsPerCountry - 1);
+            int inCountry = CardLevel(Mathf.Clamp(slot, 0, CardsPerPage - 1));
+            if (inCountry >= 0)
+                selectedLevel = inCountry;
             PlayClick();
-
-            if (statusText != null)
-                statusText.text = "COMPLETE THE PREVIOUS MISSION TO UNLOCK";
-
-            RefreshCards();
+            RefreshCards();     // the status line says which level to finish first
         }
 
-        private void PreviousLevel()
+        private void PreviousLevel() => TurnPage(-1);
+
+        private void NextLevel() => TurnPage(1);
+
+        /// <summary>Shows the previous / next three levels (arrows and swipes).</summary>
+        public void TurnPage(int direction)
         {
-            if (selectedSlot <= 0)
+            int page = Mathf.Clamp(CurrentPage + direction, 0, Pages - 1);
+            if (page == CurrentPage)
                 return;
 
-            selectedSlot--;
+            // keep the same card position on the new page
+            int slot = selectedLevel % CardsPerPage;
+            selectedLevel = Mathf.Min(page * CardsPerPage + slot, LevelsPerCountry - 1);
             PlayClick();
             RefreshAll();
+            SlideCards(direction);
         }
 
-        private void NextLevel()
+        // The new page slides in from the side it came from (unscaled time).
+        private void SlideCards(int direction)
         {
-            if (selectedSlot >= LevelsPerCountry - 1)
+            RectTransform cardsRoot = levelCards != null && levelCards.Length > 0 && levelCards[0] != null
+                ? levelCards[0].transform.parent as RectTransform
+                : null;
+            if (cardsRoot == null || !isActiveAndEnabled)
                 return;
+            if (pageSlide != null)
+                StopCoroutine(pageSlide);
+            pageSlide = StartCoroutine(SlideRoutine(cardsRoot, direction));
+        }
 
-            selectedSlot++;
-            PlayClick();
-            RefreshAll();
+        private Vector2 cardsHome;
+        private bool cardsHomeKnown;
+
+        private System.Collections.IEnumerator SlideRoutine(RectTransform cardsRoot, int direction)
+        {
+            if (!cardsHomeKnown)
+            {
+                cardsHome = cardsRoot.anchoredPosition;
+                cardsHomeKnown = true;
+            }
+
+            CanvasGroup group = cardsRoot.GetComponent<CanvasGroup>();
+            if (group == null)
+                group = cardsRoot.gameObject.AddComponent<CanvasGroup>();
+
+            float distance = cardsRoot.rect.width * 0.18f * direction;
+            for (float t = 0f; t < PageSlideDuration; t += Time.unscaledDeltaTime)
+            {
+                float k = t / PageSlideDuration;
+                float eased = 1f - (1f - k) * (1f - k) * (1f - k);
+                cardsRoot.anchoredPosition = cardsHome + new Vector2(distance * (1f - eased), 0f);
+                group.alpha = Mathf.Lerp(0.2f, 1f, eased);
+                yield return null;
+            }
+
+            cardsRoot.anchoredPosition = cardsHome;
+            group.alpha = 1f;
+            pageSlide = null;
         }
 
         public void LoadSelectedLevel(int levelIndex)
@@ -532,19 +612,20 @@ namespace Watermelon.BusStop
 
         public void ShowPage(int pageIndex)
         {
-            selectedSlot = Mathf.Clamp(pageIndex, 0, LevelsPerCountry - 1);
+            int page = Mathf.Clamp(pageIndex, 0, Pages - 1);
+            selectedLevel = Mathf.Min(page * CardsPerPage + selectedLevel % CardsPerPage, LevelsPerCountry - 1);
             RefreshAll();
         }
 
         public bool IsPageUnlocked(int pageIndex)
         {
-            int slot = Mathf.Clamp(pageIndex, 0, LevelsPerCountry - 1);
-            return IsLevelUnlocked(countryLevelStart + slot);
+            int page = Mathf.Clamp(pageIndex, 0, Pages - 1);
+            return IsLevelUnlocked(countryLevelStart + page * CardsPerPage);
         }
 
         public int GetCurrentPageIndex()
         {
-            return selectedSlot;
+            return CurrentPage;
         }
 
         private void BackPressed()

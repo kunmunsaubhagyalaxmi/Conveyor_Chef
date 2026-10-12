@@ -387,6 +387,7 @@ namespace Watermelon.BusStop
             OnMapChanged(true);
 
             tileManager.GenerateTileMap(levelMap);
+            LevelCameraFitter.Fit(levelWidth, levelHeight);   // whole board visible above the toolbar
             EnvironmentBehavior.SetBusQueue(loadedLevelData.BusSpawnQueue);
             EnvironmentBehavior.StartSpawningBusses();
 

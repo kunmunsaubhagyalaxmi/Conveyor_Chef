@@ -302,28 +302,17 @@ namespace Watermelon
 
         public static void ReturnToLevelSelection()
         {
-            if (!isGameActive)
-                return;
-
+            // Works even when no level is running (e.g. it never started for lack of lives):
+            // Home must always take the player out. Repeated taps are ignored by the loader.
             isGameActive = false;
+            Time.timeScale = 1f;
 
             RaycastController.Disable();
 
-            levelSave.ReplayingLevelAgain = false;
+            if (levelSave != null)
+                levelSave.ReplayingLevelAgain = false;
 
-            LevelData completedLevel = LevelController.LoadedStageData;
-
-            // Mark the completed level with correct index
-            int completedLevelIndex;
-            if (levelSave.isPlayingFromLevelSelection)
-            {
-                completedLevelIndex = levelSave.selectedLevelIndex;
-            }
-            else
-            {
-                completedLevelIndex = levelSave.RealLevelNumber;
-            }
-
+            SaveController.MarkAsSaveIsRequired();
             SaveController.Save(true);
 
             // Load the level selection scene
@@ -475,25 +464,6 @@ namespace Watermelon
 
 
 
-
-        // NEW: Add this method
-        private static void MarkLevelCompleted(int levelIndex, int stars)
-        {
-            // if (!levelSave.levelProgress.ContainsKey(levelIndex))
-            // {
-            //     levelSave.levelProgress[levelIndex] = new LevelProgressData();
-            // }
-            // Just call the static method from LevelController
-            LevelController.MarkLevelCompleted(levelIndex, 3);
-
-            levelSave.levelProgress[levelIndex].isCompleted = true;
-
-            // Save best star rating
-            int currentStars = levelSave.levelProgress[levelIndex].starsEarned;
-            levelSave.levelProgress[levelIndex].starsEarned = Mathf.Max(currentStars, stars);
-
-            SaveController.MarkAsSaveIsRequired();
-        }
 
         public void HomeButton()
         {

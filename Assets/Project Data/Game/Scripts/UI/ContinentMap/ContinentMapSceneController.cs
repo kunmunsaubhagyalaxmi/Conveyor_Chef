@@ -14,7 +14,7 @@ namespace Watermelon.BusStop
     [DisallowMultipleComponent]
     public sealed class ContinentMapSceneController : MonoBehaviour
     {
-        public const int LevelsPerContinent = 15;
+        public const int LevelsPerContinent = WorldCatalog.LevelsPerContinent;
         private const string SelectedContinentKey = "CC_WorldMap_SelectedContinent";
 
         private static readonly string[] ContinentNames =

@@ -17,6 +17,9 @@ namespace Watermelon.BusStop
         [SerializeField] private Image pinImage;
         [SerializeField] private Image glowImage;
         [SerializeField] private TextMeshProUGUI mapLabel;
+        [Tooltip("The continent picture has its name painted on a banner, so the text label under it is hidden. " +
+                 "Untick for art without a name banner.")]
+        [SerializeField] private bool artworkShowsName = true;
 
         [Header("Chapter Card")]
         [SerializeField] private Button cardButton;
@@ -37,9 +40,22 @@ namespace Watermelon.BusStop
         public Sprite ArtworkSprite => continentImage != null ? continentImage.sprite : null;
         public Button CardButton => cardButton;
 
+        private void Awake()
+        {
+            ApplyLabelVisibility();
+        }
+
+        // Only the label's visibility; its text, colour and position stay as authored.
+        private void ApplyLabelVisibility()
+        {
+            if (mapLabel != null && mapLabel.gameObject.activeSelf == artworkShowsName)
+                mapLabel.gameObject.SetActive(!artworkShowsName);
+        }
+
         public void Bind(WorldMapSceneController controller)
         {
             owner = controller;
+            ApplyLabelVisibility();
 
             if (mapButton != null)
             {

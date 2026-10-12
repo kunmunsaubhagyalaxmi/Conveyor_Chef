@@ -14,8 +14,8 @@ namespace Watermelon.BusStop
     [DisallowMultipleComponent]
     public sealed class CountryMapSceneController : MonoBehaviour
     {
-        public const int CountriesPerContinent = 5;
-        public const int LevelsPerCountry = 3;
+        public const int CountriesPerContinent = WorldCatalog.CountriesPerContinent;
+        public const int LevelsPerCountry = WorldCatalog.LevelsPerCountry;
         public const int LevelsPerContinent = CountriesPerContinent * LevelsPerCountry;
 
         private const string SelectedContinentKey = "CC_WorldMap_SelectedContinent";
@@ -180,6 +180,7 @@ namespace Watermelon.BusStop
             ApplyContinentArt();
             ApplyContinentHeader();
             ConfigureProgressFillRendering();
+            FitProgressPanelToScreen();
             RefreshHUD();
             RefreshCountryProgress();
             RefreshSettingsLabels();
@@ -314,6 +315,57 @@ namespace Watermelon.BusStop
             progressFill.type = Image.Type.Simple;
             progressFill.preserveAspect = false;
             progressFill.raycastTarget = false;
+
+            // Longer continent names and "12/15" shrink to fit instead of spilling out;
+            // the authored size stays the maximum.
+            FitText(progressTitleText);
+            FitText(progressValueText);
+        }
+
+        private static void FitText(TextMeshProUGUI text)
+        {
+            if (text == null || text.enableAutoSizing)
+                return;
+
+            text.fontSizeMax = text.fontSize;
+            text.fontSizeMin = Mathf.Min(text.fontSizeMin > 0f ? text.fontSizeMin : 18f, text.fontSize);
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            text.enableAutoSizing = true;
+        }
+
+        private const float DesignCanvasWidth = 1080f;
+        private const float PanelRightMargin = 14f;
+
+        // The chef is anchored to the left edge and the progress panel to the centre, so on
+        // phones narrower than the 1080-wide design (Note20, S20...) the panel slid over the
+        // chef. Keep the panel's left edge where the design puts it, and shrink it slightly
+        // only if it would then run off the right edge. Wider screens keep the authored layout.
+        private void FitProgressPanelToScreen()
+        {
+            RectTransform root = transform.parent as RectTransform;
+            RectTransform panel = root != null ? root.Find("Continent Progress Panel") as RectTransform : null;
+            if (panel == null)
+                return;
+
+            Canvas.ForceUpdateCanvases();
+            float screenWidth = root.rect.width;
+            if (screenWidth <= 0f || screenWidth >= DesignCanvasWidth)
+                return;
+
+            Vector2 pos = panel.anchoredPosition;
+            float w = panel.rect.width;
+            float h = panel.rect.height;
+
+            float leftFromEdge = DesignCanvasWidth * 0.5f + pos.x - panel.pivot.x * w;
+            float bottom = pos.y - panel.pivot.y * h;
+
+            float available = screenWidth - PanelRightMargin - leftFromEdge;
+            float scale = Mathf.Clamp(available / w, 0.75f, 1f);
+
+            panel.localScale = new Vector3(scale, scale, 1f);
+            panel.anchoredPosition = new Vector2(
+                leftFromEdge - screenWidth * 0.5f + panel.pivot.x * w * scale,
+                bottom + panel.pivot.y * h * scale);
         }
 
         private void RefreshHUD()
@@ -340,13 +392,13 @@ namespace Watermelon.BusStop
             if (save == null)
             {
                 Debug.LogWarning("[CountryMap] Level save is unavailable; country progress cannot be displayed yet.");
-                SetProgressVisual(0, LevelsPerCountry);
+                SetProgressVisual(0, LevelsPerContinent);
 
                 if (progressTitleText != null)
-                    progressTitleText.text = "COUNTRY PROGRESS";
+                    progressTitleText.text = WorldCatalog.GetContinentName(selectedContinent).ToUpperInvariant() + " PROGRESS";
 
                 if (progressValueText != null)
-                    progressValueText.text = "0/" + LevelsPerCountry;
+                    progressValueText.text = "0/" + LevelsPerContinent;
 
                 return;
             }
@@ -391,13 +443,17 @@ namespace Watermelon.BusStop
                 ? selectedNode.CountryName.ToUpperInvariant()
                 : "COUNTRY";
 
+            // The bottom panel (globe icon) is the whole continent's progress, as in the
+            // design ("ASIA PROGRESS 0/15"); each country's own x/3 is on its map pill.
+            int continentCompleted = WorldCatalog.ContinentLevelsCompleted(selectedContinent);
+
             if (progressTitleText != null)
-                progressTitleText.text = selectedCountryName + " PROGRESS";
+                progressTitleText.text = WorldCatalog.GetContinentName(selectedContinent).ToUpperInvariant() + " PROGRESS";
 
             if (progressValueText != null)
-                progressValueText.text = selectedCompleted + "/" + LevelsPerCountry;
+                progressValueText.text = continentCompleted + "/" + LevelsPerContinent;
 
-            SetProgressVisual(selectedCompleted, LevelsPerCountry);
+            SetProgressVisual(continentCompleted, LevelsPerContinent);
 
             if (statusText != null)
             {
@@ -406,8 +462,9 @@ namespace Watermelon.BusStop
                     : "SELECT A COUNTRY";
             }
 
-            Debug.Log("[CountryMap] " + selectedCountryName + " real progress: " +
-                      selectedCompleted + "/" + LevelsPerCountry);
+            Debug.Log("[CountryMap] " + WorldCatalog.GetContinentName(selectedContinent) + " progress: " +
+                      continentCompleted + "/" + LevelsPerContinent + " (" + selectedCountryName + " " +
+                      selectedCompleted + "/" + LevelsPerCountry + ")");
         }
 
         private void SetProgressVisual(int completedLevels, int totalLevels)

@@ -166,11 +166,11 @@ namespace Watermelon
             int displayLevel;
             if (levelSave != null && levelSave.isPlayingFromLevelSelection)
             {
-                displayLevel = levelSave.selectedLevelIndex + 1;
+                displayLevel = WorldCatalog.LevelInCountry(levelSave.selectedLevelIndex) + 1;   // 1-30 within the country, as on Level Selection
             }
             else
             {
-                displayLevel = LevelController.DisplayLevelNumber;
+                displayLevel = LevelController.DisplayLevelNumber + 1; // stored 0-based
             }
 
             levelText.text = string.Format("LEVEL {0}", displayLevel);

@@ -22,6 +22,10 @@ namespace Watermelon
         // Continent art.
         public const string ContinentMap = "continent_map";
         public const string ProgressGlobe = "progress_globe";
+        /// <summary>World Map header: logo + "CHAPTER n • NAME" + "UNLOCKED • 15 LEVELS" in one picture.</summary>
+        public const string ChapterBanner = "chapter_banner";
+        /// <summary>The same banner without the "UNLOCKED" line, for continents still locked.</summary>
+        public const string ChapterBannerLocked = "chapter_banner_locked";
 
         // Country art.
         public const string FlagBadge = "flag_badge";
@@ -35,7 +39,7 @@ namespace Watermelon
         public static string LevelThumbnail(int slot) => "level_" + (slot + 1);
         public static string Dish(int colour) => "dish_" + WorldCatalog.DishColours[Mathf.Clamp(colour, 0, WorldCatalog.DishColours.Length - 1)];
 
-        public static readonly string[] ContinentKeys = { ContinentMap, ProgressGlobe };
+        public static readonly string[] ContinentKeys = { ContinentMap, ProgressGlobe, ChapterBanner, ChapterBannerLocked };
 
         public static readonly string[] CountryKeys =
         {
@@ -96,6 +100,33 @@ namespace Watermelon
 
             return allowStandIn && continent != 0 ? Find(ContinentPath(0, key)) : null;
         }
+
+        private static string[] cardTitles;
+
+        /// <summary>
+        /// Title of a level's Level Selection card (its own place, e.g. "Great Wall Snacks"), from
+        /// Resources/World/card_titles.txt (line n = game level n, written by
+        /// Tools/LevelPipeline/card_art_list.py). Null when the file has no title for it.
+        /// </summary>
+        public static string CardTitle(int levelIndex)
+        {
+            if (cardTitles == null)
+            {
+                TextAsset file = Resources.Load<TextAsset>(Root + "card_titles");
+                cardTitles = file != null ? file.text.Replace("\r", string.Empty).Split('\n') : new string[0];
+            }
+
+            if (levelIndex < 0 || levelIndex >= cardTitles.Length)
+                return null;
+            string title = cardTitles[levelIndex].Trim();
+            return title.Length > 0 ? title : null;
+        }
+
+        /// <summary>Art shared by every continent: Resources/World/&lt;key&gt;.png.</summary>
+        public static Sprite Shared(string key) => Find(Root + key);
+
+        /// <summary>"LOCKED" status picture shown under a locked continent's chapter banner.</summary>
+        public const string LockedStatus = "locked_status";
 
         /// <summary>True when the country has its own art for this key (not a stand-in).</summary>
         public static bool HasOwn(int country, string key) => Find(CountryPath(country, key)) != null;

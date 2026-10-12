@@ -17,7 +17,7 @@ namespace Watermelon.BusStop
     [DisallowMultipleComponent]
     public sealed class WorldMapSceneController : MonoBehaviour
     {
-        private const int LevelsPerContinent = 15;
+        private const int LevelsPerContinent = WorldCatalog.LevelsPerContinent;
         private const string SelectedContinentKey = "CC_WorldMap_SelectedContinent";
         private const string ContinentOrderVersionKey = "CC_WorldMap_ContinentOrderVersion";
         private const int CurrentContinentOrderVersion = 2;
@@ -83,6 +83,9 @@ namespace Watermelon.BusStop
         [SerializeField] private bool focusSelectedContinentOnStart = false;
 
         private int selectedContinent;
+        private WorldMapChapterBanner chapterBanner;
+        private Vector2 statusTextAuthoredPosition;
+        private bool bannerShown;
         private Coroutine focusRoutine;
         private Coroutine hintRoutine;
         private readonly Dictionary<int, int> runtimeIndexBySerializedIndex =
@@ -130,6 +133,182 @@ namespace Watermelon.BusStop
 
             if (mapScrollRect != null)
                 mapScrollRect.onValueChanged.AddListener(OnMapScrollValueChanged);
+
+            CreateChapterBanner();
+        }
+
+        // The chapter banner pictures replace the logo + text header: the header's
+        // WorldMapLogo image shows the selected continent's banner. Without a logo image the
+        // authored header stays exactly as it is.
+        private void CreateChapterBanner()
+        {
+            Image logo = FindHeaderLogo(selectedChapterText);
+            if (logo == null)
+                return;
+
+            if (statusText != null)
+                statusTextAuthoredPosition = statusText.rectTransform.anchoredPosition;
+
+            chapterBanner = WorldMapChapterBanner.Attach(logo);
+        }
+
+        /// <summary>The header logo image (sibling of the chapter text, named WorldMapLogo).</summary>
+        public static Image FindHeaderLogo(TextMeshProUGUI chapterText)
+        {
+            Transform header = chapterText != null ? chapterText.transform.parent : null;
+            Transform logo = header != null ? header.Find("WorldMapLogo") : null;
+            return logo != null ? logo.GetComponent<Image>() : null;
+        }
+
+        // Returns false when this continent has no banner picture (texts are used instead).
+        private bool ShowChapterBanner(bool unlocked)
+        {
+            if (chapterBanner == null)
+                return false;
+
+            Sprite sprite = WorldArt.ForContinent(selectedContinent,
+                unlocked ? WorldArt.ChapterBanner : WorldArt.ChapterBannerLocked, false);
+            if (sprite == null && !unlocked)
+                sprite = WorldArt.ForContinent(selectedContinent, WorldArt.ChapterBanner, false);
+
+            bool useBanner = sprite != null;
+            if (selectedChapterText != null)
+                selectedChapterText.gameObject.SetActive(!useBanner);
+
+            if (!useBanner)
+            {
+                chapterBanner.ShowAuthoredLogo();
+                SetLockedBadge(false, 0f);
+                if (statusText != null)
+                {
+                    statusText.gameObject.SetActive(true);
+                    statusText.rectTransform.anchoredPosition = statusTextAuthoredPosition;
+                }
+                return false;
+            }
+
+            chapterBanner.Show(sprite, instant: !bannerShown);
+            bannerShown = true;
+
+            // The unlocked picture already says "UNLOCKED • 15 LEVELS"; a locked continent
+            // shows the LOCKED picture (or, without it, the LOCKED text) under its banner.
+            bool badge = !unlocked && SetLockedBadge(true, chapterBanner.BottomY);
+            if (unlocked)
+                SetLockedBadge(false, 0f);
+
+            if (statusText != null)
+            {
+                bool showText = !unlocked && !badge;
+                statusText.gameObject.SetActive(showText);
+                if (showText)
+                {
+                    float halfHeight = statusText.rectTransform.rect.height * 0.5f;
+                    statusText.rectTransform.anchoredPosition =
+                        new Vector2(statusTextAuthoredPosition.x, chapterBanner.BottomY - halfHeight + 6f);
+                }
+            }
+
+            return true;
+        }
+
+        // Same letter height (~39 units) as the "UNLOCKED • 15 LEVELS" line it stands in for.
+        private const float LockedBadgeWidth = 155f;
+        private const float LockedBadgePopDuration = 0.32f;
+
+        private Image lockedBadge;
+        private Coroutine lockedBadgeRoutine;
+
+        // Shows / hides the LOCKED picture with its top edge at `top` (Header units).
+        // Returns false when there is no LOCKED picture to show.
+        private bool SetLockedBadge(bool visible, float top)
+        {
+            if (!visible)
+            {
+                if (lockedBadge != null)
+                {
+                    StopLockedBadgePop();
+                    lockedBadge.gameObject.SetActive(false);
+                }
+                return false;
+            }
+
+            if (lockedBadge == null)
+            {
+                Sprite sprite = WorldArt.Shared(WorldArt.LockedStatus);
+                RectTransform header = chapterBanner != null ? chapterBanner.transform.parent as RectTransform : null;
+                if (sprite == null || header == null)
+                    return false;
+
+                var go = new GameObject("LockedStatus", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                go.transform.SetParent(header, false);
+                go.transform.SetSiblingIndex(chapterBanner.transform.GetSiblingIndex() + 1);
+
+                lockedBadge = go.GetComponent<Image>();
+                lockedBadge.sprite = sprite;
+                lockedBadge.preserveAspect = true;
+                lockedBadge.raycastTarget = false;
+
+                RectTransform r = lockedBadge.rectTransform;
+                r.anchorMin = r.anchorMax = new Vector2(0.5f, 0.5f);
+                r.pivot = new Vector2(0.5f, 1f);
+                r.sizeDelta = new Vector2(LockedBadgeWidth, LockedBadgeWidth * sprite.rect.height / sprite.rect.width);
+                go.SetActive(false);
+            }
+
+            // Where the UNLOCKED line starts in the unlocked picture (~6 units above the
+            // locked picture's bottom edge).
+            lockedBadge.rectTransform.anchoredPosition = new Vector2(0f, top + 7f);
+
+            if (!lockedBadge.gameObject.activeSelf)
+            {
+                lockedBadge.gameObject.SetActive(true);
+                StopLockedBadgePop();
+                if (isActiveAndEnabled && bannerShown)
+                    lockedBadgeRoutine = StartCoroutine(PopLockedBadge());
+            }
+
+            return true;
+        }
+
+        private IEnumerator PopLockedBadge()
+        {
+            RectTransform r = lockedBadge.rectTransform;
+            for (float t = 0f; t < LockedBadgePopDuration; t += Time.unscaledDeltaTime)
+            {
+                float k = t / LockedBadgePopDuration;
+                // ease-out-back: a small overshoot, then settle
+                const float s = 1.70158f;
+                float eased = 1f + (s + 1f) * Mathf.Pow(k - 1f, 3f) + s * Mathf.Pow(k - 1f, 2f);
+                r.localScale = Vector3.one * Mathf.LerpUnclamped(0.6f, 1f, eased);
+                SetImageAlpha(lockedBadge, Mathf.Clamp01(k * 2.5f));
+                yield return null;
+            }
+
+            lockedBadgeRoutine = null;
+            r.localScale = Vector3.one;
+            SetImageAlpha(lockedBadge, 1f);
+        }
+
+        private void StopLockedBadgePop()
+        {
+            if (lockedBadgeRoutine != null)
+            {
+                StopCoroutine(lockedBadgeRoutine);
+                lockedBadgeRoutine = null;
+            }
+
+            if (lockedBadge != null)
+            {
+                lockedBadge.rectTransform.localScale = Vector3.one;
+                SetImageAlpha(lockedBadge, 1f);
+            }
+        }
+
+        private static void SetImageAlpha(Image image, float alpha)
+        {
+            Color c = image.color;
+            c.a = alpha;
+            image.color = c;
         }
 
         private void Start()
@@ -491,12 +670,16 @@ namespace Watermelon.BusStop
                     "CHAPTER " + (selectedContinent + 1) + "  •  " +
                     selectedName.ToUpperInvariant();
 
+            bool selectedUnlocked = IsContinentUnlocked(selectedContinent);
+
             if (statusText != null)
             {
-                statusText.text = IsContinentUnlocked(selectedContinent)
+                statusText.text = selectedUnlocked
                     ? "UNLOCKED  •  " + LevelsPerContinent + " LEVELS"
                     : "LOCKED  •  COMPLETE THE PREVIOUS CONTINENT";
             }
+
+            ShowChapterBanner(selectedUnlocked);
 
             if (chapterStrip != null)
                 chapterStrip.Refresh(selectedContinent);

@@ -73,7 +73,10 @@ namespace Watermelon.BusStop
                 countryNameText.text = countryName;
 
             if (progressText != null)
+            {
+                FitNumber(progressText);
                 progressText.text = completedLevels + "/" + levelsPerCountry;
+            }
 
             if (selectionGlow != null)
                 selectionGlow.gameObject.SetActive(selected && unlocked);
@@ -144,5 +147,16 @@ namespace Watermelon.BusStop
             completedBadge = completedRoot;
         }
 #endif
+        // "30/30" / "150/150" are longer than the old "3/3": shrink to fit, authored size is the max.
+        private static void FitNumber(TMPro.TMP_Text text)
+        {
+            if (text == null || text.enableAutoSizing)
+                return;
+            text.fontSizeMax = text.fontSize;
+            text.fontSizeMin = UnityEngine.Mathf.Min(14f, text.fontSize);
+            text.textWrappingMode = TMPro.TextWrappingModes.NoWrap;
+            text.enableAutoSizing = true;
+        }
+
     }
 }

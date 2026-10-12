@@ -44,6 +44,11 @@ namespace Watermelon
 
         private void Awake()
         {
+            // The HUD pause button was saved in Game.unity with its Button component switched
+            // off, so it drew but ignored every tap. Both open buttons are forced usable here.
+            MakeUsable(pauseButton);
+            MakeUsable(openButton);
+
             Wire(openButton, Open);
             Wire(pauseButton, Open);      // the HUD pause button pauses with this menu
             Wire(backgroundButton, Close);
@@ -127,9 +132,24 @@ namespace Watermelon
             RefreshLabels();
         }
 
+        /// <summary>
+        /// Ends a pause that outlived the menu (the "Restart?" confirmation keeps the game
+        /// frozen until it is answered).
+        /// </summary>
+        public void ReleasePause()
+        {
+            Resume();
+
+            if (GameController.IsGameActive && (root == null || !root.activeSelf))
+                RaycastController.Enable();
+        }
+
         private void Restart()
         {
-            Close();
+            // Hide the menu but stay paused: the game must not run behind the confirmation.
+            PlayClick();
+            if (root != null)
+                root.SetActive(false);
 
             // "Restart?" confirmation, then the level is replayed.
             UIGame game = GetComponentInParent<UIGame>();
@@ -137,6 +157,8 @@ namespace Watermelon
                 game = UIController.GetPage<UIGame>();
             if (game != null)
                 game.ShowReplayConfirmation();
+            else
+                ReleasePause();
         }
 
         private void Home()
@@ -170,6 +192,23 @@ namespace Watermelon
                 label.gameObject.SetActive(sprite == null);
                 label.text = name + (on ? ": ON" : ": OFF");
             }
+        }
+
+        private static void MakeUsable(Button button)
+        {
+            if (button == null)
+                return;
+
+            if (!button.enabled)
+            {
+                Debug.Log("[GameMenu] '" + button.name + "' had its Button switched off in the scene; switched on.");
+                button.enabled = true;
+            }
+
+            button.interactable = true;
+
+            if (button.targetGraphic != null)
+                button.targetGraphic.raycastTarget = true;
         }
 
         private static void Wire(Button button, UnityEngine.Events.UnityAction action)

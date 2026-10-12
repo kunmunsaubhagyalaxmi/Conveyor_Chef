@@ -247,9 +247,7 @@ namespace Watermelon
         // Vibration, Restart, Home); the replay confirmation only when there is no menu.
         private void OnReplayButtonClicked()
         {
-            GameMenuPopup menu = GetComponentInChildren<GameMenuPopup>(true);
-            if (menu == null)
-                menu = GetComponentInParent<GameMenuPopup>();
+            GameMenuPopup menu = FindGameMenu();
             if (menu != null)
             {
                 menu.Open();
@@ -257,6 +255,22 @@ namespace Watermelon
             }
 
             exitPopUp.Show();
+        }
+
+        private GameMenuPopup FindGameMenu()
+        {
+            GameMenuPopup menu = GetComponentInChildren<GameMenuPopup>(true);
+            if (menu == null)
+                menu = GetComponentInParent<GameMenuPopup>();
+            return menu;
+        }
+
+        // The menu's Restart keeps the game paused behind "Restart?"; any answer ends it.
+        private void ReleaseMenuPause()
+        {
+            GameMenuPopup menu = FindGameMenu();
+            if (menu != null)
+                menu.ReleasePause();
         }
 
         /// <summary>"Restart?" confirmation: confirming replays the level.</summary>
@@ -270,11 +284,13 @@ namespace Watermelon
             AudioController.PlaySound(AudioController.Sounds.buttonSound);
 
             exitPopUp.Hide();
+            ReleaseMenuPause();
         }
 
         public void ExitPopUpConfirmExitButton()
         {
             exitPopUp.Hide();
+            ReleaseMenuPause();
 
             if (LivesManager.IsMaxLives) LivesManager.RemoveLife();
 
@@ -293,11 +309,11 @@ namespace Watermelon
             int displayLevel;
             if (levelSave != null && levelSave.isPlayingFromLevelSelection)
             {
-                displayLevel = levelSave.selectedLevelIndex + 1;
+                displayLevel = WorldCatalog.LevelInCountry(levelSave.selectedLevelIndex) + 1;   // 1-30 within the country, as on Level Selection
             }
             else
             {
-                displayLevel = LevelController.DisplayLevelNumber;
+                displayLevel = LevelController.DisplayLevelNumber + 1; // stored 0-based
             }
             
             levelText.text = string.Format("LEVEL {0}", displayLevel);

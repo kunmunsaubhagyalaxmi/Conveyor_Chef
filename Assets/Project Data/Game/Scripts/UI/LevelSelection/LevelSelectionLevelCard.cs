@@ -76,8 +76,14 @@ namespace Watermelon.BusStop
 
         public int SlotIndex => slotIndex;
 
+        /// <summary>The picture this card had in the scene, before any page changed it.</summary>
+        public Sprite AuthoredThumbnail { get; private set; }
+
         private void Awake()
         {
+            if (thumbnailImage != null)
+                AuthoredThumbnail = thumbnailImage.sprite;
+
             EnsureSelectionGlow();
             EnsureVisualLayering();
             CaptureAuthoredGeometry();
@@ -118,7 +124,9 @@ namespace Watermelon.BusStop
             bool isUnlocked,
             bool isSelected,
             bool isCompleted,
-            int starsEarned)
+            int starsEarned,
+            string actionLabel = null,
+            int displayNumber = -1)
         {
             unlocked = isUnlocked;
 
@@ -128,10 +136,30 @@ namespace Watermelon.BusStop
             glowTarget = isSelected;
 
             if (numberText != null)
-                numberText.text = (slotIndex + 1).ToString();
+            {
+                // the level's number in its country (1-30); "30" needs to shrink into the badge
+                numberText.text = (displayNumber > 0 ? displayNumber : slotIndex + 1).ToString();
+                if (!numberText.enableAutoSizing)
+                {
+                    numberText.fontSizeMax = numberText.fontSize;
+                    numberText.fontSizeMin = Mathf.Min(18f, numberText.fontSize);
+                    numberText.textWrappingMode = TextWrappingModes.NoWrap;
+                    numberText.enableAutoSizing = true;
+                }
+            }
 
             if (titleText != null)
+            {
+                // place names vary in length (30 per country): shrink to fit the title plate
                 titleText.text = missionTitle;
+                if (!titleText.enableAutoSizing)
+                {
+                    titleText.fontSizeMax = titleText.fontSize;
+                    titleText.fontSizeMin = Mathf.Min(16f, titleText.fontSize);
+                    titleText.textWrappingMode = TextWrappingModes.NoWrap;
+                    titleText.enableAutoSizing = true;
+                }
+            }
 
             if (thumbnailImage != null && thumbnail != null)
                 thumbnailImage.sprite = thumbnail;
@@ -187,7 +215,17 @@ namespace Watermelon.BusStop
             }
 
             if (actionText != null)
-                actionText.text = isUnlocked ? "PLAY" : string.Empty;
+            {
+                // e.g. "LEVEL 17" / "REPLAY": the mission's next level; shrinks to fit the button
+                actionText.text = isUnlocked ? (string.IsNullOrEmpty(actionLabel) ? "PLAY" : actionLabel) : string.Empty;
+                if (!actionText.enableAutoSizing)
+                {
+                    actionText.fontSizeMax = actionText.fontSize;
+                    actionText.fontSizeMin = Mathf.Min(18f, actionText.fontSize);
+                    actionText.textWrappingMode = TextWrappingModes.NoWrap;
+                    actionText.enableAutoSizing = true;
+                }
+            }
 
             if (actionLockIcon != null)
                 actionLockIcon.SetActive(!isUnlocked);

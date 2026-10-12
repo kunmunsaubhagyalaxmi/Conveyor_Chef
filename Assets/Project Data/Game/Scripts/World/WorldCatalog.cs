@@ -3,18 +3,22 @@ using UnityEngine;
 namespace Watermelon
 {
     /// <summary>
-    /// The whole culinary world: 7 continents x 5 countries (Antarctica: 5 regions) x 3 levels.
+    /// The whole culinary world: 7 continents x 5 countries (Antarctica: 5 regions) x 30 levels.
     ///
     /// Countries have a global index (continent * 5 + position), and country c owns levels
-    /// c*3 .. c*3+2, so Asia keeps levels 1-15 exactly as before, North America is 16-30,
-    /// and so on up to 105. Continent order matches the World Map chapters.
+    /// c*30 .. c*30+29: China is levels 1-30, Japan 31-60, ... Asia 1-150, North America
+    /// 151-300, and so on up to 1050. Each country's 30 levels form 3 missions of 10
+    /// (Missions[0..2]). Continent order matches the World Map chapters. The levels themselves
+    /// are built by Tools/LevelPipeline (one folder per continent / country).
     /// Art for each continent and country is looked up by name through <see cref="WorldArt"/>.
     /// </summary>
     public static class WorldCatalog
     {
         public const int ContinentCount = 7;
         public const int CountriesPerContinent = 5;
-        public const int LevelsPerCountry = 3;
+        public const int LevelsPerCountry = 30;
+        public const int LevelsPerMission = 10;
+        public const int MissionsPerCountry = LevelsPerCountry / LevelsPerMission;
         public const int CountryCount = ContinentCount * CountriesPerContinent;
         public const int LevelsPerContinent = CountriesPerContinent * LevelsPerCountry;
         public const int TotalLevels = CountryCount * LevelsPerCountry;
@@ -78,7 +82,7 @@ namespace Watermelon
 
         public static readonly Country[] Countries =
         {
-            // ---------------- Asia (levels 1-15) ----------------
+            // ---------------- Asia (levels 1-150) ----------------
             new Country(0, "china", "China",
                 "Explore China's iconic cities and bold regional flavors as you master three culinary missions.",
                 "Lantern-lit night markets: sweet tanghulu, steaming baskets of dumplings and golden spring rolls.",
@@ -105,7 +109,7 @@ namespace Watermelon
                 new[] { "Bangkok Market", "Chiang Mai Feast", "Phuket Pier" },
                 new[] { "Tom Yum", "Green Curry", "Pink Milk", "Blue Sticky Rice", "Mango Sticky Rice", "Pad Thai", "Butterfly Pea Soda" }),
 
-            // ---------------- North America (levels 16-30) ----------------
+            // ---------------- North America (levels 151-300) ----------------
             new Country(5, "usa", "United States",
                 "Fire up the grills and diners of the USA, from big-city food trucks to southern BBQ pits.",
                 "Diners and backyard grills: BBQ ribs, pancakes, mac and cheese and ice-cold milkshakes.",
@@ -132,7 +136,7 @@ namespace Watermelon
                 new[] { "Kingston Jerk Stand", "Montego Bay", "Blue Mountains" },
                 new[] { "Jerk Chicken", "Callaloo", "Sorrel Punch", "Blue Drawers", "Ackee and Saltfish", "Coconut Water", "Otaheite Apple Jam" }),
 
-            // ---------------- South America (levels 31-45) ----------------
+            // ---------------- South America (levels 301-450) ----------------
             new Country(10, "brazil", "Brazil",
                 "Keep up with Brazil's carnival crowds, beach kiosks and churrasco grills.",
                 "Carnival flavours: churrasco, brigadeiros, pao de queijo and acai bowls.",
@@ -159,7 +163,7 @@ namespace Watermelon
                 new[] { "Santiago Market", "Valparaiso Port", "Atacama Stars" },
                 new[] { "Salmon Ceviche", "Pebre Salsa", "Mote con Huesillo", "Blueberry Kuchen", "Sopaipillas", "Leche Nevada", "Maqui Berry Shake" }),
 
-            // ---------------- Europe (levels 46-60) ----------------
+            // ---------------- Europe (levels 451-600) ----------------
             new Country(15, "italy", "Italy",
                 "Serve pizza, pasta and gelato across Italy's piazzas, canals and coastal towns.",
                 "Trattoria classics: margherita pizza, pesto pasta, tiramisu and gelato.",
@@ -186,7 +190,7 @@ namespace Watermelon
                 new[] { "Berlin Currywurst", "Munich Festival", "Black Forest Cafe" },
                 new[] { "Currywurst", "Green Sauce Potatoes", "Strawberry Cake", "Blueberry Pancake", "Soft Pretzel", "Apple Spritzer", "Black Forest Cake" }),
 
-            // ---------------- Africa (levels 61-75) ----------------
+            // ---------------- Africa (levels 601-750) ----------------
             new Country(20, "morocco", "Morocco",
                 "Cook through Morocco's spice souks, desert camps and blue city streets.",
                 "Souk spices: tagine, couscous, mint tea and honey chebakia.",
@@ -213,7 +217,7 @@ namespace Watermelon
                 new[] { "Cape Town Braai", "Johannesburg Market", "Safari Lodge" },
                 new[] { "Boerewors", "Chakalaka", "Malva Pudding", "Rusks", "Bobotie", "Rooibos Tea", "Koeksisters" }),
 
-            // ---------------- Oceania (levels 76-90) ----------------
+            // ---------------- Oceania (levels 751-900) ----------------
             new Country(25, "australia", "Australia",
                 "Serve beach barbies, bakery treats and café classics across Australia.",
                 "Aussie favourites: meat pies, lamingtons, pavlova and avo toast.",
@@ -240,7 +244,7 @@ namespace Watermelon
                 new[] { "Nuku'alofa Market", "Ha'apai Islands", "Royal Feast" },
                 new[] { "Lu Pulu", "Ota Ika", "Watermelon Juice", "Coconut Pudding", "Faikakai Topai", "Keke Doughnuts", "Kumala Pudding" }),
 
-            // ---------------- Antarctica (levels 91-105): regions instead of countries ----------------
+            // ---------------- Antarctica (levels 901-1050): regions instead of countries ----------------
             new Country(30, "peninsula", "Peninsula",
                 "Start your polar adventure where icebergs drift past penguin-filled bays.",
                 "Penguin bays and icy channels: hot soups, fresh fish and warm cocoa for chilly explorers.",
@@ -280,6 +284,18 @@ namespace Watermelon
         public static int GlobalCountry(int continent, int position) => continent * CountriesPerContinent + position;
         public static int FirstLevelOfCountry(int country) => country * LevelsPerCountry;
         public static int FirstLevelOfContinent(int continent) => continent * LevelsPerContinent;
+
+        /// <summary>0-based position of a level inside its country (0-29).</summary>
+        public static int LevelInCountry(int levelIndex) => levelIndex < 0 ? 0 : levelIndex % LevelsPerCountry;
+
+        /// <summary>Mission (0-2) a level belongs to: levels 1-10, 11-20, 21-30 of a country.</summary>
+        public static int MissionOfLevel(int levelIndex) => LevelInCountry(levelIndex) / LevelsPerMission;
+
+        public static string GetMissionName(int country, int mission)
+        {
+            Country c = GetCountry(country);
+            return c != null && mission >= 0 && mission < c.Missions.Length ? c.Missions[mission] : "Mission " + (mission + 1);
+        }
 
         /// <summary>The Asian country in the same position, whose art stands in until a country has its own.</summary>
         public static int StandInCountry(int country) => IsValidCountry(country) ? country % CountriesPerContinent : 0;
