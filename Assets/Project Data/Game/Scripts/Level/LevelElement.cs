@@ -44,6 +44,9 @@ namespace Watermelon.BusStop
             Block_Yellow = 14,
             Block_Teal = 15,
             Block_Purple = 16,
+            Block_Orange = 17,
+            Block_Brown = 18,
+            Block_White = 19,
 
             Spawner = 100,
         }

@@ -65,7 +65,7 @@ namespace Watermelon.BusStop
             Sprite dish = Watermelon.WorldArt.ForCountry(country, Watermelon.WorldArt.Dish(colour), false);
             if (dish != null)
             {
-                foodArt?.RegisterWorldDish(dish, country * CountryFoodArt.ColoursPerCountry + colour);
+                foodArt?.RegisterWorldDish(dish, CountryFoodArt.DishIndex(country, colour));
                 return dish;
             }
 
@@ -84,6 +84,9 @@ namespace Watermelon.BusStop
                 case LevelElement.Type.Block_Yellow: return new Color32(250, 204, 40, 255);
                 case LevelElement.Type.Block_Teal: return new Color32(32, 196, 190, 255);
                 case LevelElement.Type.Block_Purple: return new Color32(150, 80, 220, 255);
+                case LevelElement.Type.Block_Orange: return new Color32(255, 140, 26, 255);
+                case LevelElement.Type.Block_Brown: return new Color32(140, 86, 48, 255);
+                case LevelElement.Type.Block_White: return new Color32(244, 240, 228, 255);
                 default: return Color.white;
             }
         }

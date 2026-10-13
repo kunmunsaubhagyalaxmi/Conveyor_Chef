@@ -94,7 +94,7 @@ namespace Watermelon
             Image tile = MenuUI.Image("Tile", cell.transform, MenuUI.Rounded(22, 0, tileColour, tileColour), null, false);
             MenuUI.Anchor(tile.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -12f), new Vector2(CellWidth - 24f, 190f));
 
-            Sprite sprite = CountryFood.Art != null ? CountryFood.Art.GetDish(country, colour) : null;
+            Sprite sprite = CountryFood.GetDish(country, colour);
             Image picture = MenuUI.Image("Picture", tile.transform, sprite);
             MenuUI.Stretch(picture.rectTransform, 10f, 8f, 10f, 8f);
             if (!discovered)
@@ -104,7 +104,7 @@ namespace Watermelon
                 MenuUI.Stretch(mark.rectTransform);
             }
 
-            TextMeshProUGUI name = MenuUI.Text("Name", cell.transform, discovered ? DishCatalog.GetName(dish) : "???", 31f, MenuUI.TextDark);
+            TextMeshProUGUI name = MenuUI.Text("Name", cell.transform, discovered ? WorldCatalog.GetDishName(country, colour) : "???", 31f, MenuUI.TextDark);
             MenuUI.Anchor(name.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 48f), new Vector2(CellWidth - 20f, 40f));
 
             TextMeshProUGUI detail = MenuUI.Text("Served", cell.transform,

@@ -118,20 +118,8 @@ namespace Watermelon.BusStop
 
         public bool IsBlock(LevelElement.Type element)
         {
-            if (element == LevelElement.Type.Block_Blue ||
-                element == LevelElement.Type.Block_Green ||
-                element == LevelElement.Type.Block_Pink ||
-                element == LevelElement.Type.Block_Purple ||
-                element == LevelElement.Type.Block_Red ||
-                element == LevelElement.Type.Block_Teal ||
-                element == LevelElement.Type.Block_Yellow)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            // every dish colour, Block_Red (10) .. the last one (Block_White, 19)
+            return element >= LevelElement.Type.Block_Red && element <= LevelElement.Type.Block_White;
         }
     }
 }

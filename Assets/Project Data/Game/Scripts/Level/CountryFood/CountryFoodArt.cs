@@ -12,7 +12,32 @@ namespace Watermelon.BusStop
     public sealed class CountryFoodArt : ScriptableObject
     {
         public const string ResourcePath = "CountryFoodArt";
-        public const int ColoursPerCountry = 7;
+        public const int ColoursPerCountry = 10;
+
+        /// <summary>The first 7 colours (red .. purple); data measured for them keeps its layout.</summary>
+        public const int BaseColours = 7;
+
+        /// <summary>Orange, brown and white, added later.</summary>
+        public const int ExtraColours = ColoursPerCountry - BaseColours;
+
+        private const int BaseDishCount = WorldCatalog.CountryCount * BaseColours;
+
+        /// <summary>
+        /// Stable number of a country's dish (also used for saved stats): the first 7 colours keep
+        /// country * 7 + colour as before, the newer colours come after all of those
+        /// (country * 3 + colour - 7), so nothing saved or measured earlier moves.
+        /// </summary>
+        public static int DishIndex(int country, int colour)
+        {
+            if (country < 0 || country >= WorldCatalog.CountryCount || colour < 0 || colour >= ColoursPerCountry)
+                return -1;
+            return colour < BaseColours
+                ? country * BaseColours + colour
+                : BaseDishCount + country * ExtraColours + (colour - BaseColours);
+        }
+
+        public static int CountryOfDish(int dish) => dish < BaseDishCount ? dish / BaseColours : (dish - BaseDishCount) / ExtraColours;
+        public static int ColourOfDish(int dish) => dish < BaseDishCount ? dish % BaseColours : BaseColours + (dish - BaseDishCount) % ExtraColours;
 
         public Sprite[] dishes = new Sprite[35];
 
@@ -25,6 +50,11 @@ namespace Watermelon.BusStop
         [Tooltip("Per dish, index = country * 7 + colour: x = dish image width on the card and y = where the food's " +
                  "bottom sits, measured so the food fits inside the glass cloche. 0 = use Food Width instead.")]
         public Vector2[] dishFits = new Vector2[35];
+
+        [Tooltip("Like Dish Rects, for the newer colours (orange, brown, white): index = country * 3 + colour - 7.")]
+        public Vector4[] extraDishRects = new Vector4[0];
+        [Tooltip("Like Dish Fits, for the newer colours: index = country * 3 + colour - 7.")]
+        public Vector2[] extraDishFits = new Vector2[0];
 
         [Header("Board look")]
         [Tooltip("How much of a board tile each plate covers; below 1 leaves a gap between neighbours.")]
@@ -74,9 +104,15 @@ namespace Watermelon.BusStop
         public Vector4 GetDishRect(Sprite dish)
         {
             int index = IndexOfDish(dish);
+            if (index >= BaseDishCount)
+            {
+                int extra = index - BaseDishCount;
+                if (extraDishRects != null && extra < extraDishRects.Length && extraDishRects[extra].z > extraDishRects[extra].x)
+                    return extraDishRects[extra];
+                return DefaultDishRect;
+            }
             if (dishRects != null && index >= 0 && index < dishRects.Length && dishRects[index].z > dishRects[index].x)
                 return dishRects[index];
-
             return DefaultDishRect;
         }
 
@@ -84,9 +120,13 @@ namespace Watermelon.BusStop
         public Vector2 GetDishFit(Sprite dish)
         {
             int index = IndexOfDish(dish);
+            if (index >= BaseDishCount)
+            {
+                int extra = index - BaseDishCount;
+                return extraDishFits != null && extra < extraDishFits.Length ? extraDishFits[extra] : Vector2.zero;
+            }
             if (dishFits != null && index >= 0 && index < dishFits.Length)
                 return dishFits[index];
-
             return Vector2.zero;
         }
 
@@ -94,8 +134,10 @@ namespace Watermelon.BusStop
 
         public Sprite GetDish(int country, int colourIndex)
         {
-            int index = country * ColoursPerCountry + colourIndex;
-            return dishes != null && country >= 0 && colourIndex >= 0 && colourIndex < ColoursPerCountry &&
+            // the Asian set in Images/CountryFood has the first 7 colours; newer ones load from
+            // Resources/World/<continent>/<country>/dish_<colour> (see CountryFood.GetDish)
+            int index = country * BaseColours + colourIndex;
+            return dishes != null && country >= 0 && colourIndex >= 0 && colourIndex < BaseColours &&
                    index < dishes.Length
                 ? dishes[index]
                 : null;

@@ -68,9 +68,8 @@ namespace Watermelon
 
         public static int GetDishIndex(int country, int colour)
         {
-            return country >= 0 && country < CountryCatalog.CountryCount && colour >= 0 && colour < CountryFoodArt.ColoursPerCountry
-                ? country * CountryFoodArt.ColoursPerCountry + colour
-                : -1;
+            // stable numbering: dishes saved before the new colours keep their numbers
+            return CountryFoodArt.DishIndex(country, colour);
         }
 
         public static int GetDishServed(int dish) => PlayerPrefs.GetInt(DishServedKey + dish, 0);
@@ -84,7 +83,7 @@ namespace Watermelon
             if (GetDishServed(dish) > 0)
                 return true;
 
-            int country = dish / CountryFoodArt.ColoursPerCountry;
+            int country = CountryFoodArt.CountryOfDish(dish);
             return GetCountryLevelsCompleted(country) > 0;
         }
 

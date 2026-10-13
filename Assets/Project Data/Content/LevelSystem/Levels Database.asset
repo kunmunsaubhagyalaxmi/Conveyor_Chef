@@ -1078,6 +1078,12 @@ MonoBehaviour:
     prefab: {fileID: 689842861022868380, guid: d4d75dfe7cddf5444bb594e2a16fb1f4, type: 3}
   - elementType: 16
     prefab: {fileID: 689842861022868380, guid: 53c625d3566c0834b8309675c52e5238, type: 3}
+  - elementType: 17
+    prefab: {fileID: 689842861022868380, guid: 53c625d3566c0834b8309675c52e5238, type: 3}
+  - elementType: 18
+    prefab: {fileID: 689842861022868380, guid: 53c625d3566c0834b8309675c52e5238, type: 3}
+  - elementType: 19
+    prefab: {fileID: 689842861022868380, guid: 53c625d3566c0834b8309675c52e5238, type: 3}
   - elementType: 1
     prefab: {fileID: 7755947021042730875, guid: 5ed49a86c18973048a231f7553475837, type: 3}
   - elementType: 100
@@ -1103,6 +1109,12 @@ MonoBehaviour:
     editorColor: {r: 0.31746176, g: 0.7735849, b: 0.6808968, a: 1}
   - elementType: 16
     editorColor: {r: 0.45464614, g: 0.1514774, b: 0.8679245, a: 1}
+  - elementType: 17
+    editorColor: {r: 1, g: 0.55, b: 0.1, a: 1}
+  - elementType: 18
+    editorColor: {r: 0.55, g: 0.34, b: 0.19, a: 1}
+  - elementType: 19
+    editorColor: {r: 0.96, g: 0.94, b: 0.89, a: 1}
   - elementType: 100
     editorColor: {r: 0.29516736, g: 0.30848685, b: 0.31132078, a: 1}
   editorSpawnerTexure: {fileID: 2800000, guid: f5cb87fde0d2a6a45b57b01ca3608267, type: 3}
