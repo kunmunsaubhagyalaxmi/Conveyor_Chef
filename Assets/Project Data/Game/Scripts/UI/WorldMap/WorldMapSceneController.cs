@@ -81,6 +81,8 @@ namespace Watermelon.BusStop
         [SerializeField, Range(0, 5)] private int authoredSelectedContinent = 0;
         [Tooltip("Normally OFF. Enabling this intentionally moves MapContent when Play begins.")]
         [SerializeField] private bool focusSelectedContinentOnStart = false;
+        [Tooltip("When the World Map opens, the selected continent (Asia unless another is chosen) is put in the middle of the screen.")]
+        [SerializeField] private bool centerContinentOnOpen = true;
 
         private int selectedContinent;
         private WorldMapChapterBanner chapterBanner;
@@ -346,7 +348,7 @@ namespace Watermelon.BusStop
 
             Canvas.ForceUpdateCanvases();
 
-            if (focusSelectedContinentOnStart)
+            if (focusSelectedContinentOnStart || centerContinentOnOpen)
                 FocusContinent(selectedContinent, false);
 
             // DragHint's serialized state remains scene-authored.

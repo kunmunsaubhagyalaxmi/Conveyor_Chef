@@ -22,19 +22,25 @@ namespace Watermelon
         {
             Screen.sleepTimeout = sleepTimeout;
 
+            // Frame pacing follows targetFrameRate (vSyncCount is ignored on mobile).
+            QualitySettings.vSyncCount = 0;
+
             if (setFrameRateAutomatically)
             {
-                uint numerator = Screen.currentResolution.refreshRateRatio.numerator;
-                uint denominator = Screen.currentResolution.refreshRateRatio.denominator;
+                // The fastest mode the display offers (60 / 90 / 120 Hz...). The current mode is
+                // often reported as 60 on 90-120 Hz phones until an app asks for more, so the
+                // list of modes is checked too. Android switches the display to the requested rate.
+                double best = Screen.currentResolution.refreshRateRatio.value;
+                foreach (Resolution mode in Screen.resolutions)
+                {
+                    double rate = mode.refreshRateRatio.value;
+                    if (rate > best)
+                        best = rate;
+                }
 
-                if(numerator != 0 && denominator != 0)
-                {
-                    Application.targetFrameRate = Mathf.RoundToInt(numerator / denominator);
-                }
-                else
-                {
-                    Application.targetFrameRate = (int)defaultFrameRate;
-                }
+                Application.targetFrameRate = best >= 29.0
+                    ? Mathf.Clamp(Mathf.RoundToInt((float)best), 30, 120)
+                    : (int)defaultFrameRate;
             }
             else
             {
