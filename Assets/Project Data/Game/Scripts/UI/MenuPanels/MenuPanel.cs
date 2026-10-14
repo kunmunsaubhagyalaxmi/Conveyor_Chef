@@ -497,7 +497,7 @@ namespace Watermelon
                 int index = i;
                 bool selected = i == selectedTab;
                 MenuUI.LabelButton("Tab " + tabs[i], tabsRow, selected ? Art.buttonOrange : Art.buttonGray, tabs[i],
-                    tabs.Length > 4 ? 30f : 38f, () => { if (index != selectedTab) SelectTab(index); }, null,
+                    tabs.Length > 6 ? 25f : tabs.Length > 4 ? 30f : 38f, () => { if (index != selectedTab) SelectTab(index); }, null,
                     selected ? new Color32(140, 70, 10, 255) : new Color32(70, 70, 70, 255));
             }
         }

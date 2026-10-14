@@ -53,7 +53,7 @@ namespace Watermelon
         {
             RectTransform card = MenuUI.Card("Intro", Content, 290f, true);
 
-            Image chef = MenuUI.Image("Chef", card, Art.chefFull);
+            Image chef = MenuUI.Image("Chef", card, ChefProgress.FullBody(Art));
             MenuUI.Anchor(chef.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(24f, 0f), new Vector2(130f, 260f));
 
             TextMeshProUGUI heading = MenuUI.Text("Heading", card, "THE CHEF'S JOURNEY", 44f, Heading, TextAlignmentOptions.Left);

@@ -18,7 +18,7 @@ namespace Watermelon
         private const float CellHeight = 440f;
         private const float Spacing = 18f;
 
-        private static readonly string[] CustomizeTabs = { "TRAYS", "PLATES", "LIDS" };
+        private static readonly string[] CustomizeTabs = { "CHEF", "TRAYS", "PLATES", "LIDS" };
 
         protected override string Title => "CUSTOMIZE";
         protected override string[] Tabs => CustomizeTabs;
@@ -28,11 +28,88 @@ namespace Watermelon
         {
             switch (SelectedTab)
             {
-                case 0: BuildTrays(); break;
-                case 1: BuildStyles(false); break;
+                case 0: BuildChef(); break;
+                case 1: BuildTrays(); break;
+                case 2: BuildStyles(false); break;
                 default: BuildStyles(true); break;
             }
         }
+
+        #region Chef
+
+        // Chef level, XP and the outfits it unlocks.
+        private void BuildChef()
+        {
+            int level = ChefProgress.LevelAt(ChefProgress.TotalXP, out int into, out int need);
+
+            RectTransform card = MenuUI.Card("Chef Level", Content, 340f, true);
+            Image chef = MenuUI.Image("Chef", card, ChefProgress.FullBody(Art));
+            MenuUI.Anchor(chef.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(26f, 0f), new Vector2(170f, 310f));
+
+            TextMeshProUGUI title = MenuUI.Text("Title", card, "CHEF LEVEL " + level, 52f, new Color32(160, 56, 18, 255), TextAlignmentOptions.Left);
+            MenuUI.Anchor(title.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(222f, -30f), new Vector2(560f, 64f));
+            TextMeshProUGUI outfit = MenuUI.Text("Outfit", card, ChefProgress.Selected.Name, 32f, MenuUI.TextSoft, TextAlignmentOptions.Left);
+            MenuUI.Anchor(outfit.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(222f, -98f), new Vector2(560f, 44f));
+
+            RectTransform bar = MenuUI.ProgressBar(card, (float)into / need, MenuUI.Green, into + " / " + need + " XP");
+            MenuUI.Anchor(bar, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(222f, -160f), new Vector2(560f, 48f));
+
+            ChefProgress.Outfit next = ChefProgress.NextLocked;
+            string hint = next != null
+                ? "Next outfit: " + next.Name + " at level " + next.UnlockLevel
+                : "Every outfit unlocked!";
+            TextMeshProUGUI nextText = MenuUI.Text("Next", card, hint, 28f, MenuUI.TextSoft, TextAlignmentOptions.Left);
+            MenuUI.Anchor(nextText.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(222f, -226f), new Vector2(560f, 40f));
+            TextMeshProUGUI how = MenuUI.Text("How", card, "Win levels to earn XP: +" + (ChefProgress.XPPerWin + 3 * ChefProgress.XPPerStar) + " XP per win",
+                24f, MenuUI.TextSoft, TextAlignmentOptions.Left);
+            MenuUI.Anchor(how.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(222f, -270f), new Vector2(560f, 36f));
+
+            RectTransform grid = Grid(ChefProgress.Outfits.Length);
+            ChefProgress.Outfit selected = ChefProgress.Selected;
+            foreach (ChefProgress.Outfit o in ChefProgress.Outfits)
+            {
+                bool unlocked = ChefProgress.IsUnlocked(o);
+                bool hasArt = ChefProgress.HasArt(o);
+                Image cell = Cell(grid, o.Name, o == selected);
+                RectTransform preview = PreviewArea(cell.transform);
+                Sprite face = hasArt ? ChefProgress.AvatarOf(o, Art) : Art.chefAvatar;
+                Image picture = MenuUI.Image("Picture", preview, face);
+                MenuUI.Stretch(picture.rectTransform, 30f, 20f, 30f, 20f);
+                if (!unlocked || !hasArt)
+                    picture.color = new Color(0.2f, 0.16f, 0.14f, 0.55f);
+                CellName(cell.transform, o.Name);
+
+                Vector2 anchor = new Vector2(0.5f, 0f);
+                if (o == selected)
+                {
+                    CellAction(cell.transform, true, true, 0, CurrencyType.Coins, null, null, false);
+                }
+                else if (!unlocked)
+                {
+                    Image lockBadge = MenuUI.Image("Lock", preview, Art.lockBadge);
+                    MenuUI.Anchor(lockBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(110f, 96f));
+                    TextMeshProUGUI need2 = MenuUI.Text("Needs", cell.transform, "CHEF LEVEL " + o.UnlockLevel, 32f, MenuUI.TextSoft);
+                    MenuUI.Anchor(need2.rectTransform, anchor, new Vector2(0.5f, 0f), new Vector2(0f, 34f), new Vector2(CellWidth - 30f, 60f));
+                }
+                else if (!hasArt)
+                {
+                    TextMeshProUGUI soon = MenuUI.Text("Soon", cell.transform, "COMING SOON", 32f, MenuUI.TextSoft);
+                    MenuUI.Anchor(soon.rectTransform, anchor, new Vector2(0.5f, 0f), new Vector2(0f, 34f), new Vector2(CellWidth - 30f, 60f));
+                }
+                else
+                {
+                    ChefProgress.Outfit chosen = o;
+                    CellAction(cell.transform, false, true, 0, CurrencyType.Coins, () =>
+                    {
+                        ChefProgress.Select(chosen);
+                        Toast(chosen.Name + " selected", new Color32(40, 110, 30, 255));
+                        Refresh();
+                    }, null, false);
+                }
+            }
+        }
+
+        #endregion
 
         #region Trays
 

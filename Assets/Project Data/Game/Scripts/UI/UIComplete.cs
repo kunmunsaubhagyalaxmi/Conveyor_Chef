@@ -368,6 +368,7 @@ namespace Watermelon
 
     currentReward = LevelController.CurrentReward;
     rewardGranted = false;
+    ChefXPWidget.Show(safeZone, ChefProgress.LastGain);
     Debug.Log($"[UIComplete] Current reward: {currentReward}");
 
     // Buttons appear with the banner; the coin animation below no longer holds them back.

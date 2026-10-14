@@ -431,6 +431,7 @@ namespace Watermelon
 
             LevelController.MarkLevelCompleted(completedLevelIndex, 3);
             PlayerStats.RecordLevelWon(3);
+            ChefProgress.AwardWin(3);          // chef XP (shown on the win screen)
             SaveController.MarkAsSaveIsRequired();
             SaveController.Save(true);
             LogProgress(completedLevelIndex);

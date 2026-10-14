@@ -57,7 +57,7 @@ namespace Watermelon
         {
             RectTransform card = MenuUI.Card("You", Content, 250f, true);
 
-            Image avatar = MenuUI.Image("Avatar", card, Art.chefAvatar);
+            Image avatar = MenuUI.Image("Avatar", card, ChefProgress.Avatar(Art));
             MenuUI.Anchor(avatar.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(22f, -20f), new Vector2(130f, 148f));
 
             TextMeshProUGUI label = MenuUI.Text("Label", card, "YOUR CHEF SCORE", 30f, MenuUI.TextSoft, TextAlignmentOptions.Left);
@@ -94,7 +94,7 @@ namespace Watermelon
                 MenuUI.Anchor(number.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(20f, 0f), new Vector2(72f, 60f));
             }
 
-            Image avatar = MenuUI.Image("Avatar", card, entry.IsPlayer ? Art.chefAvatar : Art.GetFlag(entry.Country));
+            Image avatar = MenuUI.Image("Avatar", card, entry.IsPlayer ? ChefProgress.Avatar(Art) : Art.GetFlag(entry.Country));
             MenuUI.Anchor(avatar.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(110f, 0f), new Vector2(82f, 82f));
 
             TextMeshProUGUI name = MenuUI.Text("Name", card, entry.IsPlayer ? "YOU" : entry.Name, 36f,
