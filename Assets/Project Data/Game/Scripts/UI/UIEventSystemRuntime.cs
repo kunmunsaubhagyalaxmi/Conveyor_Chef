@@ -159,11 +159,26 @@ namespace Watermelon
 
             EventSystem.current = selected;
             selected.SetSelectedGameObject(null);
+            selected.pixelDragThreshold = DragThreshold();
 
             Debug.Log(
                 "[UI Input] Active scene EventSystem: " +
                 selected.gameObject.scene.name + "/" + selected.gameObject.name +
                 " | module=" + GetModuleName(selected));
+        }
+
+        /// <summary>
+        /// How far a finger may move before a press turns into a drag. The serialized 10 px is
+        /// tiny on a 450-550 dpi phone, so ordinary taps on buttons inside scroll views (World
+        /// Map continents, level lists, menu panels) became drags and the tap was lost. About
+        /// 2 mm at the screen's density.
+        /// </summary>
+        private static int DragThreshold()
+        {
+            float dpi = Screen.dpi;
+            if (dpi <= 0f)
+                return 10;
+            return Mathf.Clamp(Mathf.RoundToInt(dpi * 0.08f), 10, 60);
         }
 
         private static void EnsureInputModule(EventSystem system)

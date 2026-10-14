@@ -31,7 +31,22 @@ namespace Watermelon
             go.transform.SetParent(parent, false);
             var widget = go.AddComponent<ChefXPWidget>();
             widget.Build();
-            widget.StartCoroutine(widget.Play(gain));
+            // The win screen is often still hidden at this point: play once it shows.
+            widget.pending = gain;
+            widget.queued = true;
+            if (widget.isActiveAndEnabled)
+                widget.OnEnable();
+        }
+
+        private ChefProgress.Gain pending;
+        private bool queued;
+
+        private void OnEnable()
+        {
+            if (!queued)
+                return;
+            queued = false;
+            StartCoroutine(Play(pending));
         }
 
         private void Build()
