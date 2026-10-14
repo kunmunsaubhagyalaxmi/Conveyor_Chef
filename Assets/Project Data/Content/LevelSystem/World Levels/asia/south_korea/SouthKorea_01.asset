@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SouthKorea_01
   m_EditorClassIdentifier: 
   elementsData:
-  - elementType: 16
+  - elementType: 12
     elementPosition:
       x: 0
       y: 0
@@ -43,55 +43,55 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 16
     elementPosition:
       x: 5
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 17
     elementPosition:
       x: 6
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 17
     elementPosition:
       x: 0
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 17
     elementPosition:
       x: 1
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 17
     elementPosition:
       x: 2
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 19
     elementPosition:
       x: 3
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 17
     elementPosition:
       x: 4
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 17
     elementPosition:
       x: 5
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 12
     elementPosition:
       x: 6
       y: 1
@@ -109,19 +109,19 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 17
     elementPosition:
       x: 2
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 16
     elementPosition:
       x: 3
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 16
     elementPosition:
       x: 4
       y: 2
@@ -145,31 +145,31 @@ MonoBehaviour:
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 19
     elementPosition:
       x: 1
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 12
     elementPosition:
       x: 2
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 17
     elementPosition:
       x: 3
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 17
     elementPosition:
       x: 4
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 19
     elementPosition:
       x: 5
       y: 3
@@ -183,7 +183,7 @@ MonoBehaviour:
     temp: 0
   spawnerData: []
   tutorialSteps: []
-  busSpawnQueue: 0a0000000a000000100000000f0000000b0000000a000000
+  busSpawnQueue: 11000000110000000c000000130000001000000011000000
   width: 7
   height: 4
   coinsReward: 20

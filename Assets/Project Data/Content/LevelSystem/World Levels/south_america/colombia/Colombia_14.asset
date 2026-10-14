@@ -19,7 +19,7 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 1
       y: 0
@@ -43,7 +43,7 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 5
       y: 0
@@ -55,7 +55,7 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 7
       y: 0
@@ -73,7 +73,7 @@ MonoBehaviour:
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 17
     elementPosition:
       x: 2
       y: 1
@@ -127,25 +127,25 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 17
     elementPosition:
       x: 3
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 4
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 17
     elementPosition:
       x: 5
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 6
       y: 2
@@ -157,13 +157,13 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 17
     elementPosition:
       x: 0
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 1
       y: 3
@@ -175,7 +175,7 @@ MonoBehaviour:
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 17
     elementPosition:
       x: 3
       y: 3
@@ -199,7 +199,7 @@ MonoBehaviour:
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 7
       y: 3
@@ -211,7 +211,7 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 1
       y: 4
@@ -241,7 +241,7 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 6
       y: 4
@@ -258,9 +258,9 @@ MonoBehaviour:
       x: 6
       y: 3
     direction: 0
-    spawnQueue: 0c0000000c0000000f000000
+    spawnQueue: 0c0000000c00000011000000
   tutorialSteps: []
-  busSpawnQueue: 0b0000000e0000000a0000000c0000000f0000000b0000000e0000000f0000000b0000000c0000000c000000
+  busSpawnQueue: 130000000e0000000a0000000c00000011000000130000000e00000011000000130000000c0000000c000000
   width: 8
   height: 5
   coinsReward: 20

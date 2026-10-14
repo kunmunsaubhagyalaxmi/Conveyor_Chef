@@ -61,7 +61,7 @@ MonoBehaviour:
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 1
       y: 1
@@ -79,7 +79,7 @@ MonoBehaviour:
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 4
       y: 1
@@ -97,25 +97,25 @@ MonoBehaviour:
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 0
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 14
     elementPosition:
       x: 1
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 14
     elementPosition:
       x: 2
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 3
       y: 2
@@ -127,7 +127,7 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 5
       y: 2
@@ -139,43 +139,43 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 0
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 1
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 14
     elementPosition:
       x: 2
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 14
     elementPosition:
       x: 3
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 19
     elementPosition:
       x: 4
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 14
     elementPosition:
       x: 5
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 6
       y: 3
@@ -187,19 +187,19 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 1
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 15
     elementPosition:
       x: 2
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 19
     elementPosition:
       x: 3
       y: 4
@@ -211,7 +211,7 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 14
     elementPosition:
       x: 5
       y: 4
@@ -223,19 +223,19 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 15
     elementPosition:
       x: 0
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 19
     elementPosition:
       x: 1
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 13
     elementPosition:
       x: 2
       y: 5
@@ -253,13 +253,13 @@ MonoBehaviour:
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 13
     elementPosition:
       x: 5
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 13
     elementPosition:
       x: 6
       y: 5
@@ -270,9 +270,9 @@ MonoBehaviour:
       x: 3
       y: 5
     direction: 3
-    spawnQueue: 0e0000000e0000000e0000000c0000000d000000
+    spawnQueue: 1200000012000000120000000c0000000f000000
   tutorialSteps: []
-  busSpawnQueue: 0e0000000e0000000c0000000f0000000f0000000e0000000a0000000c0000000d000000100000000e000000
+  busSpawnQueue: 12000000120000000c0000000e0000000e00000012000000130000000c0000000f0000000d00000012000000
   width: 7
   height: 6
   coinsReward: 20

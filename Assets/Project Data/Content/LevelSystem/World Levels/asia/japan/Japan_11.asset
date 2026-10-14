@@ -19,7 +19,7 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 13
     elementPosition:
       x: 0
       y: 1
@@ -31,13 +31,13 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 14
     elementPosition:
       x: 0
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 18
     elementPosition:
       x: 0
       y: 4
@@ -49,7 +49,7 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 19
     elementPosition:
       x: 1
       y: 1
@@ -61,7 +61,7 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 14
     elementPosition:
       x: 1
       y: 3
@@ -79,7 +79,7 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 19
     elementPosition:
       x: 2
       y: 1
@@ -91,7 +91,7 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 18
     elementPosition:
       x: 2
       y: 3
@@ -103,31 +103,31 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 19
     elementPosition:
       x: 3
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 13
     elementPosition:
       x: 3
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 18
     elementPosition:
       x: 3
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 18
     elementPosition:
       x: 3
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 13
     elementPosition:
       x: 3
       y: 4
@@ -138,9 +138,9 @@ MonoBehaviour:
       x: 0
       y: 2
     direction: 2
-    spawnQueue: 0a0000000c0000000a000000
+    spawnQueue: 120000000e00000012000000
   tutorialSteps: []
-  busSpawnQueue: 0f000000100000000a0000000a0000000c000000
+  busSpawnQueue: 130000000d00000012000000120000000e000000
   width: 4
   height: 5
   coinsReward: 20

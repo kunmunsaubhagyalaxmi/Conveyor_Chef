@@ -19,55 +19,55 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 15
     elementPosition:
       x: 0
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 11
     elementPosition:
       x: 0
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 0
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 19
     elementPosition:
       x: 0
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 12
     elementPosition:
       x: 0
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 0
       y: 6
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 17
     elementPosition:
       x: 0
       y: 7
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 0
       y: 8
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 0
       y: 9
@@ -79,55 +79,55 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 15
     elementPosition:
       x: 1
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 1
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 19
     elementPosition:
       x: 1
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 19
     elementPosition:
       x: 1
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 1
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 17
     elementPosition:
       x: 1
       y: 6
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 17
     elementPosition:
       x: 1
       y: 7
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 17
     elementPosition:
       x: 1
       y: 8
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 1
       y: 9
@@ -139,7 +139,7 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 2
       y: 1
@@ -157,37 +157,37 @@ MonoBehaviour:
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 17
     elementPosition:
       x: 2
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 2
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 15
     elementPosition:
       x: 2
       y: 6
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 2
       y: 7
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 19
     elementPosition:
       x: 2
       y: 8
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 15
     elementPosition:
       x: 2
       y: 9
@@ -199,115 +199,115 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 17
     elementPosition:
       x: 3
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 19
     elementPosition:
       x: 3
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 3
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 12
     elementPosition:
       x: 3
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 3
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 12
     elementPosition:
       x: 3
       y: 6
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 3
       y: 7
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 15
     elementPosition:
       x: 3
       y: 8
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 3
       y: 9
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 19
     elementPosition:
       x: 4
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 19
     elementPosition:
       x: 4
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 19
     elementPosition:
       x: 4
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 19
     elementPosition:
       x: 4
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 15
     elementPosition:
       x: 4
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 19
     elementPosition:
       x: 4
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 11
     elementPosition:
       x: 4
       y: 6
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 4
       y: 7
     specialEffectType: 0
     temp: 0
-  - elementType: 14
+  - elementType: 18
     elementPosition:
       x: 4
       y: 8
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 4
       y: 9
@@ -318,9 +318,9 @@ MonoBehaviour:
       x: 2
       y: 2
     direction: 1
-    spawnQueue: 100000000f0000000e00000010000000
+    spawnQueue: 130000000b0000001200000013000000
   tutorialSteps: []
-  busSpawnQueue: 100000000b000000100000000e0000000d0000000c0000000f000000100000000e0000000a0000000e000000100000000d0000000c0000000c0000000b000000
+  busSpawnQueue: 130000000f000000130000001200000011000000100000000b00000013000000120000000c00000012000000130000001100000010000000100000000f000000
   width: 5
   height: 10
   coinsReward: 20

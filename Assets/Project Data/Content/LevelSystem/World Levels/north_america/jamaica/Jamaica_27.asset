@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Jamaica_27
   m_EditorClassIdentifier: 
   elementsData:
-  - elementType: 16
+  - elementType: 18
     elementPosition:
       x: 0
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 1
       y: 0
@@ -37,25 +37,25 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 4
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 5
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 19
     elementPosition:
       x: 6
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 0
       y: 1
@@ -67,19 +67,19 @@ MonoBehaviour:
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 18
     elementPosition:
       x: 2
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 3
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 18
     elementPosition:
       x: 4
       y: 1
@@ -91,13 +91,13 @@ MonoBehaviour:
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 18
     elementPosition:
       x: 6
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 18
     elementPosition:
       x: 0
       y: 2
@@ -115,13 +115,13 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 18
     elementPosition:
       x: 3
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 17
     elementPosition:
       x: 4
       y: 2
@@ -139,13 +139,13 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 17
     elementPosition:
       x: 0
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 17
     elementPosition:
       x: 1
       y: 3
@@ -169,13 +169,13 @@ MonoBehaviour:
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 17
     elementPosition:
       x: 5
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 17
     elementPosition:
       x: 6
       y: 3
@@ -187,7 +187,7 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 17
     elementPosition:
       x: 1
       y: 4
@@ -211,7 +211,7 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 5
       y: 4
@@ -223,13 +223,13 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 18
     elementPosition:
       x: 0
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 1
       y: 5
@@ -253,13 +253,13 @@ MonoBehaviour:
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 16
     elementPosition:
       x: 5
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 18
     elementPosition:
       x: 6
       y: 5
@@ -270,9 +270,9 @@ MonoBehaviour:
       x: 2
       y: 2
     direction: 0
-    spawnQueue: 100000000f0000000f0000000f000000
+    spawnQueue: 12000000110000001100000011000000
   tutorialSteps: []
-  busSpawnQueue: 0b0000000c00000010000000100000000e0000000f0000000f0000000f0000000c00000010000000
+  busSpawnQueue: 130000001000000012000000120000000e0000001100000011000000110000001000000012000000
   width: 7
   height: 6
   coinsReward: 20

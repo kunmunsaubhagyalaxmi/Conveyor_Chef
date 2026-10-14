@@ -25,19 +25,19 @@ MonoBehaviour:
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 10
     elementPosition:
       x: 0
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 10
     elementPosition:
       x: 0
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 10
     elementPosition:
       x: 0
       y: 4
@@ -67,19 +67,19 @@ MonoBehaviour:
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 19
     elementPosition:
       x: 1
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 10
     elementPosition:
       x: 1
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 19
     elementPosition:
       x: 1
       y: 4
@@ -121,19 +121,19 @@ MonoBehaviour:
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 19
     elementPosition:
       x: 2
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 10
     elementPosition:
       x: 2
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 10
     elementPosition:
       x: 2
       y: 6
@@ -151,13 +151,13 @@ MonoBehaviour:
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 10
     elementPosition:
       x: 3
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 10
     elementPosition:
       x: 3
       y: 3
@@ -175,7 +175,7 @@ MonoBehaviour:
       y: 5
     specialEffectType: 0
     temp: 0
-  - elementType: 15
+  - elementType: 10
     elementPosition:
       x: 3
       y: 6
@@ -225,7 +225,7 @@ MonoBehaviour:
     temp: 0
   spawnerData: []
   tutorialSteps: []
-  busSpawnQueue: 100000000f0000000f0000000f000000100000000e0000000c000000
+  busSpawnQueue: 100000000a0000000a0000000a000000100000000e00000013000000
   width: 5
   height: 7
   coinsReward: 20
