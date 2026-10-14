@@ -72,6 +72,8 @@ namespace Watermelon.BusStop
 
         public void OnElementSubmitted(BaseCharacterBehavior levelElementBehavior, ElementPosition elementPosition)
         {
+            if (steps == null)
+                return;
             if (steps.IsInRange(stepIndex))
             {
                 int stepOffset = 0;

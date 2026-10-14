@@ -107,7 +107,18 @@ namespace Watermelon
                 var type = busTypeQueue[0];
                 busTypeQueue.RemoveAt(0);
 
-                busTypesPoolsDictionary[type].GetPooledComponent().SetType(type);
+                // a colour without its own tray must not stop the level from loading
+                if (!busTypesPoolsDictionary.TryGetValue(type, out PoolGeneric<BusBehavior> pool))
+                {
+                    Debug.LogWarning("[Environment] No customer tray for " + type + " in the selected bus skin; using another one.");
+                    foreach (PoolGeneric<BusBehavior> any in busTypesPoolsDictionary.Values)
+                    {
+                        pool = any;
+                        break;
+                    }
+                }
+                if (pool != null)
+                    pool.GetPooledComponent().SetType(type);
 
             }
         }
