@@ -15,6 +15,9 @@ namespace Watermelon.BusStop
         private static bool isActive;
 
         public static event SimpleCallback OnInputActivated;
+
+        /// <summary>True while the board takes taps (off when paused, won or lost).</summary>
+        public static bool IsEnabled => isActive;
         public static event SimpleCallback OnMovementInputActivated;
 
         public void Initialise()

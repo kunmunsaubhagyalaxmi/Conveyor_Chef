@@ -19,6 +19,9 @@ namespace Watermelon.BusStop
         private BaseCharacterBehavior lastPickedObject;
 
         public bool IsFilled => slots[^1].IsOccupied;
+
+        /// <summary>The tray's spots, left to right.</summary>
+        public static IReadOnlyList<SlotBehavior> Slots => slots;
         public bool IsEmpty => !slots[0].IsOccupied;
 
         private TweenCase delayTweenCase;

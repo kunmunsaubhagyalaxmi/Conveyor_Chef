@@ -66,6 +66,9 @@ namespace Watermelon.BusStop
         private static List<LevelElementBehavior> levelElements;
         private static List<LevelElementBehavior> highlightedElements;
 
+        /// <summary>Elements on the board (the idle hint picks a dish from them).</summary>
+        public static IReadOnlyList<LevelElementBehavior> Elements => levelElements;
+
         private static Dictionary<LevelData.SpecialEffectType, ElementSpecialEffect> levelEffectsLink;
         private static Dictionary<LevelElement.Type, LevelElement> levelElementsLink;
 
@@ -394,6 +397,7 @@ namespace Watermelon.BusStop
             levelTutorial.Initialise(loadedLevelData.TutorialSteps);
 
             PUController.PowerUpsUIController.OnLevelStarted(levelIndex);
+            GameplayHelpers.Begin();          // idle hint + tray-almost-full warning
 
             isStageLoaded = true;
 
@@ -678,6 +682,8 @@ public static void MarkLevelCompleted(int levelIndex, int starsEarned)
         {
             if (!isStageLoaded)
                 return;
+
+            GameplayHelpers.End();
 
             isStageLoaded = false;
 

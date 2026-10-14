@@ -36,6 +36,12 @@ namespace Watermelon
         public Sprite gem;
         public Sprite chefAvatar;
         public Sprite chefFull;
+
+        [Header("Gameplay helpers")]
+        [Tooltip("Hand that points at a good dish when the player waits (idle hint).")]
+        public Sprite handPointer;
+        [Tooltip("Ring that ripples where the hand taps.")]
+        public Sprite tapRing;
         public Sprite iconShop;
         public Sprite iconCollection;
         public Sprite iconTrophy;

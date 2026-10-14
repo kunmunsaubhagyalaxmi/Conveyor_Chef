@@ -17,6 +17,7 @@ namespace Watermelon
         public SlotCase SlotCase { get; private set; }
 
         public bool IsOccupied => SlotCase != null;
+        public SpriteRenderer BackImage => backImage;
 
         private TweenCase colorCase;
 
