@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ads Settings
   m_EditorClassIdentifier: 
   bannerType: 0
-  interstitialType: 1
+  interstitialType: 0
   rewardedVideoType: 1
   adMobContainer:
     androidAppId: 
