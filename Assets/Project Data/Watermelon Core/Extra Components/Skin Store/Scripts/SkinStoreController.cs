@@ -62,6 +62,35 @@ namespace Watermelon.SkinStore
             }
         }
 
+        // Conveyor Chef: the customers used to carry buses. When the real trays arrived the
+        // first tray became the default, so players still on a bus get it once (they can pick
+        // the bus again in Customize).
+        private const string TrayDefaultKey = "CC_TrayDefaultApplied";
+
+        private static string SwitchToDefaultTrayOnce(string selectedId)
+        {
+            if (PlayerPrefs.GetInt(TrayDefaultKey, 0) == 1)
+                return selectedId;
+
+            foreach (var tab in products.Keys)
+            {
+                if (tab.Type != SkinTab.Bus || products[tab].Count == 0)
+                    continue;
+
+                SkinData first = products[tab][0];
+                if (!first.UniqueId.StartsWith("tray_"))
+                    return selectedId;            // trays not built yet: try again next time
+
+                PlayerPrefs.SetInt(TrayDefaultKey, 1);
+                PlayerPrefs.Save();
+                if (selectedId != null && selectedId.StartsWith("tray_"))
+                    return selectedId;
+                Database[SkinTab.Bus] = first.UniqueId;
+                return first.UniqueId;
+            }
+            return selectedId;
+        }
+
         private static void InitSelectedProducts()
         {
             selectedProducts = new Dictionary<SkinTab, SkinData>();
@@ -70,6 +99,9 @@ namespace Watermelon.SkinStore
             {
                 var type = Database.TabTypes[i];
                 var selectedId = Database[type];
+
+                if (type == SkinTab.Bus)
+                    selectedId = SwitchToDefaultTrayOnce(selectedId);
 
                 for (int j = 0; j < Database.Tabs.Length; j++)
                 {

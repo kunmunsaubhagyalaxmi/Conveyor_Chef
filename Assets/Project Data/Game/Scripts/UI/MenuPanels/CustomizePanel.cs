@@ -136,7 +136,7 @@ namespace Watermelon
                 Image picture = MenuUI.Image("Picture", preview, tray.Preview2DSprite);
                 MenuUI.Stretch(picture.rectTransform, 10f, 10f, 10f, 10f);
 
-                string name = string.IsNullOrEmpty(tray.Name) ? "Tray " + (i + 1) : tray.Name.Replace("Bus", "Tray");
+                string name = string.IsNullOrEmpty(tray.Name) ? "Tray " + (i + 1) : tray.Name;
                 CellName(cell.transform, name);
 
                 SkinData chosen = tray;
