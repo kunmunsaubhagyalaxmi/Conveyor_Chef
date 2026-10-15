@@ -292,6 +292,7 @@ namespace Watermelon
             noThanksButtonScale = new UIScaleAnimation((RectTransform)noThanksButton.transform);
 
             coinsPanelUI.Initialise();
+            MakeRoomForChefXP();
 
             Currency currency = CurrenciesController.GetCurrency(CurrencyType.Coins);
             rewardIconImage.sprite = currency.Icon;
@@ -347,6 +348,27 @@ namespace Watermelon
         //     });
         // }
 
+        // The chef XP bar sits at the bottom of the banner's cream panel, under GET X3:
+        // the reward, CONTINUE and GET X3 move up a little to make room for it.
+        private void MakeRoomForChefXP()
+        {
+            Nudge(rewardLabel != null ? rewardLabel.RectTransform : null, 35f);
+            Nudge(noThanksButton != null ? (RectTransform)noThanksButton.transform : null, 55f);
+            Nudge(multiplyRewardButton != null ? (RectTransform)multiplyRewardButton.transform : null, 72f);
+        }
+
+        private static void Nudge(RectTransform rect, float up)
+        {
+            if (rect != null)
+                rect.anchoredPosition += new Vector2(0f, up);
+        }
+
+        private Vector2 ChefXPPosition()
+        {
+            var x3 = (RectTransform)multiplyRewardButton.transform;
+            return new Vector2(0f, x3.anchoredPosition.y - x3.rect.height * 0.5f - 45f);
+        }
+
         public override void PlayShowAnimation()
 {
     Debug.Log("[UIComplete] PlayShowAnimation started");
@@ -368,8 +390,7 @@ namespace Watermelon
 
     currentReward = LevelController.CurrentReward;
     rewardGranted = false;
-    // On the page itself, drawn last, just under the banner (banner bottom is at y -570).
-    ChefXPWidget.Show(transform, ChefProgress.LastGain, new Vector2(0f, -665f));
+    ChefXPWidget.Show(transform, ChefProgress.LastGain, ChefXPPosition());
     Debug.Log($"[UIComplete] Current reward: {currentReward}");
 
     // Buttons appear with the banner; the coin animation below no longer holds them back.
