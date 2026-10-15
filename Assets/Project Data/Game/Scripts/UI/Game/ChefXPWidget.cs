@@ -19,7 +19,8 @@ namespace Watermelon
         private TextMeshProUGUI levelText, xpText, gainText, levelUpText;
         private CanvasGroup group;
 
-        public static void Show(Transform parent, ChefProgress.Gain gain)
+        /// <param name="position">Centre of the card, relative to the centre of <paramref name="parent"/>.</param>
+        public static void Show(Transform parent, ChefProgress.Gain gain, Vector2 position)
         {
             if (parent == null || gain.XP <= 0)
                 return;
@@ -29,8 +30,9 @@ namespace Watermelon
 
             var go = new GameObject(ObjectName, typeof(RectTransform));
             go.transform.SetParent(parent, false);
+            go.transform.SetAsLastSibling();           // above the popup frame
             var widget = go.AddComponent<ChefXPWidget>();
-            widget.Build();
+            widget.Build(position);
             // The win screen is often still hidden at this point: play once it shows.
             widget.pending = gain;
             widget.queued = true;
@@ -49,12 +51,12 @@ namespace Watermelon
             StartCoroutine(Play(pending));
         }
 
-        private void Build()
+        private void Build(Vector2 position)
         {
             art = Resources.Load<MenuPanelArt>(MenuPanelArt.ResourcePath);
             var r = (RectTransform)transform;
             r.anchorMin = r.anchorMax = new Vector2(0.5f, 0.5f);
-            r.anchoredPosition = new Vector2(0f, -175f);
+            r.anchoredPosition = position;
             r.sizeDelta = new Vector2(760f, 130f);
             group = gameObject.AddComponent<CanvasGroup>();
             group.alpha = 0f;
