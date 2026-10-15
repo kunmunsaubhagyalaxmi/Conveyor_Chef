@@ -22,9 +22,9 @@ Start every prompt with this shared style line:
 
 For the avatar, add "head and shoulders portrait, square". For the full body, add "full body standing pose, feet visible".
 
-## Chef poses (win jump, loading screen)
+## Chef poses (not used in the game)
 
-Put these in `Assets/Project Data/Game/Resources/Chef/Poses/` as transparent portrait PNGs (about 1024×1536). Without them, the standing chef is used.
+The chef jumping on the win screen and waving on the loading screen was tried and removed. The finished pose images are kept in `Docs/ChefArt/Poses/`.
 
 - `chef_jump.png`: shown on the win screen as the chef jumps up.
 - `chef_cheer.png` (optional): shown after he lands.

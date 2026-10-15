@@ -376,7 +376,6 @@ namespace Watermelon
     levelCompleteLabel.Show();
 
     PlayConfetti();
-    ChefMascot.PlayWinJump(transform);           // the chef jumps up to celebrate
 
     coinsPanelScalable.Show();
 
@@ -404,7 +403,7 @@ namespace Watermelon
             GrantReward();
             try
             {
-                CoinShower.Play(transform, rewardLabel.RectTransform, coinsPanelUI, before, currentReward, 0.9f);
+                CoinShower.Play(transform, rewardLabel.RectTransform, coinsPanelUI, before, currentReward);
             }
             catch (System.Exception exception)
             {
