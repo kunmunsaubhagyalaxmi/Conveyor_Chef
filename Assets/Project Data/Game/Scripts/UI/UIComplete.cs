@@ -376,6 +376,7 @@ namespace Watermelon
     levelCompleteLabel.Show();
 
     PlayConfetti();
+    ChefMascot.PlayWinJump(transform);           // the chef jumps up to celebrate
 
     coinsPanelScalable.Show();
 
@@ -393,46 +394,23 @@ namespace Watermelon
         
         rewardLabel.RectTransform.DOPushScale(Vector3.one * 1.1f, Vector3.one, 0.2f, 0.2f).OnComplete(delegate
         {
-            Debug.Log("[UIComplete] Scale animation complete, spawning currency");
-            
-            // ADDED: Fallback timeout in case FloatingCloud fails
-            bool callbackCalled = false;
+            Debug.Log("[UIComplete] Scale animation complete, coins fly to the counter");
 
-            // An exception here would stop the tween from finishing, so it would call this
-            // again every frame (the endless "spawning currency" log). The coins are only
-            // decoration: if they fail, the reward is granted straight away.
+            // The reward is added now (nothing is lost if the player continues early); the
+            // counter shows the old amount and counts up as each coin lands.
+            if (rewardGranted)
+                return;                          // already continued: the coins were added
+            int before = CurrenciesController.GetCurrency(CurrencyType.Coins).Amount;
+            GrantReward();
             try
             {
-                FloatingCloud.SpawnCurrency(coinsHash, rewardLabel.RectTransform, coinsPanelScalable.RectTransform, 10, "", () =>
-                {
-                    if (callbackCalled) return;
-                    callbackCalled = true;
-
-                    Debug.Log("[UIComplete] Currency spawned callback");
-                    GrantReward();
-                });
+                CoinShower.Play(transform, rewardLabel.RectTransform, coinsPanelUI, before, currentReward, 0.9f);
             }
             catch (System.Exception exception)
             {
-                Debug.LogWarning("[UIComplete] Coin animation failed, granting reward: " + exception.Message);
-                if (!callbackCalled)
-                {
-                    callbackCalled = true;
-                    GrantReward();
-                }
-                return;
+                Debug.LogWarning("[UIComplete] Coin animation failed: " + exception.Message);
+                coinsPanelUI.Redraw();
             }
-
-            // Fallback: grant the reward after 2 seconds if callback doesn't fire
-            Tween.DelayedCall(2f, delegate
-            {
-                if (!callbackCalled)
-                {
-                    Debug.LogWarning("[UIComplete] FloatingCloud callback didn't fire, granting reward anyway");
-                    callbackCalled = true;
-                    GrantReward();
-                }
-            });
         });
     });
 }

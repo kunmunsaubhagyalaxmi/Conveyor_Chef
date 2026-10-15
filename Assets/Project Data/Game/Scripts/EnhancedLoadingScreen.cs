@@ -155,6 +155,10 @@ namespace Watermelon
             if (loadingScreenPanel != null)
             {
                 loadingScreenPanel.SetActive(true);
+
+                // The chef stands in the middle of the plaza, above the food and the bar.
+                if (loadingScreenPanel.transform is RectTransform panelRect)
+                    ChefMascot.AttachLoading(panelRect, new Vector2(0.5f, 0.36f), 0.34f);
             }
 
             if (loadingCanvasGroup == null && loadingScreenPanel != null)
