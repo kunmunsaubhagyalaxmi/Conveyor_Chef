@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4025699797958113191
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2222000704305892486}
+  - component: {fileID: 7534419714923375350}
+  m_Layer: 0
+  m_Name: Tray Bento Box Data
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2222000704305892486
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4025699797958113191}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7534419714923375350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4025699797958113191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83200cb4e7e42ea469534ccd79d2fa0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  busData:
+  - prefab: {fileID: 4993242592274865528, guid: be79dd439d72fc944942fb35efe23e0f, type: 3}
+    type: 10
+  - prefab: {fileID: 6994452178250236187, guid: 09bc4c3923301e7479d68022b24eb65f, type: 3}
+    type: 11
+  - prefab: {fileID: 2867231013874796944, guid: 1ecb17addd1a9e847a1f21bbf8b6145d, type: 3}
+    type: 12
+  - prefab: {fileID: 7716708002839941137, guid: cac364afd04ed0a48a9bf846a852c088, type: 3}
+    type: 13
+  - prefab: {fileID: 4322820622212568543, guid: 5836897dcb123544697091a3865bd980, type: 3}
+    type: 14
+  - prefab: {fileID: 8526282262955594822, guid: 89ee6ef8c23eb4547800e6e2cda866b0, type: 3}
+    type: 15
+  - prefab: {fileID: 6334220904876956875, guid: a6656da3d7f804840820e7960c29ab92, type: 3}
+    type: 16
+  - prefab: {fileID: 8862757180794829983, guid: 695cfdafc78ff3843af73fe6f7bc5c49, type: 3}
+    type: 17
+  - prefab: {fileID: 9105146901536237397, guid: 66e8d8881bec5014082e22c551d84912, type: 3}
+    type: 18
+  - prefab: {fileID: 2375512285796645183, guid: 83f6b593c16f80b4a92c54e35e96169d, type: 3}
+    type: 19

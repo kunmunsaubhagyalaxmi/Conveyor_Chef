@@ -21,7 +21,7 @@ namespace Watermelon
     ///   - "Tray &lt;Design&gt; Data.prefab" (BusData: colour -> prefab), the skin's prefab,
     ///   - a preview picture for Customize > TRAYS (Images/Skins/Trays),
     /// and puts them in the Skins Database before the buses, so the first design is the
-    /// default tray. The buses stay as skins (renamed City Bus / Camper Van).
+    /// default tray. The buses stay as skins (renamed Food Bus / Snack Van).
     /// Running it again rebuilds everything in place (same files, same skin ids).
     /// </summary>
     public static class TrayBuilder
@@ -416,7 +416,7 @@ namespace Watermelon
             Texture2D picture = null;
             try
             {
-                int[] colours = { 0, 4, 3 };
+                int[] colours = { 3, 4, 0 };          // blue in front, then yellow, red
                 for (int i = 0; i < colours.Length; i++)
                 {
                     string path = Root + design.Name + "/Tray " + design.Name + " " + ColourNames[colours[i]] + ".prefab";
@@ -424,7 +424,7 @@ namespace Watermelon
                     if (prefab == null)
                         continue;
                     var tray = (GameObject)Object.Instantiate(prefab);
-                    tray.transform.position = new Vector3((i - 1) * 0.9f, 0f, (i - 1) * -2.1f);
+                    tray.transform.position = new Vector3((i - 1) * 1.25f, 0f, (i - 1) * 2.0f);
                     SceneManager.MoveGameObjectToScene(tray, scene);
                     objects.Add(tray);
                 }
@@ -446,7 +446,7 @@ namespace Watermelon
                 camera.farClipPlane = 100f;
                 camera.allowHDR = false;
                 camera.allowMSAA = true;
-                cameraObject.transform.position = new Vector3(5.2f, 7.2f, -12.5f);
+                cameraObject.transform.position = new Vector3(3.5f, 6.4f, -12.5f);
                 cameraObject.transform.LookAt(new Vector3(0f, design.SeatY * 0.5f + 0.2f, 0f));
                 SceneManager.MoveGameObjectToScene(cameraObject, scene);
 
@@ -454,6 +454,11 @@ namespace Watermelon
                 Texture2D onWhite = Render(camera, size, Color.white);
                 if (onBlack != null && onWhite != null)
                     picture = Matte(onBlack, onWhite);
+                // URP may ignore the background colour (both renders black): cut the black out.
+                if (picture == null && onBlack != null)
+                    picture = KeyOutBlack(onBlack);
+                if (picture != null)
+                    picture = CropToContent(picture, size, 0.06f);
                 Object.DestroyImmediate(onBlack);
                 Object.DestroyImmediate(onWhite);
             }
@@ -515,6 +520,63 @@ namespace Watermelon
             }
         }
 
+        private static Texture2D KeyOutBlack(Texture2D source)
+        {
+            Color[] pixels = source.GetPixels();
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                Color c = pixels[i];
+                float alpha = Mathf.Clamp01(Mathf.Max(c.r, Mathf.Max(c.g, c.b)) / 0.07f);
+                pixels[i] = alpha <= 0f ? Color.clear
+                    : new Color(Mathf.Clamp01(c.r / alpha), Mathf.Clamp01(c.g / alpha), Mathf.Clamp01(c.b / alpha), alpha);
+            }
+            var texture = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
+            texture.SetPixels(pixels);
+            texture.Apply();
+            return texture;
+        }
+
+        /// <summary>Square picture of <paramref name="size"/> with the trays filling it (like the bus pictures).</summary>
+        private static Texture2D CropToContent(Texture2D source, int size, float margin)
+        {
+            Color32[] pixels = source.GetPixels32();
+            int w = source.width, h = source.height;
+            int minX = w, minY = h, maxX = -1, maxY = -1;
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    if (pixels[y * w + x].a < 8)
+                        continue;
+                    minX = Mathf.Min(minX, x); maxX = Mathf.Max(maxX, x);
+                    minY = Mathf.Min(minY, y); maxY = Mathf.Max(maxY, y);
+                }
+            }
+            if (maxX < 0)
+                return source;
+
+            int side = Mathf.Max(maxX - minX + 1, maxY - minY + 1);
+            int pad = Mathf.RoundToInt(side * margin);
+            side += pad * 2;
+            int cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+            var result = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            var output = new Color[size * size];
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float u = cx - side * 0.5f + (x + 0.5f) * side / size;
+                    float v = cy - side * 0.5f + (y + 0.5f) * side / size;
+                    output[y * size + x] = u < 0 || v < 0 || u >= w || v >= h ? Color.clear
+                        : source.GetPixelBilinear(u / w, v / h);
+                }
+            }
+            result.SetPixels(output);
+            result.Apply();
+            Object.DestroyImmediate(source);
+            return result;
+        }
+
         // alpha = 1 - (white - black); colour = black / alpha
         private static Texture2D Matte(Texture2D onBlack, Texture2D onWhite)
         {
@@ -533,7 +595,7 @@ namespace Watermelon
                 any = true;
                 result[i] = new Color(Mathf.Clamp01(black[i].r / alpha), Mathf.Clamp01(black[i].g / alpha), Mathf.Clamp01(black[i].b / alpha), alpha);
             }
-            if (!any)
+            if (!any || System.Array.TrueForAll(result, c => c.a >= 0.999f))
                 return null;
             var texture = new Texture2D(onBlack.width, onBlack.height, TextureFormat.RGBA32, false);
             texture.SetPixels(result);
@@ -603,10 +665,10 @@ namespace Watermelon
                     continue;
                 p.FindPropertyRelative("id").intValue = id++;
                 SerializedProperty name = p.FindPropertyRelative("name");
-                if (name.stringValue == "Bus 1")
-                    name.stringValue = "City Bus";
-                else if (name.stringValue == "Bus 2")
-                    name.stringValue = "Camper Van";
+                if (name.stringValue == "Bus 1" || name.stringValue == "City Bus")
+                    name.stringValue = "Food Bus";
+                else if (name.stringValue == "Bus 2" || name.stringValue == "Camper Van")
+                    name.stringValue = "Snack Van";
             }
 
             so.ApplyModifiedPropertiesWithoutUndo();

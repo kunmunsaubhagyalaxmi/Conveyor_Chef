@@ -94,12 +94,68 @@ MonoBehaviour:
     purchaseType: 0
     currency: 0
     cost: 0
-  - uniqueId: 2/8/2024 3:04:08 PM_891103
+  - uniqueId: tray_snack
     isExpanded: 0
     id: 0
     tabId: 1
     isDummy: 0
-    name: Bus 1
+    name: Snack Tray
+    openedSprite: {fileID: 21300000, guid: 11eff1089fa83dd44860ac4e5aef3099, type: 3}
+    lockedSprite: {fileID: 21300000, guid: 11eff1089fa83dd44860ac4e5aef3099, type: 3}
+    preview2DSprite: {fileID: 21300000, guid: 11eff1089fa83dd44860ac4e5aef3099, type: 3}
+    prefab: {fileID: 273334333440180846, guid: b8f9d2c00f0419544be48220d5f54a9d, type: 3}
+    previewPrefab: {fileID: 0}
+    purchaseType: 0
+    currency: 0
+    cost: 0
+  - uniqueId: tray_platter
+    isExpanded: 0
+    id: 1
+    tabId: 1
+    isDummy: 0
+    name: Royal Platter
+    openedSprite: {fileID: 21300000, guid: bb9aa6095d9ccc64e80c4bb850df024b, type: 3}
+    lockedSprite: {fileID: 21300000, guid: bb9aa6095d9ccc64e80c4bb850df024b, type: 3}
+    preview2DSprite: {fileID: 21300000, guid: bb9aa6095d9ccc64e80c4bb850df024b, type: 3}
+    prefab: {fileID: 5379168995766810546, guid: 58cee8640be00da4588dd4e658cee9c0, type: 3}
+    previewPrefab: {fileID: 0}
+    purchaseType: 0
+    currency: 0
+    cost: 800
+  - uniqueId: tray_bento
+    isExpanded: 0
+    id: 2
+    tabId: 1
+    isDummy: 0
+    name: Bento Box
+    openedSprite: {fileID: 21300000, guid: df787290e0816d240a850a187ed87b85, type: 3}
+    lockedSprite: {fileID: 21300000, guid: df787290e0816d240a850a187ed87b85, type: 3}
+    preview2DSprite: {fileID: 21300000, guid: df787290e0816d240a850a187ed87b85, type: 3}
+    prefab: {fileID: 4025699797958113191, guid: 7a9908a47ccb7184291edf46cb9de2a4, type: 3}
+    previewPrefab: {fileID: 0}
+    purchaseType: 0
+    currency: 0
+    cost: 1500
+  - uniqueId: tray_cart
+    isExpanded: 0
+    id: 3
+    tabId: 1
+    isDummy: 0
+    name: Serving Cart
+    openedSprite: {fileID: 21300000, guid: ac633339bda9b044c9ddd093c8e1522f, type: 3}
+    lockedSprite: {fileID: 21300000, guid: ac633339bda9b044c9ddd093c8e1522f, type: 3}
+    preview2DSprite: {fileID: 21300000, guid: ac633339bda9b044c9ddd093c8e1522f, type: 3}
+    prefab: {fileID: 1286668949605304957, guid: 4df81d34123ded54196993822731f140, type: 3}
+    previewPrefab: {fileID: 0}
+    purchaseType: 0
+    currency: 1
+    cost: 25
+  - uniqueId: 2/8/2024 3:04:08 PM_891103
+    isExpanded: 0
+    id: 4
+    tabId: 1
+    isDummy: 0
+    name: Food Bus
     openedSprite: {fileID: 21300000, guid: 2145547afe2f4f64eac0ef094f3dbebd, type: 3}
     lockedSprite: {fileID: 21300000, guid: 2145547afe2f4f64eac0ef094f3dbebd, type: 3}
     preview2DSprite: {fileID: 21300000, guid: 2145547afe2f4f64eac0ef094f3dbebd, type: 3}
@@ -110,10 +166,10 @@ MonoBehaviour:
     cost: 0
   - uniqueId: 2/8/2024 3:06:15 PM_364395
     isExpanded: 0
-    id: 1
+    id: 5
     tabId: 1
     isDummy: 0
-    name: Bus 2
+    name: Snack Van
     openedSprite: {fileID: 21300000, guid: 1dc5b5829d89dcf40a068788f54b1546, type: 3}
     lockedSprite: {fileID: 21300000, guid: 1dc5b5829d89dcf40a068788f54b1546, type: 3}
     preview2DSprite: {fileID: 21300000, guid: 1dc5b5829d89dcf40a068788f54b1546, type: 3}
@@ -124,7 +180,7 @@ MonoBehaviour:
     cost: 1000
   - uniqueId: 2/8/2024 3:08:32 PM_20212
     isExpanded: 0
-    id: 2
+    id: 6
     tabId: 1
     isDummy: 1
     name: Dummy
@@ -138,7 +194,7 @@ MonoBehaviour:
     cost: 0
   - uniqueId: 2/8/2024 3:09:02 PM_613652
     isExpanded: 0
-    id: 3
+    id: 7
     tabId: 1
     isDummy: 1
     name: Dummy
