@@ -38,12 +38,49 @@ namespace Watermelon
             shower.StartCoroutine(shower.Fly(from, counter, amountBefore, reward, delay, onFinished));
         }
 
+        /// <summary>
+        /// The coin counter the player can actually see (the game screen's top bar), not one
+        /// on a hidden layer. <paramref name="exclude"/>: a page whose own counters are skipped.
+        /// </summary>
+        public static CurrencyUIPanelSimple VisibleCoinCounter(Transform exclude)
+        {
+            CurrencyUIPanelSimple best = null;
+            foreach (CurrencyUIPanelSimple panel in FindObjectsByType<CurrencyUIPanelSimple>(FindObjectsSortMode.None))
+            {
+                if (panel == null || !panel.isActiveAndEnabled || panel.Currency == null || panel.Currency.CurrencyType != CurrencyType.Coins)
+                    continue;
+                if (exclude != null && panel.transform.IsChildOf(exclude))
+                    continue;
+                Canvas canvas = panel.GetComponentInParent<Canvas>();
+                if (canvas == null || !canvas.isActiveAndEnabled)
+                    continue;
+                // the gameplay HUD's counter is the one at the top of the screen
+                if (best == null || panel.GetComponentInParent<GameMainCanvas>() != null)
+                    best = panel;
+            }
+            return best;
+        }
+
+        // Position of `target` in this layer's space, through the screen (the counter may be
+        // on another canvas).
+        private Vector2 LocalPoint(RectTransform target)
+        {
+            var layer = (RectTransform)transform;
+            Canvas targetCanvas = target.GetComponentInParent<Canvas>();
+            Canvas ownCanvas = layer.GetComponentInParent<Canvas>();
+            Camera targetCamera = targetCanvas != null && targetCanvas.renderMode != RenderMode.ScreenSpaceOverlay ? targetCanvas.worldCamera : null;
+            Camera ownCamera = ownCanvas != null && ownCanvas.renderMode != RenderMode.ScreenSpaceOverlay ? ownCanvas.worldCamera : null;
+            Vector2 screen = RectTransformUtility.WorldToScreenPoint(targetCamera, target.position);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(layer, screen, ownCamera, out Vector2 local);
+            return local;
+        }
+
         private IEnumerator Fly(RectTransform from, CurrencyUIPanelSimple counter, int before, int reward, float delay, System.Action onFinished)
         {
             yield return Wait(delay);
             Sprite icon = CurrenciesController.GetCurrency(CurrencyType.Coins).Icon;
             var layer = (RectTransform)transform;
-            Vector2 start = layer.InverseTransformPoint(from.position);
+            Vector2 start = LocalPoint(from);
             RectTransform target = counter.RectTransform != null ? counter.RectTransform : (RectTransform)counter.transform;
 
             int count = Mathf.Clamp(reward, 5, 12);
@@ -99,7 +136,7 @@ namespace Watermelon
             float spin = Random.Range(-260f, 260f);
             yield return Tween(0.55f, k =>
             {
-                Vector2 end = ((RectTransform)transform).InverseTransformPoint(target.position);
+                Vector2 end = LocalPoint(IconOf(target));
                 Vector2 control = (from + end) * 0.5f + new Vector2(side, 220f);
                 float e = k * k * (3f - 2f * k);
                 r.anchoredPosition = Bezier(from, control, end, e);
@@ -108,6 +145,17 @@ namespace Watermelon
             });
             onLanded();
             Destroy(go);
+        }
+
+        // Aim at the coin picture of the counter when it has one, not the middle of the bar.
+        private static RectTransform IconOf(RectTransform counter)
+        {
+            foreach (Image image in counter.GetComponentsInChildren<Image>())
+            {
+                if (image.sprite != null && image.sprite == CurrenciesController.GetCurrency(CurrencyType.Coins).Icon)
+                    return image.rectTransform;
+            }
+            return counter;
         }
 
         private static Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, float t)

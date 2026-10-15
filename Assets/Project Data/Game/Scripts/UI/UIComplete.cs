@@ -403,7 +403,9 @@ namespace Watermelon
             GrantReward();
             try
             {
-                CoinShower.Play(transform, rewardLabel.RectTransform, coinsPanelUI, before, currentReward);
+                // Fly to the coin bar the player sees at the top of the game screen.
+                CurrencyUIPanelSimple counter = CoinShower.VisibleCoinCounter(transform);
+                CoinShower.Play(transform, rewardLabel.RectTransform, counter != null ? counter : coinsPanelUI, before, currentReward);
             }
             catch (System.Exception exception)
             {
