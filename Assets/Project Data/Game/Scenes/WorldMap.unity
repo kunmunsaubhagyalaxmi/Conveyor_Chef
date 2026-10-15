@@ -14288,6 +14288,7 @@ MonoBehaviour:
   preserveAuthoredStartupVisuals: 1
   authoredSelectedContinent: 0
   focusSelectedContinentOnStart: 0
+  centerContinentOnOpen: 1
 --- !u!1 &2079700581
 GameObject:
   m_ObjectHideFlags: 0

@@ -107,3 +107,7 @@ ehthumbs.db
 
 # Unity Burst debug info
 *_BurstDebugInformation_DoNotShip/
+
+# Source art archives (already unpacked into the project; too big for GitHub)
+Docs/DishArt/*.zip
+Docs/LevelMapArt/*.zip
