@@ -8,17 +8,27 @@ namespace Watermelon
     /// <summary>
     /// Chef XP strip at the bottom of the win banner: chef face with "LV n", a bar that fills
     /// from the old XP to the new (rolling over when the chef levels up) and "+60 XP", which
-    /// turns into LEVEL UP! / NEW OUTFIT!. UIComplete places it under the GET X3 button.
+    /// turns into LEVEL UP! / NEW OUTFIT!. UIComplete places it where GET X3 was.
+    /// It can live in the scene ("Chef XP" under UI Complete, added with
+    /// Conveyor Chef > UI Panels > Edit Win Panel) so it can be moved and restyled in the
+    /// editor; the game then uses that one as it is. Without it, the game builds one.
+    /// Bar art: Resources/UI/ChefXP (9-sliced).
     /// </summary>
     public sealed class ChefXPWidget : MonoBehaviour
     {
-        private const string ObjectName = "Chef XP";
+        public const string ObjectName = "Chef XP";
         private const float TrackWidth = 500f;
 
+                private const string SpriteFolder = "UI/ChefXP/";
+
+        [SerializeField] private RectTransform fill;
+        [SerializeField] private Image face;
+        [SerializeField] private TextMeshProUGUI levelText, xpText, gainText;
+        [SerializeField] private CanvasGroup group;
+        [SerializeField] private Color gainColor = new Color32(40, 140, 40, 255);
+        [SerializeField] private Color levelUpColor = new Color32(214, 120, 0, 255);
+
         private MenuPanelArt art;
-        private RectTransform fill, face;
-        private TextMeshProUGUI levelText, xpText, gainText;
-        private CanvasGroup group;
 
         private ChefProgress.Gain pending;
         private bool queued;
@@ -26,17 +36,27 @@ namespace Watermelon
         /// <param name="position">Centre of the strip, relative to the centre of <paramref name="parent"/>.</param>
         public static void Show(Transform parent, ChefProgress.Gain gain, Vector2 position)
         {
-            if (parent == null || gain.XP <= 0)
+            if (parent == null)
                 return;
-            Transform old = parent.Find(ObjectName);
-            if (old != null)
-                Destroy(old.gameObject);
 
-            var go = new GameObject(ObjectName, typeof(RectTransform));
-            go.transform.SetParent(parent, false);
-            go.transform.SetAsLastSibling();           // above the banner frame
-            var widget = go.AddComponent<ChefXPWidget>();
-            widget.Build(position);
+            // One placed in the scene is used as it is (its position and look are the editor's).
+            Transform existing = parent.Find(ObjectName);
+            ChefXPWidget widget = existing != null ? existing.GetComponent<ChefXPWidget>() : null;
+            if (widget == null || !widget.IsComplete)
+            {
+                if (existing != null)
+                    Destroy(existing.gameObject);
+                widget = Create(parent, position);
+            }
+
+            if (gain.XP <= 0)
+            {
+                widget.gameObject.SetActive(false);
+                return;
+            }
+            widget.gameObject.SetActive(true);
+            widget.transform.SetAsLastSibling();       // above the banner frame
+            widget.StopAllCoroutines();
             // The win screen is often still hidden at this point: play once it shows.
             widget.pending = gain;
             widget.queued = true;
@@ -52,6 +72,31 @@ namespace Watermelon
             StartCoroutine(Play(pending));
         }
 
+        private bool IsComplete => fill != null && face != null && levelText != null && xpText != null && gainText != null && group != null;
+
+        /// <summary>Makes the strip under <paramref name="parent"/> (also used by the editor menu).</summary>
+        public static ChefXPWidget Create(Transform parent, Vector2 position)
+        {
+            var go = new GameObject(ObjectName, typeof(RectTransform));
+            go.transform.SetParent(parent, false);
+            go.transform.SetAsLastSibling();
+            var widget = go.AddComponent<ChefXPWidget>();
+            widget.Build(position);
+            return widget;
+        }
+
+        /// <summary>Editor preview: the bar at the player's current XP, fully visible.</summary>
+        public void ShowPreview()
+        {
+            if (!IsComplete)
+                return;
+            group.alpha = 1f;
+            ShowXP(ChefProgress.TotalXP);
+            gainText.text = "+" + (ChefProgress.XPPerWin + 3 * ChefProgress.XPPerStar) + " XP";
+        }
+
+        private static Sprite Art(string name) => Resources.Load<Sprite>(SpriteFolder + name);
+
         private void Build(Vector2 position)
         {
             art = Resources.Load<MenuPanelArt>(MenuPanelArt.ResourcePath);
@@ -64,10 +109,11 @@ namespace Watermelon
             group.blocksRaycasts = false;
 
             // bar
-            Image track = Img("Track", r, MenuUI.Rounded(34, 5, new Color32(232, 214, 184, 255), new Color32(176, 120, 60, 255)));
+            Image track = Img("Track", r, Art("xp_track"));
             track.type = Image.Type.Sliced;
             Place(track.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(10f, 0f), new Vector2(TrackWidth, 70f));
-            Image fillImage = Img("Fill", track.transform, MenuUI.Rounded(28, 0, new Color32(84, 196, 64, 255), Color.clear));
+            Image fillImage = Img("Fill", track.transform, Art("xp_fill"));
+            fillImage.color = new Color32(84, 196, 64, 255);
             fillImage.type = Image.Type.Sliced;
             fill = fillImage.rectTransform;
             fill.anchorMin = Vector2.zero;
@@ -79,22 +125,31 @@ namespace Watermelon
             Stretch(xpText.rectTransform, 10f, 2f, 10f, 2f);
 
             // chef face with the level under it, overlapping the bar's left end
-            Image faceImage = Img("Chef", r, ChefProgress.Avatar(art));
-            faceImage.preserveAspect = true;
-            face = faceImage.rectTransform;
-            Place(face, new Vector2(0.5f, 0.5f), new Vector2(-285f, 12f), new Vector2(124f, 124f));
-            Image badge = Img("Level Badge", face, MenuUI.Rounded(16, 3, new Color32(64, 150, 236, 255), Color.white));
+            face = Img("Chef", r, ChefProgress.Avatar(art));
+            face.preserveAspect = true;
+            Place(face.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-285f, 12f), new Vector2(124f, 124f));
+            Image badge = Img("Level Badge", face.transform, Art("xp_badge"));
             badge.type = Image.Type.Sliced;
             Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, -10f), new Vector2(110f, 44f));
             levelText = Txt("Level", badge.transform, "LV 1", 32f, Color.white);
             Stretch(levelText.rectTransform, 4f, 1f, 4f, 1f);
 
-            gainText = Txt("Gain", r, "+0 XP", 42f, new Color32(40, 140, 40, 255));
+            gainText = Txt("Gain", r, "+0 XP", 42f, gainColor);
             Place(gainText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 64f), new Vector2(360f, 56f));
         }
 
         private IEnumerator Play(ChefProgress.Gain gain)
         {
+            // reset from the last win (or the editor preview)
+            if (art == null)
+                art = Resources.Load<MenuPanelArt>(MenuPanelArt.ResourcePath);
+            Sprite chef = ChefProgress.Avatar(art);
+            if (chef != null)
+                face.sprite = chef;
+            group.alpha = 0f;
+            gainText.color = gainColor;
+            gainText.transform.localScale = Vector3.one;
+            face.transform.localScale = Vector3.one;
             ShowXP(gain.Before);
             yield return Wait(0.6f);                     // after the banner has popped in
             yield return Tween(0.3f, k => group.alpha = k);
@@ -109,7 +164,7 @@ namespace Watermelon
                 if (level > lastLevel)
                 {
                     lastLevel = level;
-                    StartCoroutine(Punch(face));
+                    StartCoroutine(Punch(face.transform));
                 }
             });
             ShowXP(gain.After);
@@ -119,7 +174,7 @@ namespace Watermelon
             {
                 yield return Wait(0.4f);
                 try { AudioController.PlaySound(AudioController.Sounds.completeSound); } catch { }
-                gainText.color = new Color32(214, 120, 0, 255);
+                gainText.color = levelUpColor;
                 gainText.text = "LEVEL UP!";
                 yield return Punch(gainText.transform);
 
