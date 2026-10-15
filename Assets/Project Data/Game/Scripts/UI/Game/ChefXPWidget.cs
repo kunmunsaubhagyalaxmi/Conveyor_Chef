@@ -13,7 +13,7 @@ namespace Watermelon
     public sealed class ChefXPWidget : MonoBehaviour
     {
         private const string ObjectName = "Chef XP";
-        private const float TrackWidth = 400f;
+        private const float TrackWidth = 500f;
 
         private MenuPanelArt art;
         private RectTransform fill, face;
@@ -58,39 +58,39 @@ namespace Watermelon
             var r = (RectTransform)transform;
             r.anchorMin = r.anchorMax = new Vector2(0.5f, 0.5f);
             r.anchoredPosition = position;
-            r.sizeDelta = new Vector2(600f, 70f);
+            r.sizeDelta = new Vector2(760f, 120f);
             group = gameObject.AddComponent<CanvasGroup>();
             group.alpha = 0f;
             group.blocksRaycasts = false;
 
             // bar
-            Image track = Img("Track", r, MenuUI.Rounded(22, 4, new Color32(232, 214, 184, 255), new Color32(176, 120, 60, 255)));
+            Image track = Img("Track", r, MenuUI.Rounded(34, 5, new Color32(232, 214, 184, 255), new Color32(176, 120, 60, 255)));
             track.type = Image.Type.Sliced;
-            Place(track.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-10f, 0f), new Vector2(TrackWidth, 44f));
-            Image fillImage = Img("Fill", track.transform, MenuUI.Rounded(18, 0, new Color32(84, 196, 64, 255), Color.clear));
+            Place(track.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(10f, 0f), new Vector2(TrackWidth, 70f));
+            Image fillImage = Img("Fill", track.transform, MenuUI.Rounded(28, 0, new Color32(84, 196, 64, 255), Color.clear));
             fillImage.type = Image.Type.Sliced;
             fill = fillImage.rectTransform;
             fill.anchorMin = Vector2.zero;
             fill.anchorMax = new Vector2(0f, 1f);
             fill.pivot = new Vector2(0f, 0.5f);
-            fill.offsetMin = new Vector2(4f, 4f);
-            fill.offsetMax = new Vector2(-4f, -4f);
-            xpText = Txt("XP", track.transform, "0 / 100 XP", 24f, new Color32(70, 40, 16, 255));
+            fill.offsetMin = new Vector2(6f, 6f);
+            fill.offsetMax = new Vector2(-6f, -6f);
+            xpText = Txt("XP", track.transform, "0 / 100 XP", 36f, new Color32(70, 40, 16, 255));
             Stretch(xpText.rectTransform, 10f, 2f, 10f, 2f);
 
             // chef face with the level under it, overlapping the bar's left end
             Image faceImage = Img("Chef", r, ChefProgress.Avatar(art));
             faceImage.preserveAspect = true;
             face = faceImage.rectTransform;
-            Place(face, new Vector2(0.5f, 0.5f), new Vector2(-240f, 8f), new Vector2(80f, 80f));
+            Place(face, new Vector2(0.5f, 0.5f), new Vector2(-285f, 12f), new Vector2(124f, 124f));
             Image badge = Img("Level Badge", face, MenuUI.Rounded(16, 3, new Color32(64, 150, 236, 255), Color.white));
             badge.type = Image.Type.Sliced;
-            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, -6f), new Vector2(76f, 32f));
-            levelText = Txt("Level", badge.transform, "LV 1", 22f, Color.white);
+            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, -10f), new Vector2(110f, 44f));
+            levelText = Txt("Level", badge.transform, "LV 1", 32f, Color.white);
             Stretch(levelText.rectTransform, 4f, 1f, 4f, 1f);
 
-            gainText = Txt("Gain", r, "+0 XP", 32f, new Color32(40, 140, 40, 255));
-            Place(gainText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(255f, 0f), new Vector2(130f, 50f));
+            gainText = Txt("Gain", r, "+0 XP", 42f, new Color32(40, 140, 40, 255));
+            Place(gainText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 64f), new Vector2(360f, 56f));
         }
 
         private IEnumerator Play(ChefProgress.Gain gain)

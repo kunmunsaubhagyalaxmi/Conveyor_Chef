@@ -348,26 +348,17 @@ namespace Watermelon
         //     });
         // }
 
-        // The chef XP bar sits at the bottom of the banner's cream panel, under GET X3:
-        // the reward, CONTINUE and GET X3 move up a little to make room for it.
+        // GET X3 is hidden; the chef XP bar takes its place under CONTINUE.
+        private Vector2 chefXPPosition;
+
         private void MakeRoomForChefXP()
         {
-            Nudge(rewardLabel != null ? rewardLabel.RectTransform : null, 35f);
-            Nudge(noThanksButton != null ? (RectTransform)noThanksButton.transform : null, 55f);
-            Nudge(multiplyRewardButton != null ? (RectTransform)multiplyRewardButton.transform : null, 72f);
-        }
-
-        private static void Nudge(RectTransform rect, float up)
-        {
-            if (rect != null)
-                rect.anchoredPosition += new Vector2(0f, up);
-        }
-
-        private Vector2 ChefXPPosition()
-        {
             var x3 = (RectTransform)multiplyRewardButton.transform;
-            return new Vector2(0f, x3.anchoredPosition.y - x3.rect.height * 0.5f - 45f);
+            chefXPPosition = x3.anchoredPosition;
+            multiplyRewardButton.gameObject.SetActive(false);
         }
+
+        private Vector2 ChefXPPosition() => chefXPPosition;
 
         public override void PlayShowAnimation()
 {
