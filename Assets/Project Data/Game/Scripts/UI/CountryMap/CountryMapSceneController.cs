@@ -312,7 +312,11 @@ namespace Watermelon.BusStop
             // IMPORTANT: never change RectTransform position, anchors, pivot, height or
             // scale at runtime. The Canvas owns the layout and designers can edit it.
             // Runtime only changes the width inside SetProgressVisual().
-            progressFill.type = Image.Type.Simple;
+            // Filled, not stretched: the bar keeps its full length and rounded ends and is
+            // revealed from the left (a stretched picture squashed its ends at low progress).
+            progressFill.type = Image.Type.Filled;
+            progressFill.fillMethod = Image.FillMethod.Horizontal;
+            progressFill.fillOrigin = (int)Image.OriginHorizontal.Left;
             progressFill.preserveAspect = false;
             progressFill.raycastTarget = false;
 
@@ -489,10 +493,11 @@ namespace Watermelon.BusStop
                 : Mathf.Max(0f, fillRect.sizeDelta.x);
 
             Vector2 size = fillRect.sizeDelta;
-            size.x = fullWidth * normalized;
+            size.x = fullWidth;
             fillRect.sizeDelta = size;
+            progressFill.fillAmount = normalized;
 
-            progressFill.enabled = true;
+            progressFill.enabled = normalized > 0f;
         }
 
         public void HandleCountryPressed(int countryIndex)
