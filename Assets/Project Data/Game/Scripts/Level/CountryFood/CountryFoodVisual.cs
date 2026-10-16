@@ -207,7 +207,8 @@ namespace Watermelon.BusStop
 
             // A covered ("unknown") piece keeps its colour secret until revealed.
             bool covered = customCover != null && customCover.activeInHierarchy;
-            card.gameObject.SetActive(!covered);
+            if (card.gameObject.activeSelf == covered)
+                card.gameObject.SetActive(!covered);
             if (covered)
                 return;
 
@@ -255,15 +256,23 @@ namespace Watermelon.BusStop
                 ? -cam.transform.forward
                 : (cam.transform.position - centre).normalized;
 
-            card.rotation = cam.transform.rotation;
-            card.position = centre + towardsCamera * (scale * TowardsCamera);
-            card.localScale = new Vector3(scale, scale, scale);
+            // Only write what changed: a resting dish then costs no transform or renderer
+            // updates (there are dozens of dishes on a board, every frame).
+            Vector3 position = centre + towardsCamera * (scale * TowardsCamera);
+            if (card.rotation != cam.transform.rotation)
+                card.rotation = cam.transform.rotation;
+            if ((card.position - position).sqrMagnitude > 1e-10f)
+                card.position = position;
+            if (Mathf.Abs(card.localScale.x - scale) > 1e-6f)
+                card.localScale = new Vector3(scale, scale, scale);
 
             Color blocked = art != null ? art.blockedTint : new Color(0.95f, 0.95f, 0.95f, 1f);
             bool pickable = character.IsHighlighted || character.IsSubmitted;
             Color tint = pickable ? Color.white : blocked;
-            dishRenderer.color = tint;
-            plateRenderer.color = tint;
+            if (dishRenderer.color != tint)
+                dishRenderer.color = tint;
+            if (plateRenderer.color != tint)
+                plateRenderer.color = tint;
 
             UpdateCloche(!pickable && (art == null || art.showCloche));
             UpdateFoodSize(art);
@@ -314,11 +323,15 @@ namespace Watermelon.BusStop
             float m = showPlate ? Mathf.Lerp(1f, grow, t) : grow;
 
             Transform dish = dishRenderer.transform;
-            dish.localScale = dishBaseScale * m;
-            dish.localPosition = new Vector3(
+            Vector3 size = dishBaseScale * m;
+            Vector3 place = new Vector3(
                 dishBasePosition.x * m,
                 dishBottom + (dishBasePosition.y - dishBottom) * m,
                 dishBasePosition.z);
+            if (dish.localScale != size)
+                dish.localScale = size;
+            if (dish.localPosition != place)
+                dish.localPosition = place;
         }
 
         // World distance between neighbouring seats of the tray this character sits on, or 0
@@ -358,8 +371,10 @@ namespace Watermelon.BusStop
                 clocheLift = Mathf.Min(1f, clocheLift + Time.deltaTime / ClocheLiftTime);
             }
 
-            clocheRenderer.enabled = clocheLift < 1f;
-            if (!clocheRenderer.enabled)
+            bool showCloche = clocheLift < 1f;
+            if (clocheRenderer.enabled != showCloche)
+                clocheRenderer.enabled = showCloche;
+            if (!showCloche)
                 return;
 
             float rise = 1f - (1f - clocheLift) * (1f - clocheLift) * (1f - clocheLift);   // ease out

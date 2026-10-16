@@ -55,34 +55,37 @@ def file_name(country, k):
 
 # ------------------------------------------------------------------ difficulty plan
 def target(n, total):
-    """Casual-bot win rate wanted for global level n (1-based). Lower = harder."""
+    """Casual-bot win rate wanted for global level n (1-based). Lower = harder.
+    The bot is a weak player (often taps at random), so real players win far more often
+    than this number; levels 1-2 are the hand-made tutorial."""
     c, k = divmod(n - 1, LEVELS_PER_COUNTRY)
     countries = total // LEVELS_PER_COUNTRY
-    if n <= 5:
+    if n <= 2:
         return 100.0                                   # tutorial levels
-    base = 92.0 - 60.0 * (c / max(1, countries - 1)) ** 0.8   # each country harder than the last
-    t = base - 14.0 * k / (LEVELS_PER_COUNTRY - 1)        # and harder towards its end
+    base = 62.0 - 44.0 * (c / max(1, countries - 1)) ** 0.8   # each country harder than the last
+    t = base - 12.0 * k / (LEVELS_PER_COUNTRY - 1)        # and harder towards its end
     if k % 10 == 9:
-        t -= 28.0                                      # boss: levels 10, 20, 30 of a country
+        t -= 20.0                                      # boss: levels 10, 20, 30 of a country
     elif k % 5 == 4:
-        t -= 16.0                                      # hard: levels 5, 15, 25
+        t -= 12.0                                      # hard: levels 5, 15, 25
     elif k % 5 == 0 and k > 0:
-        t += 8.0                                       # breather after a hard level
-    if c == 0 and k < 12:
-        t = max(t, 74.0)                               # gentle start in China
-    return max(6.0, min(98.0, t))
+        t += 6.0                                       # breather after a hard level
+    if n <= 6:
+        t = max(t, 70.0)                               # levels 3-6 ease into it
+    return max(5.0, min(95.0, t))
 
 
 def size_plan(n, total, rng):
     c, k = divmod(n - 1, LEVELS_PER_COUNTRY)
     progress = (n - 1) / max(1, total - 1)
     hard = k % 10 == 9 or k % 5 == 4
-    sets = 4 + 11 * progress ** 0.7 + 2.0 * k / (LEVELS_PER_COUNTRY - 1) + (1.5 if hard else 0) + rng.uniform(-1, 1)
-    sets = max(3, min(16, int(round(sets))))
-    colours = max(3, min(7, int(round(3.2 + 4.0 * progress ** 0.6 + rng.uniform(-0.5, 0.5)))))
-    colours = min(colours, sets)
-    hidden = 0.0 if n < 15 else min(0.22, 0.04 + 0.2 * progress) * rng.choice((0, 0.5, 1, 1))
-    spawners = 0 if n < 8 else rng.choice((0, 0, 1, 1, 2)) if k % 4 != 0 else 0
+    sets = 5 + 10 * progress ** 0.6 + 2.0 * k / (LEVELS_PER_COUNTRY - 1) + (1.5 if hard else 0) + rng.uniform(-1, 1)
+    sets = max(4, min(16, int(round(sets))))
+    # many colours, each on at most 2 customers: about 1.4 customers per colour
+    colours = int(round(sets / 1.4 + rng.uniform(-0.6, 0.6)))
+    colours = max((sets + 1) // 2, min(10, sets, max(3, colours)))
+    hidden = 0.0 if n < 7 else min(0.28, 0.06 + 0.22 * progress) * rng.choice((0.5, 1, 1, 1.2))
+    spawners = 0 if n < 5 else rng.choice((0, 1, 1, 2, 2)) if k % 4 != 0 else rng.choice((0, 1))
     return dict(target=target(n, total), sets=sets, colours=colours, hidden=hidden, spawners=spawners)
 
 
@@ -98,7 +101,7 @@ def handmade_spec(path):
     cell, hidden = {}, set()
     for a, x, y, s in re.findall(r'- elementType: (\d+)\n\s+elementPosition:\n\s+x: (\d+)\n\s+y: (\d+)\n\s+specialEffectType: (\d+)', t):
         cell[(int(x), int(y))] = int(a)
-        if int(s) == 1 and 10 <= int(a) <= 16:
+        if int(s) == 1 and 10 <= int(a) <= 19:
             hidden.add((int(x), int(y)))
     spawners = {}
     sp = re.search(r'^  spawnerData:(.*?)(?=^  tutorialSteps)', t, re.S | re.M)
@@ -126,21 +129,9 @@ def measure_handmade():
 
 
 def assign_handmade(total, rates):
-    """Levels 1-5 open the game; other hand-made boards go where their difficulty fits
-    (only in the first 10 countries: they are small boards)."""
-    assign = {n: n for n in range(1, 6)}
-    free = [n for n in range(6, min(total, 300) + 1)]
-    pool = [i for i in range(6, 51) if rates[i] >= 5]
-
-    def rate(i):
-        return rates[i]
-
-    for i in sorted(pool, key=lambda i: min(abs(target(n, total) - rate(i)) for n in free)):
-        best = min(free, key=lambda n: abs(target(n, total) - rate(i)))
-        if abs(target(best, total) - rate(i)) <= 6:
-            assign[best] = i
-            free.remove(best)
-    return assign
+    """Only the two tutorial levels are hand-made now; every other level is generated with
+    all 10 colours (the old hand-made boards are small, easy and use 7 colours)."""
+    return {1: 1, 2: 2}
 
 
 def drop_duplicate_spawners(yaml_text):

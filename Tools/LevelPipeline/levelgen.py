@@ -17,7 +17,8 @@ import sys
 import uuid
 
 DOCK, SEATS = 7, 3
-COLOURS = [10, 11, 12, 13, 14, 15, 16]          # red green pink blue yellow teal purple
+COLOURS = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]   # red green pink blue yellow teal purple orange brown white
+MAX_SETS_PER_COLOUR = 2                        # a colour fills at most 2 customers per level (variety)
 OFF = {0: (0, -1), 1: (1, 0), 2: (0, 1), 3: (-1, 0)}   # Forward Right Back Left
 N4 = ((1, 0), (-1, 0), (0, 1), (0, -1))
 
@@ -63,7 +64,7 @@ class Game:
                 if n not in reach and 0 <= n[0] < self.w and 0 <= n[1] < self.h and self.empty(n):
                     reach.add(n)
                     stack.append(n)
-        return [p for p, a in self.cell.items() if 10 <= a <= 16 and
+        return [p for p, a in self.cell.items() if 10 <= a <= 19 and
                 (p[1] == 0 or any((p[0] + dx, p[1] + dy) in reach for dx, dy in N4))]
 
     def collecting(self):
@@ -257,8 +258,12 @@ def build(n, pl, mess, rng):
     keyed = sorted(slots, key=lambda s: s[0] + rng.gauss(0, mess))
 
     # colours per set, then the customer queue in surfacing order of each set
+    # every colour once, then some colours a second time - never more than MAX_SETS_PER_COLOUR
     palette = rng.sample(COLOURS, pl['colours'])
-    sets = palette + [rng.choice(palette) for _ in range(pl['sets'] - len(palette))]
+    extra = pl['sets'] - len(palette)
+    if extra > len(palette) * (MAX_SETS_PER_COLOUR - 1):
+        return None
+    sets = palette + rng.sample(palette * (MAX_SETS_PER_COLOUR - 1), extra)
     rng.shuffle(sets)
     assign = {}
     for i, (_, slot) in enumerate(keyed):
