@@ -56,36 +56,40 @@ def file_name(country, k):
 # ------------------------------------------------------------------ difficulty plan
 def target(n, total):
     """Casual-bot win rate wanted for global level n (1-based). Lower = harder.
-    The bot is a weak player (often taps at random), so real players win far more often
-    than this number; levels 1-2 are the hand-made tutorial."""
+    Hardest plan: every level after the tutorial is tough. The bot is a weak player
+    (often taps at random), so real players win far more often than this number."""
     c, k = divmod(n - 1, LEVELS_PER_COUNTRY)
     countries = total // LEVELS_PER_COUNTRY
     if n <= 2:
         return 100.0                                   # tutorial levels
-    base = 62.0 - 44.0 * (c / max(1, countries - 1)) ** 0.8   # each country harder than the last
-    t = base - 12.0 * k / (LEVELS_PER_COUNTRY - 1)        # and harder towards its end
+    base = 21.0 - 15.0 * (c / max(1, countries - 1)) ** 0.7   # each country harder than the last
+    t = base - 6.0 * k / (LEVELS_PER_COUNTRY - 1)         # and harder towards its end
     if k % 10 == 9:
-        t -= 20.0                                      # boss: levels 10, 20, 30 of a country
+        t -= 8.0                                       # boss: levels 10, 20, 30 of a country
     elif k % 5 == 4:
-        t -= 12.0                                      # hard: levels 5, 15, 25
+        t -= 5.0                                       # hard: levels 5, 15, 25
     elif k % 5 == 0 and k > 0:
-        t += 6.0                                       # breather after a hard level
-    if n <= 6:
-        t = max(t, 70.0)                               # levels 3-6 ease into it
-    return max(5.0, min(95.0, t))
+        t += 3.0                                       # small breather after a hard level
+    if n <= 5:
+        t = max(t, 30.0)                               # levels 3-5: hard, but learnable
+    return max(3.0, min(95.0, t))
+
+
+def is_boss(n):
+    return (n - 1) % LEVELS_PER_COUNTRY % 10 == 9
 
 
 def size_plan(n, total, rng):
     c, k = divmod(n - 1, LEVELS_PER_COUNTRY)
     progress = (n - 1) / max(1, total - 1)
     hard = k % 10 == 9 or k % 5 == 4
-    sets = 5 + 10 * progress ** 0.6 + 2.0 * k / (LEVELS_PER_COUNTRY - 1) + (1.5 if hard else 0) + rng.uniform(-1, 1)
-    sets = max(4, min(16, int(round(sets))))
+    sets = 9 + 7 * progress ** 0.5 + 1.0 * k / (LEVELS_PER_COUNTRY - 1) + (1.5 if hard else 0) + rng.uniform(-1, 1)
+    sets = max(7 if n > 5 else 6, min(16, int(round(sets))))
     # many colours, each on at most 2 customers: about 1.4 customers per colour
     colours = int(round(sets / 1.4 + rng.uniform(-0.6, 0.6)))
     colours = max((sets + 1) // 2, min(10, sets, max(3, colours)))
-    hidden = 0.0 if n < 7 else min(0.28, 0.06 + 0.22 * progress) * rng.choice((0.5, 1, 1, 1.2))
-    spawners = 0 if n < 5 else rng.choice((0, 1, 1, 2, 2)) if k % 4 != 0 else rng.choice((0, 1))
+    hidden = 0.0 if n < 4 else min(0.36, 0.16 + 0.2 * progress) * rng.choice((0.8, 1, 1, 1.15))
+    spawners = 0 if n < 3 else rng.choice((2, 2, 3)) if n > 5 else 1
     return dict(target=target(n, total), sets=sets, colours=colours, hidden=hidden, spawners=spawners)
 
 
@@ -158,6 +162,7 @@ def build_one(job):
     n, total, seed = job
     rng = random.Random(seed)
     tgt = target(n, total)
+    peak_limit = 6                                     # hardest plan: only 1 tray spot to spare
     last = None
     for attempt in range(6):
         def plan(_n, t=tgt):
@@ -169,13 +174,14 @@ def build_one(job):
         if spec is None:
             continue
         # fair: perfect play keeps 2 dock slots free, and the bot wins at least sometimes
-        if spec['peak'] <= 5 and spec['rate'] >= max(3.0, tgt - 14):
+        # bosses may need all but one tray spot; other levels keep 2 spots spare
+        if spec['peak'] <= peak_limit and spec['rate'] >= max(2.0, tgt - 14):
             return n, spec
-        if last is None or (spec['peak'] <= 5 and abs(spec['rate'] - tgt) < abs(last['rate'] - tgt)):
+        if last is None or (spec['peak'] <= peak_limit and abs(spec['rate'] - tgt) < abs(last['rate'] - tgt)):
             last = spec
         if tgt < 15:
             tgt += 4                                   # a finale that came out brutal: a touch easier
-    return n, (last if last is not None and last['peak'] <= 5 else None)
+    return n, (last if last is not None and last['peak'] <= peak_limit else None)
 
 
 def main():
@@ -219,7 +225,8 @@ def main():
     by_n = {m['n']: m for m in manifest}
     start = time.time()
     done = 0
-    with mp.Pool(max(1, os.cpu_count() - 2)) as pool:
+    workers = int(os.environ.get("LEVEL_WORKERS", max(1, os.cpu_count() - 2)))
+    with mp.Pool(workers) as pool:
         for n, spec in pool.imap_unordered(build_one, jobs, chunksize=1):
             m = by_n[n]
             done += 1
