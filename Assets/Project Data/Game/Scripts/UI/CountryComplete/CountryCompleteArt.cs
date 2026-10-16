@@ -38,7 +38,18 @@ namespace Watermelon
 
         // Each country's own art (Resources/World/<continent>/<country>/landmark|decor) wins;
         // countries without it use the Asian country in the same position.
-        public Sprite GetLandmark(int country) => Pick(WorldArt.ForCountry(country, WorldArt.Landmark), Get(landmarks, WorldCatalog.StandInCountry(country)));
+        // Landmark: the country's own picture; the Asian ones are set here; other countries
+        // use their map diorama (Statue of Liberty, Colosseum...). Never another country's
+        // art: without a picture (Antarctica) the panel shows just the name.
+        public Sprite GetLandmark(int country)
+        {
+            Sprite own = WorldArt.ForCountry(country, WorldArt.Landmark, false);
+            if (own != null)
+                return own;
+            if (WorldCatalog.ContinentOfCountry(country) == 0)
+                return Get(landmarks, country);
+            return WorldArt.ForCountry(country, WorldArt.MapDiorama, false);
+        }
         public Sprite GetDecor(int country) => Pick(WorldArt.ForCountry(country, WorldArt.Decor), Get(decors, WorldCatalog.StandInCountry(country)));
 
         public bool IsDecorWide(int country)

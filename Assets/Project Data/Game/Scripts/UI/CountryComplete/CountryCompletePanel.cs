@@ -93,6 +93,7 @@ namespace Watermelon
                                NextCountryColor + ">" + nextNameText + "</color>";
                 nextName.text = nextNameText;
                 SetSprite(nextLandmark, art != null ? art.GetLandmark(next) : null);
+                ((RectTransform)nextName.transform).anchoredPosition = new Vector2(0f, nextLandmark.enabled ? -335f : -398f);
                 nextCardGroup.SetActive(true);
             }
             else
@@ -173,10 +174,12 @@ namespace Watermelon
             decorRight = Add("Decor Right", null, 300, 322, 140, 140);
             decorRight.rectTransform.localScale = new Vector3(-1f, 1f, 1f);
 
-            countryName = AddText("Country Name", "COUNTRY", new Color32(255, 214, 60, 255), 96f, 0, 322, 640, 104);
-            Outline(countryName, new Color32(110, 40, 10, 255), 0.28f);
+            landmark = Add("Landmark", null, 0, 150, 540, 400);
 
-            landmark = Add("Landmark", null, 0, 165, 560, 420);
+            // Drawn after the landmark so the picture never covers it: gold with a dark
+            // outline and a soft shadow, readable on the cream panel and over the picture.
+            countryName = AddText("Country Name", "COUNTRY", new Color32(255, 200, 40, 255), 96f, 0, 322, 680, 108);
+            Outline(countryName, new Color32(120, 36, 8, 255), 0.3f);
 
             Add("Ribbon", Art(a => a.ribbon), 0, -28, 880, 293);
             Add("Flowers Left", Art(a => a.flowersLeft), -390, -35, 200, 200);
@@ -198,8 +201,8 @@ namespace Watermelon
             nextCardGroup = card.gameObject;
             AddTo(card, "Card", Art(a => a.nextCard), 0, -398, 560, 300, preserveAspect: false);
             nextLandmark = AddTo(card, "Next Landmark", null, 0, -440, 330, 248);
-            nextName = AddTextTo(card, "Next Name", "NEXT", new Color32(190, 30, 40, 255), 70f, 0, -335, 380, 78);
-            Outline(nextName, Color.white, 0.25f);
+            nextName = AddTextTo(card, "Next Name", "NEXT", new Color32(200, 30, 40, 255), 70f, 0, -335, 420, 80);
+            Outline(nextName, Color.white, 0.3f);
             AddTo(card, "Next Label", Art(a => a.nextLabel), 0, -258, 320, 107);
 
             Button continueButton = AddButton(Add("Continue Button", Art(a => a.continueButton), 0, -606, 420, 140), Continue);
@@ -257,10 +260,20 @@ namespace Watermelon
 
         private static void Outline(TMP_Text text, Color color, float width)
         {
-            // Runtime material instance: only this text gets the outline.
-            text.fontMaterial.EnableKeyword("OUTLINE_ON");
-            text.outlineColor = color;
-            text.outlineWidth = width;
+            // Own material (only this text): outline plus a soft dark shadow underneath. The
+            // shader ratios must be refreshed, or TMP keeps the old padding and the outline
+            // is clipped away (which is why the name looked flat before).
+            var material = new Material(text.fontSharedMaterial) { name = text.name + " Outline" };
+            material.EnableKeyword("OUTLINE_ON");
+            material.EnableKeyword("UNDERLAY_ON");
+            material.SetColor(ShaderUtilities.ID_OutlineColor, color);
+            material.SetFloat(ShaderUtilities.ID_OutlineWidth, width);
+            material.SetFloat(ShaderUtilities.ID_FaceDilate, width * 0.5f);
+            material.SetColor(ShaderUtilities.ID_UnderlayColor, new Color(0f, 0f, 0f, 0.45f));
+            material.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, -0.6f);
+            material.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 0.35f);
+            ShaderUtilities.UpdateShaderRatios(material);
+            text.fontSharedMaterial = material;
         }
 
         private static Button AddButton(Image image, Action action)

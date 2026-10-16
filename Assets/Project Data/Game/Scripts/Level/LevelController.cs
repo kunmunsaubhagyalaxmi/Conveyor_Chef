@@ -366,6 +366,7 @@ namespace Watermelon.BusStop
                 UnloadStage();
 
             levelElements = new List<LevelElementBehavior>();
+            flyingToDock.Clear();
             highlightedElements = new List<LevelElementBehavior>();
 
             levelWidth = loadedLevelData.Width;
@@ -528,13 +529,22 @@ public static void MarkLevelCompleted(int levelIndex, int starsEarned)
             levelTutorial.OnElementClicked(levelElementBehavior, elementPosition);
         }
 
+        // Dishes that were tapped and are still flying to the tray. A dish only takes its spot
+        // when it lands, so taps must count these too: otherwise quick taps with 6 spots taken
+        // all passed the check and the extras landed on a full tray and were lost.
+        private static readonly HashSet<BaseCharacterBehavior> flyingToDock = new HashSet<BaseCharacterBehavior>();
+
         public static bool SubmitIsAllowed()
         {
-            return !Dock.IsFilled;
+            if (Dock.IsFilled)
+                return false;
+            flyingToDock.RemoveWhere(b => b == null || !b.gameObject.activeInHierarchy);
+            return Dock.OccupiedCount + flyingToDock.Count < Dock.Capacity;
         }
 
         public static void OnElementSubmittedToSlot(BaseCharacterBehavior blockElementBehavior, bool instant)
         {
+            flyingToDock.Remove(blockElementBehavior);
             if (!Dock.IsFilled)
             {
                 levelElements.Remove(blockElementBehavior);
@@ -545,6 +555,7 @@ public static void MarkLevelCompleted(int levelIndex, int starsEarned)
 
         public static void SubmitElement(BaseCharacterBehavior levelElementBehavior, ElementPosition elementPosition)
         {
+            flyingToDock.Add(levelElementBehavior);
             LevelElement.Type elementType = levelElementBehavior.LevelElement.ElementType;
 
             levelElementBehavior.MarkAsSubmitted();

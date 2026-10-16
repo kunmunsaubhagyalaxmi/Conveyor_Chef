@@ -26,9 +26,9 @@ namespace Watermelon
         private const float RowSpacing = 10f;
         private const float LargeCardHeight = 96f;
         private const float MediumCardHeight = 92f;
-        private const float StackedCardHeight = 118f;
+        private const float StackedCardHeight = 128f;
         private const float IconOverscale = 1.1f;          // dish pictures are ~80% food, 20% empty edge
-        private const float StackedIconOverscale = 1.15f;
+        private const float StackedIconOverscale = 1.0f;     // two columns: the dish must leave room for the count
 
         private enum Style { Large, Medium, Stacked }
 
@@ -121,8 +121,8 @@ namespace Watermelon
 
             if (style == Style.Stacked)
             {
-                // Big dish in the upper part, count on its own line below.
-                const float textHeight = 30f;
+                // Dish in the upper part, count on its own line below (tall enough to read).
+                const float textHeight = 40f;
                 const float inset = 4f;
                 float slot = Mathf.Min(cell.x - inset * 2f, cell.y - textHeight - inset * 2f);
                 float iconSize = slot * StackedIconOverscale;
@@ -141,7 +141,7 @@ namespace Watermelon
                     text.anchorMin = new Vector2(0f, 0f);
                     text.anchorMax = new Vector2(1f, 0f);
                     text.pivot = new Vector2(0.5f, 0f);
-                    text.anchoredPosition = new Vector2(0f, 7f);
+                    text.anchoredPosition = new Vector2(0f, 4f);
                     text.sizeDelta = new Vector2(-inset * 2f, textHeight);
                 }
             }
@@ -175,12 +175,23 @@ namespace Watermelon
             if (icon != null)
                 icon.SetSiblingIndex(0);
 
-            // Autosize may shrink far enough that the count never spills past the card.
+            // The count is drawn above the dish so the dish never covers it.
+            if (text != null)
+                text.SetAsLastSibling();
+            Transform check = item.Find("Completed Check");
+            if (check != null)
+                check.SetAsLastSibling();
+
+            // Autosize may shrink far enough that the count never spills past the card, but
+            // never below a size that is easy to read.
             TextMeshProUGUI label = text != null ? text.GetComponent<TextMeshProUGUI>() : null;
             if (label != null)
             {
                 label.enableAutoSizing = true;
-                label.fontSizeMin = 12f;
+                label.fontSizeMin = style == Style.Stacked ? 22f : 16f;
+                label.fontSizeMax = style == Style.Stacked ? 34f : 40f;
+                label.fontStyle = FontStyles.Bold;
+                label.color = new Color32(92, 52, 24, 255);
                 label.alignment = TextAlignmentOptions.Center;
                 label.overflowMode = TextOverflowModes.Overflow;
             }

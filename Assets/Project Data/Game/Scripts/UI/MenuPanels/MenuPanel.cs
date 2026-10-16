@@ -116,15 +116,24 @@ namespace Watermelon
 
         #region Messages and rewards
 
-        /// <summary>Short message that rises and fades above the panel.</summary>
-        protected void Toast(string message, Color? color = null)
+        /// <summary>
+        /// Short message that rises and fades above the panel, on a dark pill so it reads over
+        /// any card. <paramref name="color"/> tints the outline; <paramref name="face"/> the letters.
+        /// </summary>
+        protected void Toast(string message, Color? color = null, Color? face = null)
         {
             if (toastRoot == null)
                 return;
 
-            TextMeshProUGUI text = MenuUI.OutlinedText("Toast", toastRoot, message, 54f, color ?? new Color32(60, 40, 20, 255));
-            MenuUI.Place(text.rectTransform, Vector2.zero, new Vector2(900f, 90f));
-            StartCoroutine(FloatAway(text));
+            Image pill = MenuUI.Image("Toast", toastRoot, MenuUI.Rounded(40, 4, new Color32(48, 28, 14, 235), new Color32(255, 200, 70, 255)), null, false);
+            pill.raycastTarget = false;
+            MenuUI.Place(pill.rectTransform, Vector2.zero, new Vector2(720f, 104f));
+            TextMeshProUGUI text = MenuUI.OutlinedText("Text", pill.transform, message, 50f, color ?? new Color32(30, 18, 8, 255),
+                TextAlignmentOptions.Center, face ?? Color.white);
+            MenuUI.Stretch(text.rectTransform, 24f, 8f, 24f, 8f);
+            CanvasGroup group = pill.gameObject.AddComponent<CanvasGroup>();
+            group.blocksRaycasts = false;
+            StartCoroutine(FloatAway(pill.rectTransform, group));
         }
 
         protected static bool Spend(CurrencyType currency, int amount)
@@ -157,7 +166,8 @@ namespace Watermelon
             }
 
             try { AudioController.PlaySound(AudioController.Sounds.completeSound); } catch { }
-            Toast("+" + amount.ToString("N0") + (currency == CurrencyType.Coins ? " COINS" : " DIAMONDS"), new Color32(40, 110, 30, 255));
+            Toast("+" + amount.ToString("N0") + (currency == CurrencyType.Coins ? " COINS" : " DIAMONDS"), new Color32(30, 18, 8, 255),
+                currency == CurrencyType.Coins ? new Color32(255, 214, 70, 255) : new Color32(120, 220, 255, 255));
             UpdateCurrencies();
         }
 
@@ -269,22 +279,22 @@ namespace Watermelon
             popInRoutine = null;
         }
 
-        private IEnumerator FloatAway(TextMeshProUGUI text)
+        private IEnumerator FloatAway(RectTransform rect, CanvasGroup group)
         {
-            const float duration = 1.1f;
+            const float duration = 1.3f;
             float t = 0f;
-            RectTransform rect = text.rectTransform;
-            while (t < duration && text != null)
+            while (t < duration && rect != null)
             {
                 t += Time.unscaledDeltaTime;
                 float k = t / duration;
                 rect.anchoredPosition = new Vector2(0f, 140f * k);
-                text.alpha = 1f - Mathf.Clamp01((k - 0.5f) * 2f);
+                rect.localScale = Vector3.one * (k < 0.12f ? Mathf.Lerp(0.7f, 1f, k / 0.12f) : 1f);
+                group.alpha = 1f - Mathf.Clamp01((k - 0.6f) * 2.5f);
                 yield return null;
             }
 
-            if (text != null)
-                Destroy(text.gameObject);
+            if (rect != null)
+                Destroy(rect.gameObject);
         }
 
         private Vector2 fittedScreen;

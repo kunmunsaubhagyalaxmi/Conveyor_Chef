@@ -22,6 +22,20 @@ namespace Watermelon.BusStop
 
         /// <summary>The tray's spots, left to right.</summary>
         public static IReadOnlyList<SlotBehavior> Slots => slots;
+
+        /// <summary>Spots the tray has (7) and how many hold a dish.</summary>
+        public int Capacity => slots.Count;
+        public int OccupiedCount
+        {
+            get
+            {
+                int count = 0;
+                for (int i = 0; i < slots.Count; i++)
+                    if (slots[i].IsOccupied)
+                        count++;
+                return count;
+            }
+        }
         public bool IsEmpty => !slots[0].IsOccupied;
 
         private TweenCase delayTweenCase;

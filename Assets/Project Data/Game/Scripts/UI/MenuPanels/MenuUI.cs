@@ -71,11 +71,11 @@ namespace Watermelon
             return text;
         }
 
-        /// <summary>White text with a dark outline, for titles and button labels.</summary>
+        /// <summary>Text with an outline (white face by default), for titles, labels and buttons.</summary>
         public static TextMeshProUGUI OutlinedText(string name, Transform parent, string value, float size, Color outline,
-            TextAlignmentOptions alignment = TextAlignmentOptions.Center)
+            TextAlignmentOptions alignment = TextAlignmentOptions.Center, Color? face = null)
         {
-            TextMeshProUGUI text = Text(name, parent, value, size, Color.white, alignment);
+            TextMeshProUGUI text = Text(name, parent, value, size, face ?? Color.white, alignment);
             Material material = GetOutlineMaterial(outline);
             if (material != null)
                 text.fontSharedMaterial = material;
@@ -94,8 +94,9 @@ namespace Watermelon
             Material material = new Material(Font.material) { name = "Menu Outline " + key };
             material.EnableKeyword("OUTLINE_ON");
             material.SetColor("_OutlineColor", outline);
-            material.SetFloat("_OutlineWidth", 0.2f);
-            material.SetFloat("_FaceDilate", 0.15f);
+            // thick enough that white labels stay readable on light buttons
+            material.SetFloat("_OutlineWidth", 0.27f);
+            material.SetFloat("_FaceDilate", 0.2f);
             // Without the ratio update TMP keeps the old padding and clips the outline away.
             ShaderUtilities.UpdateShaderRatios(material);
             outlineMaterials[key] = material;
@@ -231,7 +232,9 @@ namespace Watermelon
 
             if (!string.IsNullOrEmpty(label))
             {
-                TextMeshProUGUI text = OutlinedText("Value", trackRect, label, 30f, new Color32(70, 45, 20, 255));
+                // dark numbers with a cream edge: readable on the green fill and the cream track
+                TextMeshProUGUI text = OutlinedText("Value", trackRect, label, 30f, new Color32(255, 248, 230, 255),
+                    TextAlignmentOptions.Center, new Color32(70, 40, 16, 255));
                 Stretch(text.rectTransform, 6f, 2f, 6f, 2f);
             }
 
