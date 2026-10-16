@@ -28,7 +28,9 @@ namespace Watermelon.BusStop
             {
                 for (int i = 0; i < checkmarks.Length; i++)
                 {
-                    if (i < requiredAmount)
+                    // Checkmarks without a picture (the current card art) would draw as pale
+                    // white squares over the count, so they stay hidden.
+                    if (i < requiredAmount && checkmarks[i].sprite != null)
                     {
                         checkmarks[i].gameObject.SetActive(true);
                         checkmarks[i].color = new Color(1, 1, 1, 0.3f); // Dim/uncompleted
