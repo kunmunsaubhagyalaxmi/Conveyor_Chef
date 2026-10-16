@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: India_16
   m_EditorClassIdentifier: 
   elementsData:
-  - elementType: 12
+  - elementType: 1
     elementPosition:
       x: 0
       y: 0
@@ -31,122 +31,122 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 0
     elementPosition:
       x: 3
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 1
     elementPosition:
       x: 4
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 0
     elementPosition:
       x: 0
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 0
     elementPosition:
       x: 1
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 0
     elementPosition:
       x: 2
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 0
     elementPosition:
       x: 3
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 12
+  - elementType: 13
     elementPosition:
       x: 4
       y: 1
-    specialEffectType: 0
-    temp: 0
-  - elementType: 1
-    elementPosition:
-      x: 0
-      y: 2
-    specialEffectType: 0
-    temp: 0
-  - elementType: 10
-    elementPosition:
-      x: 1
-      y: 2
-    specialEffectType: 0
-    temp: 0
-  - elementType: 12
-    elementPosition:
-      x: 2
-      y: 2
-    specialEffectType: 0
-    temp: 0
-  - elementType: 16
-    elementPosition:
-      x: 3
-      y: 2
-    specialEffectType: 0
-    temp: 0
-  - elementType: 1
-    elementPosition:
-      x: 4
-      y: 2
-    specialEffectType: 0
-    temp: 0
-  - elementType: 12
-    elementPosition:
-      x: 0
-      y: 3
-    specialEffectType: 0
-    temp: 0
-  - elementType: 10
-    elementPosition:
-      x: 1
-      y: 3
-    specialEffectType: 0
-    temp: 0
-  - elementType: 19
-    elementPosition:
-      x: 2
-      y: 3
-    specialEffectType: 0
-    temp: 0
-  - elementType: 16
-    elementPosition:
-      x: 3
-      y: 3
-    specialEffectType: 0
-    temp: 0
-  - elementType: 12
-    elementPosition:
-      x: 4
-      y: 3
-    specialEffectType: 0
-    temp: 0
-  - elementType: 1
-    elementPosition:
-      x: 0
-      y: 4
-    specialEffectType: 0
-    temp: 0
-  - elementType: 19
-    elementPosition:
-      x: 1
-      y: 4
     specialEffectType: 0
     temp: 0
   - elementType: 100
     elementPosition:
+      x: 0
+      y: 2
+    specialEffectType: 0
+    temp: 0
+  - elementType: 16
+    elementPosition:
+      x: 1
+      y: 2
+    specialEffectType: 0
+    temp: 0
+  - elementType: 16
+    elementPosition:
+      x: 2
+      y: 2
+    specialEffectType: 0
+    temp: 0
+  - elementType: 19
+    elementPosition:
+      x: 3
+      y: 2
+    specialEffectType: 0
+    temp: 0
+  - elementType: 13
+    elementPosition:
+      x: 4
+      y: 2
+    specialEffectType: 0
+    temp: 0
+  - elementType: 15
+    elementPosition:
+      x: 0
+      y: 3
+    specialEffectType: 0
+    temp: 0
+  - elementType: 19
+    elementPosition:
+      x: 1
+      y: 3
+    specialEffectType: 0
+    temp: 0
+  - elementType: 16
+    elementPosition:
+      x: 2
+      y: 3
+    specialEffectType: 0
+    temp: 0
+  - elementType: 100
+    elementPosition:
+      x: 3
+      y: 3
+    specialEffectType: 0
+    temp: 0
+  - elementType: 11
+    elementPosition:
+      x: 4
+      y: 3
+    specialEffectType: 0
+    temp: 0
+  - elementType: 10
+    elementPosition:
+      x: 0
+      y: 4
+    specialEffectType: 0
+    temp: 0
+  - elementType: 15
+    elementPosition:
+      x: 1
+      y: 4
+    specialEffectType: 0
+    temp: 0
+  - elementType: 13
+    elementPosition:
       x: 2
       y: 4
     specialEffectType: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 11
     elementPosition:
       x: 4
       y: 4
@@ -165,14 +165,19 @@ MonoBehaviour:
     temp: 0
   spawnerData:
   - elementPosition:
-      x: 2
-      y: 4
+      x: 0
+      y: 2
     direction: 1
-    spawnQueue: 0a0000000a0000000a0000000a000000
+    spawnQueue: 0b0000000b0000000f0000000a0000000b000000
+  - elementPosition:
+      x: 3
+      y: 3
+    direction: 2
+    spawnQueue: 0b0000000d0000000d0000000d0000000a000000
   tutorialSteps: []
-  busSpawnQueue: 0c000000100000000a000000130000000c0000000a0000000a000000
+  busSpawnQueue: 0d00000010000000130000000f0000000a0000000b0000000b0000000d000000
   width: 5
   height: 5
   coinsReward: 20
   useInRandomizer: 1
-  note: 7  SPA x1
+  note: 8  SPA x2

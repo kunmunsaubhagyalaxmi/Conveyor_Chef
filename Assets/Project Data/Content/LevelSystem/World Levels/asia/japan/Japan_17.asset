@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Japan_17
   m_EditorClassIdentifier: 
   elementsData:
-  - elementType: 0
+  - elementType: 1
     elementPosition:
       x: 0
       y: 0
@@ -37,79 +37,79 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 0
+  - elementType: 17
     elementPosition:
       x: 4
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 0
+  - elementType: 1
     elementPosition:
       x: 5
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 100
     elementPosition:
       x: 0
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 12
     elementPosition:
       x: 1
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 12
     elementPosition:
       x: 2
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 18
+  - elementType: 19
     elementPosition:
       x: 3
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 17
     elementPosition:
       x: 4
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 19
     elementPosition:
       x: 5
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 17
     elementPosition:
       x: 0
+      y: 2
+    specialEffectType: 0
+    temp: 0
+  - elementType: 17
+    elementPosition:
+      x: 1
       y: 2
     specialEffectType: 0
     temp: 0
   - elementType: 1
     elementPosition:
-      x: 1
-      y: 2
-    specialEffectType: 0
-    temp: 0
-  - elementType: 11
-    elementPosition:
       x: 2
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 11
+  - elementType: 1
     elementPosition:
       x: 3
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 12
     elementPosition:
       x: 4
       y: 2
@@ -121,37 +121,37 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 15
     elementPosition:
       x: 0
-      y: 3
-    specialEffectType: 0
-    temp: 0
-  - elementType: 16
-    elementPosition:
-      x: 1
-      y: 3
-    specialEffectType: 0
-    temp: 0
-  - elementType: 13
-    elementPosition:
-      x: 2
       y: 3
     specialEffectType: 0
     temp: 0
   - elementType: 18
     elementPosition:
+      x: 1
+      y: 3
+    specialEffectType: 0
+    temp: 0
+  - elementType: 18
+    elementPosition:
+      x: 2
+      y: 3
+    specialEffectType: 0
+    temp: 0
+  - elementType: 15
+    elementPosition:
       x: 3
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 19
     elementPosition:
       x: 4
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 15
     elementPosition:
       x: 5
       y: 3
@@ -163,25 +163,25 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 1
     elementPosition:
       x: 1
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 15
     elementPosition:
       x: 2
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 15
     elementPosition:
       x: 3
       y: 4
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 1
     elementPosition:
       x: 4
       y: 4
@@ -193,11 +193,16 @@ MonoBehaviour:
       y: 4
     specialEffectType: 0
     temp: 0
-  spawnerData: []
+  spawnerData:
+  - elementPosition:
+      x: 0
+      y: 1
+    direction: 2
+    spawnQueue: 11000000110000000f000000
   tutorialSteps: []
-  busSpawnQueue: 0b0000000d0000000d0000000b0000001000000012000000
+  busSpawnQueue: 110000000c0000001300000011000000120000000f0000000f000000
   width: 6
   height: 5
   coinsReward: 20
   useInRandomizer: 1
-  note: 6
+  note: 7  SPA x1

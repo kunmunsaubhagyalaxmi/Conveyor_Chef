@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: China_07
   m_EditorClassIdentifier: 
   elementsData:
-  - elementType: 0
+  - elementType: 1
     elementPosition:
       x: 0
       y: 0
@@ -49,79 +49,79 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 0
+  - elementType: 1
     elementPosition:
       x: 6
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 17
+  - elementType: 10
     elementPosition:
       x: 0
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 17
+  - elementType: 1
     elementPosition:
       x: 1
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 13
+  - elementType: 0
     elementPosition:
       x: 2
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 17
+  - elementType: 0
     elementPosition:
       x: 3
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 0
     elementPosition:
       x: 4
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 17
+  - elementType: 1
     elementPosition:
       x: 5
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 16
     elementPosition:
       x: 6
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 16
     elementPosition:
       x: 0
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 17
+  - elementType: 10
     elementPosition:
       x: 1
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 14
     elementPosition:
       x: 2
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 0
     elementPosition:
       x: 3
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 16
     elementPosition:
       x: 4
       y: 2
@@ -133,101 +133,64 @@ MonoBehaviour:
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 18
     elementPosition:
       x: 6
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 18
     elementPosition:
       x: 0
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 16
     elementPosition:
       x: 1
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 18
     elementPosition:
       x: 2
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 14
     elementPosition:
       x: 3
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 16
     elementPosition:
       x: 4
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 17
+  - elementType: 100
     elementPosition:
       x: 5
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 14
     elementPosition:
       x: 6
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 1
-    elementPosition:
-      x: 0
-      y: 4
-    specialEffectType: 0
-    temp: 0
-  - elementType: 13
-    elementPosition:
-      x: 1
-      y: 4
-    specialEffectType: 0
-    temp: 0
-  - elementType: 1
-    elementPosition:
-      x: 2
-      y: 4
-    specialEffectType: 0
-    temp: 0
-  - elementType: 1
-    elementPosition:
-      x: 3
-      y: 4
-    specialEffectType: 0
-    temp: 0
-  - elementType: 1
-    elementPosition:
-      x: 4
-      y: 4
-    specialEffectType: 0
-    temp: 0
-  - elementType: 13
-    elementPosition:
+  spawnerData:
+  - elementPosition:
       x: 5
-      y: 4
-    specialEffectType: 0
-    temp: 0
-  - elementType: 1
-    elementPosition:
-      x: 6
-      y: 4
-    specialEffectType: 0
-    temp: 0
-  spawnerData: []
+      y: 3
+    direction: 0
+    spawnQueue: 0a0000000a000000100000000a000000
   tutorialSteps: []
-  busSpawnQueue: 0a000000110000000a000000110000000d000000
+  busSpawnQueue: 0a0000001000000010000000120000000e0000000a000000
   width: 7
-  height: 5
+  height: 4
   coinsReward: 20
   useInRandomizer: 1
-  note: 5
+  note: 6  SPA x1

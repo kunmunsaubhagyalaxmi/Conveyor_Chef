@@ -18,126 +18,179 @@ MonoBehaviour:
       x: 0
       y: 0
     specialEffectType: 0
-    temp: 1
-  - elementType: 19
+    temp: 0
+  - elementType: 15
     elementPosition:
       x: 0
       y: 1
     specialEffectType: 0
-    temp: 2
-  - elementType: 13
+    temp: 0
+  - elementType: 12
     elementPosition:
       x: 0
       y: 2
-    specialEffectType: 1
-    temp: 3
+    specialEffectType: 0
+    temp: 0
   - elementType: 12
     elementPosition:
       x: 0
       y: 3
     specialEffectType: 0
-    temp: 4
-  - elementType: 18
+    temp: 0
+  - elementType: 17
     elementPosition:
       x: 0
       y: 4
     specialEffectType: 0
-    temp: 5
+    temp: 0
+  - elementType: 1
+    elementPosition:
+      x: 0
+      y: 5
+    specialEffectType: 0
+    temp: 0
+  - elementType: 19
+    elementPosition:
+      x: 0
+      y: 6
+    specialEffectType: 0
+    temp: 0
   - elementType: 0
     elementPosition:
       x: 1
       y: 0
     specialEffectType: 0
-    temp: 1
+    temp: 0
+  - elementType: 0
+    elementPosition:
+      x: 1
+      y: 1
+    specialEffectType: 0
+    temp: 0
+  - elementType: 17
+    elementPosition:
+      x: 1
+      y: 2
+    specialEffectType: 0
+    temp: 0
   - elementType: 13
     elementPosition:
       x: 1
-      y: 1
-    specialEffectType: 0
-    temp: 2
-  - elementType: 18
-    elementPosition:
-      x: 1
-      y: 2
-    specialEffectType: 1
-    temp: 3
-  - elementType: 1
-    elementPosition:
-      x: 1
       y: 3
     specialEffectType: 0
-    temp: -1
-  - elementType: 1
+    temp: 0
+  - elementType: 15
     elementPosition:
       x: 1
       y: 4
     specialEffectType: 0
-    temp: -1
+    temp: 0
+  - elementType: 15
+    elementPosition:
+      x: 1
+      y: 5
+    specialEffectType: 0
+    temp: 0
+  - elementType: 19
+    elementPosition:
+      x: 1
+      y: 6
+    specialEffectType: 0
+    temp: 0
   - elementType: 0
     elementPosition:
       x: 2
       y: 0
     specialEffectType: 0
-    temp: 1
-  - elementType: 18
+    temp: 0
+  - elementType: 12
     elementPosition:
       x: 2
       y: 1
     specialEffectType: 0
-    temp: 2
-  - elementType: 12
+    temp: 0
+  - elementType: 100
     elementPosition:
       x: 2
       y: 2
-    specialEffectType: 1
-    temp: 3
-  - elementType: 1
+    specialEffectType: 0
+    temp: 0
+  - elementType: 12
     elementPosition:
       x: 2
       y: 3
     specialEffectType: 0
-    temp: -1
-  - elementType: 1
+    temp: 0
+  - elementType: 17
     elementPosition:
       x: 2
       y: 4
+    specialEffectType: 1
+    temp: 0
+  - elementType: 10
+    elementPosition:
+      x: 2
+      y: 5
     specialEffectType: 0
-    temp: -1
+    temp: 0
+  - elementType: 10
+    elementPosition:
+      x: 2
+      y: 6
+    specialEffectType: 0
+    temp: 0
   - elementType: 0
     elementPosition:
       x: 3
       y: 0
     specialEffectType: 0
-    temp: 1
-  - elementType: 13
+    temp: 0
+  - elementType: 12
     elementPosition:
       x: 3
       y: 1
     specialEffectType: 0
-    temp: 2
-  - elementType: 19
+    temp: 0
+  - elementType: 12
     elementPosition:
       x: 3
       y: 2
-    specialEffectType: 1
-    temp: 3
-  - elementType: 19
+    specialEffectType: 0
+    temp: 0
+  - elementType: 15
     elementPosition:
       x: 3
       y: 3
     specialEffectType: 0
-    temp: 4
-  - elementType: 12
+    temp: 0
+  - elementType: 15
     elementPosition:
       x: 3
       y: 4
     specialEffectType: 0
-    temp: 5
-  spawnerData: []
+    temp: 0
+  - elementType: 1
+    elementPosition:
+      x: 3
+      y: 5
+    specialEffectType: 0
+    temp: 0
+  - elementType: 10
+    elementPosition:
+      x: 3
+      y: 6
+    specialEffectType: 0
+    temp: 0
+  spawnerData:
+  - elementPosition:
+      x: 2
+      y: 2
+    direction: 1
+    spawnQueue: 130000000d0000000f0000000d000000
   tutorialSteps: []
-  busSpawnQueue: 130000000d000000120000000c000000
+  busSpawnQueue: 0c0000000f0000000c000000110000000d000000130000000f0000000a000000
   width: 4
-  height: 5
+  height: 7
   coinsReward: 20
   useInRandomizer: 1
-  note: 4  CRA x4
+  note: 8  SPA x1  CRA x1

@@ -37,91 +37,127 @@ MonoBehaviour:
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 0
     elementPosition:
       x: 4
       y: 0
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 0
+    elementPosition:
+      x: 5
+      y: 0
+    specialEffectType: 0
+    temp: 0
+  - elementType: 1
+    elementPosition:
+      x: 6
+      y: 0
+    specialEffectType: 0
+    temp: 0
+  - elementType: 11
     elementPosition:
       x: 0
       y: 1
     specialEffectType: 0
     temp: 0
-  - elementType: 0
+  - elementType: 12
     elementPosition:
       x: 1
-      y: 1
-    specialEffectType: 0
-    temp: 0
-  - elementType: 0
-    elementPosition:
-      x: 2
-      y: 1
-    specialEffectType: 0
-    temp: 0
-  - elementType: 16
-    elementPosition:
-      x: 3
-      y: 1
-    specialEffectType: 0
-    temp: 0
-  - elementType: 16
-    elementPosition:
-      x: 4
       y: 1
     specialEffectType: 0
     temp: 0
   - elementType: 18
     elementPosition:
+      x: 2
+      y: 1
+    specialEffectType: 0
+    temp: 0
+  - elementType: 0
+    elementPosition:
+      x: 3
+      y: 1
+    specialEffectType: 0
+    temp: 0
+  - elementType: 12
+    elementPosition:
+      x: 4
+      y: 1
+    specialEffectType: 0
+    temp: 0
+  - elementType: 15
+    elementPosition:
+      x: 5
+      y: 1
+    specialEffectType: 0
+    temp: 0
+  - elementType: 11
+    elementPosition:
+      x: 6
+      y: 1
+    specialEffectType: 0
+    temp: 0
+  - elementType: 10
+    elementPosition:
       x: 0
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 11
     elementPosition:
       x: 1
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 11
     elementPosition:
       x: 2
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 1
+  - elementType: 12
     elementPosition:
       x: 3
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 18
+  - elementType: 14
     elementPosition:
       x: 4
       y: 2
     specialEffectType: 0
     temp: 0
-  - elementType: 19
+  - elementType: 14
+    elementPosition:
+      x: 5
+      y: 2
+    specialEffectType: 0
+    temp: 0
+  - elementType: 11
+    elementPosition:
+      x: 6
+      y: 2
+    specialEffectType: 0
+    temp: 0
+  - elementType: 14
     elementPosition:
       x: 0
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 14
     elementPosition:
       x: 1
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 100
     elementPosition:
       x: 2
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 10
+  - elementType: 1
     elementPosition:
       x: 3
       y: 3
@@ -133,46 +169,33 @@ MonoBehaviour:
       y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 16
+  - elementType: 11
     elementPosition:
-      x: 0
-      y: 4
+      x: 5
+      y: 3
     specialEffectType: 0
     temp: 0
-  - elementType: 18
+  - elementType: 14
     elementPosition:
-      x: 1
-      y: 4
-    specialEffectType: 0
-    temp: 0
-  - elementType: 19
-    elementPosition:
-      x: 2
-      y: 4
-    specialEffectType: 0
-    temp: 0
-  - elementType: 19
-    elementPosition:
-      x: 3
-      y: 4
-    specialEffectType: 0
-    temp: 0
-  - elementType: 10
-    elementPosition:
-      x: 4
-      y: 4
+      x: 6
+      y: 3
     specialEffectType: 0
     temp: 0
   spawnerData:
   - elementPosition:
-      x: 4
+      x: 2
       y: 3
     direction: 3
-    spawnQueue: 120000001200000012000000
+    spawnQueue: 0a000000120000000f00000012000000
+  - elementPosition:
+      x: 4
+      y: 3
+    direction: 0
+    spawnQueue: 0e0000000a0000000f000000
   tutorialSteps: []
-  busSpawnQueue: 10000000130000000a000000120000001200000010000000
-  width: 5
-  height: 5
+  busSpawnQueue: 0b0000000c0000000e0000000b000000120000000a0000000f0000000e000000
+  width: 7
+  height: 4
   coinsReward: 20
   useInRandomizer: 1
-  note: 6  SPA x1
+  note: 8  SPA x2
