@@ -7,8 +7,10 @@ namespace Watermelon
     /// <summary>
     /// Lays out the ORDERS panel for any number of orders (levels use 1-7), always inside
     /// the same content width so nothing reaches the frame's border:
-    ///   1-4 orders: one column of cards, a big dish on the left and the count on the right
-    ///   5-7 orders: two columns of cards, a big dish with the count underneath
+    ///   1-4 orders:  one column of cards, a big dish on the left and the count on the right
+    ///   5-6 orders:  two columns of cards, a big dish with the count underneath
+    ///   7-10 orders: three columns of smaller cards (thinner card border), the panel a
+    ///                little wider, so 10 orders still fit in 4 short rows
     /// The dish pictures have empty space around the food, so the icon is drawn a little larger
     /// than its slot (IconOverscale) to make the food itself fill the card. Cards never shrink
     /// with more orders; the frame grows instead, so the dishes stay easy to see.
@@ -22,15 +24,27 @@ namespace Watermelon
         [SerializeField] float contentWidth = 232f;
 
         private const int MaxSingleColumnItems = 4;
+        private const int MaxTwoColumnItems = 6;
+        private const float CompactContentWidth = 330f;
+        private const float CompactCardHeight = 104f;
+        private const float CardPixelsPerUnit = 4.5f;      // the card's normal border scale
+        private const float CompactCardPixelsPerUnit = 7f; // thinner border on small cards
         private const float ColumnSpacing = 10f;
         private const float RowSpacing = 10f;
-        private const float LargeCardHeight = 96f;
-        private const float MediumCardHeight = 92f;
-        private const float StackedCardHeight = 128f;
+        private const float LargeCardHeight = 112f;
+        private const float MediumCardHeight = 106f;
+        private const float StackedCardHeight = 148f;
+
+        // The card picture (order_item_slot.png) has a transparent border: the visible yellow
+        // card starts this far inside the item's box. Dish and count are laid out inside the
+        // visible card, so nothing pokes out of it.
+        private const float CardInsetX = 15f;
+        private const float CardInsetY = 16f;
+        private const float CardRim = 7f;                  // gold edge inside that, around the cream
         private const float IconOverscale = 1.1f;          // dish pictures are ~80% food, 20% empty edge
         private const float StackedIconOverscale = 1.0f;     // two columns: the dish must leave room for the count
 
-        private enum Style { Large, Medium, Stacked }
+        private enum Style { Large, Medium, Stacked, Compact }
 
         private GridLayoutGroup grid;
         private LayoutElement layoutElement;
@@ -84,11 +98,22 @@ namespace Watermelon
         {
             lastCount = count;
 
-            Style style = count > MaxSingleColumnItems ? Style.Stacked
+            Style style = count > MaxTwoColumnItems ? Style.Compact
+                : count > MaxSingleColumnItems ? Style.Stacked
                 : count == MaxSingleColumnItems ? Style.Medium
                 : Style.Large;
 
-            if (style == Style.Stacked)
+            float width = style == Style.Compact ? CompactContentWidth : contentWidth;
+            layoutElement.minWidth = width;
+            layoutElement.preferredWidth = width;
+
+            if (style == Style.Compact)
+            {
+                grid.constraintCount = 3;
+                grid.spacing = new Vector2(ColumnSpacing * 0.6f, RowSpacing * 0.6f);
+                grid.cellSize = new Vector2((width - ColumnSpacing * 1.2f) / 3f, CompactCardHeight);
+            }
+            else if (style == Style.Stacked)
             {
                 grid.constraintCount = 2;
                 grid.spacing = new Vector2(ColumnSpacing, RowSpacing);
@@ -112,6 +137,7 @@ namespace Watermelon
         {
             ApplyItemLayout(item, compact ? Style.Stacked : Style.Large,
                 compact ? new Vector2(111f, StackedCardHeight) : new Vector2(232f, LargeCardHeight));
+            // (cell sizes match Relayout: two 111-wide columns, or one 232-wide column)
         }
 
         private static void ApplyItemLayout(Transform item, Style style, Vector2 cell)
@@ -119,12 +145,25 @@ namespace Watermelon
             RectTransform icon = item.Find("Icon") as RectTransform;
             RectTransform text = item.Find("Order Text") as RectTransform;
 
-            if (style == Style.Stacked)
+            // Small cards draw the card picture with a thinner border (and so a thinner
+            // transparent edge); the visible card inside the item's box shrinks or grows with it.
+            Image card = item.GetComponent<Image>();
+            float ppu = style == Style.Compact ? CompactCardPixelsPerUnit : CardPixelsPerUnit;
+            if (card != null && card.type == Image.Type.Sliced)
+                card.pixelsPerUnitMultiplier = ppu;
+            float insetX = CardInsetX * CardPixelsPerUnit / ppu;
+            float insetY = CardInsetY * CardPixelsPerUnit / ppu;
+            float rim = CardRim * CardPixelsPerUnit / ppu;     // gold edge of the card
+            float innerW = cell.x - insetX * 2f;
+            float innerH = cell.y - insetY * 2f;
+
+            if (style == Style.Stacked || style == Style.Compact)
             {
-                // Dish in the upper part, count on its own line below (tall enough to read).
-                const float textHeight = 40f;
-                const float inset = 4f;
-                float slot = Mathf.Min(cell.x - inset * 2f, cell.y - textHeight - inset * 2f);
+                // Dish in the upper part of the visible card, count on its own line below.
+                float textHeight = style == Style.Compact ? 26f : 32f;
+                const float gap = 2f;
+                // the count sits on the cream, just above the gold bottom edge
+                float slot = Mathf.Min(innerW - gap * 2f, innerH - textHeight - rim - gap * 3f);
                 float iconSize = slot * StackedIconOverscale;
 
                 if (icon != null)
@@ -132,7 +171,7 @@ namespace Watermelon
                     icon.anchorMin = new Vector2(0.5f, 1f);
                     icon.anchorMax = new Vector2(0.5f, 1f);
                     icon.pivot = new Vector2(0.5f, 0.5f);
-                    icon.anchoredPosition = new Vector2(0f, -inset - slot * 0.5f);
+                    icon.anchoredPosition = new Vector2(0f, -insetY - gap - slot * 0.5f);
                     icon.sizeDelta = new Vector2(iconSize, iconSize);
                 }
 
@@ -141,15 +180,15 @@ namespace Watermelon
                     text.anchorMin = new Vector2(0f, 0f);
                     text.anchorMax = new Vector2(1f, 0f);
                     text.pivot = new Vector2(0.5f, 0f);
-                    text.anchoredPosition = new Vector2(0f, 4f);
-                    text.sizeDelta = new Vector2(-inset * 2f, textHeight);
+                    text.anchoredPosition = new Vector2(0f, insetY + rim);
+                    text.sizeDelta = new Vector2(-insetX * 2f - 4f, textHeight);
                 }
             }
             else
             {
-                // Big dish on the left (about half the card), count in the rest.
-                const float inset = 4f;
-                float slot = cell.y - inset * 2f;
+                // Dish on the left of the visible card, count in the rest.
+                const float gap = 3f;
+                float slot = innerH - gap * 2f;
                 float iconSize = slot * IconOverscale;
 
                 if (icon != null)
@@ -157,7 +196,7 @@ namespace Watermelon
                     icon.anchorMin = new Vector2(0f, 0.5f);
                     icon.anchorMax = new Vector2(0f, 0.5f);
                     icon.pivot = new Vector2(0.5f, 0.5f);
-                    icon.anchoredPosition = new Vector2(inset + slot * 0.5f + 4f, 0f);
+                    icon.anchoredPosition = new Vector2(insetX + gap + slot * 0.5f + 4f, 0f);
                     icon.sizeDelta = new Vector2(iconSize, iconSize);
                 }
 
@@ -166,14 +205,10 @@ namespace Watermelon
                     text.anchorMin = Vector2.zero;
                     text.anchorMax = Vector2.one;
                     text.pivot = new Vector2(0.5f, 0.5f);
-                    text.offsetMin = new Vector2(inset + slot + 10f, 8f);
-                    text.offsetMax = new Vector2(-inset - 6f, -8f);
+                    text.offsetMin = new Vector2(insetX + gap + slot + 10f, insetY + 4f);
+                    text.offsetMax = new Vector2(-insetX - 6f, -insetY - 4f);
                 }
             }
-
-            // The dish is drawn above the card but below the count and the tick.
-            if (icon != null)
-                icon.SetSiblingIndex(0);
 
             // The count is drawn above the dish so the dish never covers it.
             if (text != null)
@@ -188,8 +223,8 @@ namespace Watermelon
             if (label != null)
             {
                 label.enableAutoSizing = true;
-                label.fontSizeMin = style == Style.Stacked ? 22f : 16f;
-                label.fontSizeMax = style == Style.Stacked ? 34f : 40f;
+                label.fontSizeMin = style == Style.Compact ? 18f : style == Style.Stacked ? 22f : 16f;
+                label.fontSizeMax = style == Style.Compact ? 28f : style == Style.Stacked ? 34f : 40f;
                 label.fontStyle = FontStyles.Bold;
                 label.color = new Color32(92, 52, 24, 255);
                 label.alignment = TextAlignmentOptions.Center;
