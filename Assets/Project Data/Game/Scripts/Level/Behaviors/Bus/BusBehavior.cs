@@ -401,8 +401,14 @@ namespace Watermelon
             if (animator != null)
                 animator.SetTrigger("Start");
             transform.DOMove(position, duration).OnComplete(onReached).SetEasing(Ease.Type.QuadOutIn);
+            // The tray may be gone by then (level left mid-move): Unity's null check covers
+            // a destroyed animator.
             if (animator != null)
-                Tween.DelayedCall(duration - 0.1f, () => animator.SetTrigger("Break"));
+                Tween.DelayedCall(duration - 0.1f, () =>
+                {
+                    if (animator != null && animator.isActiveAndEnabled)
+                        animator.SetTrigger("Break");
+                });
 
             Tween.EndTweenCaseCollection();
         }
