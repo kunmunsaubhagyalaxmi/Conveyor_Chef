@@ -474,7 +474,8 @@ namespace Watermelon.BusStop
             progressFill.fillMethod = Image.FillMethod.Horizontal;
             progressFill.fillOrigin = 0;
             progressFill.fillClockwise = true;
-            progressFill.fillAmount = normalized;
+            // The fill picture has empty margins (its bar runs from 3.4% to 96.6% of the width).
+            progressFill.fillAmount = normalized <= 0f ? 0f : Mathf.Lerp(0.0336f, 0.9664f, normalized);
             progressFill.preserveAspect = false;
             progressFill.raycastTarget = false;
         }

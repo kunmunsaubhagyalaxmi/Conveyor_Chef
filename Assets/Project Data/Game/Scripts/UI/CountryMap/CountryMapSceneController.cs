@@ -480,22 +480,11 @@ namespace Watermelon.BusStop
                 ? Mathf.Clamp01((float)completedLevels / totalLevels)
                 : 0f;
 
-            RectTransform fillRect = progressFill.rectTransform;
-            RectTransform trackRect = fillRect.parent as RectTransform;
-
-            // Derive the full width from the authored track instead of hard-coding it.
-            // With the default layout: 420 track width - (20 * 2) inset = 380.
-            // If the designer adjusts the fill X position or track width in Canvas,
-            // Play Mode respects that layout instead of snapping back.
-            float leftInset = Mathf.Max(0f, fillRect.anchoredPosition.x);
-            float fullWidth = trackRect != null
-                ? Mathf.Max(0f, trackRect.rect.width - (leftInset * 2f))
-                : Mathf.Max(0f, fillRect.sizeDelta.x);
-
-            Vector2 size = fillRect.sizeDelta;
-            size.x = fullWidth;
-            fillRect.sizeDelta = size;
-            progressFill.fillAmount = normalized;
+            // The fill picture is drawn on the same canvas as the track (same size, same empty
+            // margins), so in the scene it covers the track exactly and is revealed from the
+            // left. Its visible bar runs from 6.9% to 93.1% of the picture's width.
+            const float barStart = 150f / 2172f, barEnd = 2022f / 2172f;
+            progressFill.fillAmount = normalized <= 0f ? 0f : Mathf.Lerp(barStart, barEnd, normalized);
 
             progressFill.enabled = normalized > 0f;
         }
