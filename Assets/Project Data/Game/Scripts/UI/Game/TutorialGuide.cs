@@ -213,6 +213,7 @@ namespace Watermelon
         }
 
         private CanvasGroup visibility;
+        private const float ChefWidth = 280f, ChefHeight = 640f;
 
         private void Show(string text, Rect? target, bool interactive, string button = null)
         {
@@ -476,8 +477,8 @@ namespace Watermelon
             chef.preserveAspect = true;
             chef.rectTransform.anchorMin = chef.rectTransform.anchorMax = new Vector2(0f, 0f);
             chef.rectTransform.pivot = new Vector2(0.5f, 1f);
-            chef.rectTransform.anchoredPosition = new Vector2(118f, -2f);
-            chef.rectTransform.sizeDelta = new Vector2(140f, 320f);
+            chef.rectTransform.anchoredPosition = new Vector2(150f, -2f);
+            chef.rectTransform.sizeDelta = new Vector2(ChefWidth, ChefHeight);
 
             // AAGE: the game's green gold-trimmed button with an outlined label (like CONTINUE)
             Image nextImage = Img("Next", bubble.transform, art != null ? art.tutorialButton : null, Color.white);
@@ -510,7 +511,7 @@ namespace Watermelon
             var sr = skipText.rectTransform;
             sr.anchorMin = sr.anchorMax = new Vector2(0f, 0f);
             sr.pivot = new Vector2(0f, 1f);
-            sr.anchoredPosition = new Vector2(205f, -18f);   // beside the chef
+            sr.anchoredPosition = new Vector2(300f, -18f);   // beside the chef
             sr.sizeDelta = new Vector2(300f, 60f);
             skipText.alignment = TextAlignmentOptions.Left;
         }
@@ -573,6 +574,12 @@ namespace Watermelon
             }
             bubble.rectTransform.anchorMin = bubble.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
             bubble.rectTransform.anchoredPosition = new Vector2(0f, y);
+
+            // the chef is big, but always fits between the bubble and the bottom of the screen
+            float bubbleBottom = y - bubble.rectTransform.sizeDelta.y * 0.5f;
+            float room = bubbleBottom - (-root.rect.height * 0.5f) - 20f;
+            float height = Mathf.Clamp(room, ChefHeight * 0.5f, ChefHeight);
+            chef.rectTransform.sizeDelta = new Vector2(ChefWidth * height / ChefHeight, height);
         }
 
         private Vector2 ToLocal(Vector2 screen)
