@@ -29,6 +29,16 @@ namespace Watermelon
             public bool Claimed => PlayerStats.GetFlag("achievement_" + Id);
         }
 
+        /// <summary>Every achievement id (their "claimed" flags are part of the cloud save).</summary>
+        public static IEnumerable<string> Ids
+        {
+            get
+            {
+                foreach (Achievement a in All)
+                    yield return a.Id;
+            }
+        }
+
         protected override string Title => "ACHIEVEMENTS";
         protected override bool ShowCurrencies => true;
 
