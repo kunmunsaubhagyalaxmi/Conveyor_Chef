@@ -17,7 +17,7 @@ namespace Watermelon
     public sealed class ChefXPWidget : MonoBehaviour
     {
         public const string ObjectName = "Chef XP";
-        private const float TrackWidth = 500f;
+        private const float TrackWidth = 420f;
 
                 private const string SpriteFolder = "UI/ChefXP/";
 
@@ -26,8 +26,8 @@ namespace Watermelon
         [SerializeField] private Image face;
         [SerializeField] private TextMeshProUGUI levelText, xpText, gainText;
         [SerializeField] private CanvasGroup group;
-        [SerializeField] private Color gainColor = new Color32(40, 140, 40, 255);
-        [SerializeField] private Color levelUpColor = new Color32(214, 120, 0, 255);
+        [SerializeField] private Color gainColor = new Color32(255, 200, 40, 255);
+        [SerializeField] private Color levelUpColor = new Color32(255, 140, 30, 255);
 
         private MenuPanelArt art;
 
@@ -79,7 +79,11 @@ namespace Watermelon
             StartCoroutine(Play(pending));
         }
 
-        private bool UsesCurrentArt => fill != null && fill.GetComponent<Image>() != null && fill.GetComponent<Image>().type == Image.Type.Filled;
+        // Bumped whenever the look changes, so a bar saved in the scene with an older look is
+        // rebuilt (in the same place).
+        private const int CurrentLayout = 3;
+        [SerializeField] private int layoutVersion;
+        private bool UsesCurrentArt => layoutVersion == CurrentLayout;
 
         private bool IsComplete => fill != null && face != null && levelText != null && xpText != null && gainText != null && group != null;
 
@@ -112,39 +116,66 @@ namespace Watermelon
             var r = (RectTransform)transform;
             r.anchorMin = r.anchorMax = new Vector2(0.5f, 0.5f);
             r.anchoredPosition = position;
-            r.sizeDelta = new Vector2(760f, 120f);
+            r.sizeDelta = new Vector2(740f, 150f);
+            layoutVersion = CurrentLayout;
             group = gameObject.AddComponent<CanvasGroup>();
             group.alpha = 0f;
             group.blocksRaycasts = false;
 
-            // bar: the game's own progress bar art (a matched track + fill pair, same as the
-            // Country Map), the fill revealed from the left
+            // Laid out like the Country Map progress panel (the game's own look): the chef in
+            // the gold ring with the level on a gold badge, the blue/green bar, and the numbers
+            // on a gold-framed badge at the bar's end.
             Image track = Img("Track", r, Art("xp_track"));
-            Place(track.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(45f, -6f), new Vector2(TrackWidth, 104f));
+            Place(track.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-25f, -6f), new Vector2(TrackWidth, 116f));
             fillImage = Img("Fill", track.transform, Art("xp_fill"));
             fillImage.type = Image.Type.Filled;
             fillImage.fillMethod = Image.FillMethod.Horizontal;
             fillImage.fillOrigin = (int)Image.OriginHorizontal.Left;
             fill = fillImage.rectTransform;
             Stretch(fill, 0f, 0f, 0f, 0f);
-            xpText = MenuUI.OutlinedText("XP", track.transform, "0 / 100 XP", 30f, new Color32(16, 38, 90, 255));
-            Stretch(xpText.rectTransform, 40f, 20f, 40f, 22f);
 
-            // chef face in the gold ring, the level on a gold badge under it
+            Image valueBadge = Img("Value Badge", r, Art("xp_badge"));
+            valueBadge.preserveAspect = true;
+            Place(valueBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(246f, -6f), new Vector2(160f, 80f));
+            xpText = Txt("XP", valueBadge.transform, "0/100", 32f, Brown);
+            Stretch(xpText.rectTransform, 30f, 18f, 30f, 18f);
+
             Image ring = Img("Ring", r, Art("xp_ring"));
             ring.preserveAspect = true;
-            Place(ring.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-272f, 4f), new Vector2(132f, 132f));
+            Place(ring.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-285f, 8f), new Vector2(140f, 140f));
             face = Img("Chef", ring.transform, ChefProgress.Avatar(art));
             face.preserveAspect = true;
-            Place(face.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 2f), new Vector2(100f, 100f));
+            Place(face.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 2f), new Vector2(104f, 104f));
+            face.transform.SetAsFirstSibling();                 // under the ring
             Image badge = Img("Level Badge", ring.transform, Art("xp_badge"));
             badge.preserveAspect = true;
-            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, -8f), new Vector2(118f, 59f));
-            levelText = Txt("Level", badge.transform, "LV 1", 28f, new Color32(92, 52, 24, 255));
-            Stretch(levelText.rectTransform, 16f, 10f, 16f, 10f);
+            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, -12f), new Vector2(124f, 62f));
+            levelText = Txt("Level", badge.transform, "LV 1", 28f, Brown);
+            Stretch(levelText.rectTransform, 20f, 12f, 20f, 12f);
 
-            gainText = MenuUI.OutlinedText("Gain", r, "+0 XP", 40f, new Color32(255, 255, 255, 255), TMPro.TextAlignmentOptions.Center, gainColor);
-            Place(gainText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(45f, 62f), new Vector2(360f, 54f));
+            // "+60 XP" like the gold country name on Country Completed
+            gainText = Txt("Gain", r, "+0 XP", 46f, gainColor);
+            Outline(gainText, new Color32(120, 36, 8, 255), 0.3f);
+            Place(gainText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-25f, 74f), new Vector2(380f, 60f));
+        }
+
+        private static readonly Color32 Brown = new Color32(92, 52, 24, 255);
+
+        // Outline + soft shadow on this text only (own material, ratios refreshed so TMP does
+        // not clip the outline away).
+        private static void Outline(TMP_Text text, Color color, float width)
+        {
+            var material = new Material(text.fontSharedMaterial) { name = text.name + " Outline" };
+            material.EnableKeyword("OUTLINE_ON");
+            material.EnableKeyword("UNDERLAY_ON");
+            material.SetColor(ShaderUtilities.ID_OutlineColor, color);
+            material.SetFloat(ShaderUtilities.ID_OutlineWidth, width);
+            material.SetFloat(ShaderUtilities.ID_FaceDilate, width * 0.5f);
+            material.SetColor(ShaderUtilities.ID_UnderlayColor, new Color(0f, 0f, 0f, 0.35f));
+            material.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, -0.5f);
+            material.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 0.3f);
+            ShaderUtilities.UpdateShaderRatios(material);
+            text.fontSharedMaterial = material;
         }
 
         private IEnumerator Play(ChefProgress.Gain gain)
@@ -204,7 +235,7 @@ namespace Watermelon
         {
             int level = ChefProgress.LevelAt(xp, out int into, out int need);
             levelText.text = "LV " + level;
-            xpText.text = into + " / " + need + " XP";
+            xpText.text = into + "/" + need;
             if (fillImage == null && fill != null)
                 fillImage = fill.GetComponent<Image>();
             float k = Mathf.Clamp01((float)into / need);

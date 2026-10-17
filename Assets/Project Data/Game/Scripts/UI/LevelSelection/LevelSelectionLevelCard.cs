@@ -137,7 +137,7 @@ namespace Watermelon.BusStop
 
             if (numberText != null)
             {
-                // the level's number in its country (1-30); "30" needs to shrink into the badge
+                // the level's game-wide number (China 1-30, Japan 31-60...); long numbers shrink into the badge
                 numberText.text = (displayNumber > 0 ? displayNumber : slotIndex + 1).ToString();
                 if (!numberText.enableAutoSizing)
                 {

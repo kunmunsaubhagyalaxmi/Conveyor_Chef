@@ -309,7 +309,7 @@ namespace Watermelon
             int displayLevel;
             if (levelSave != null && levelSave.isPlayingFromLevelSelection)
             {
-                displayLevel = WorldCatalog.LevelInCountry(levelSave.selectedLevelIndex) + 1;   // 1-30 within the country, as on Level Selection
+                displayLevel = levelSave.selectedLevelIndex + 1;   // game-wide number, as on Level Selection
             }
             else
             {
