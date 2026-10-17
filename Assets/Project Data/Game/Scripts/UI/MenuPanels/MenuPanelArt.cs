@@ -42,6 +42,8 @@ namespace Watermelon
         public Sprite handPointer;
         [Tooltip("Ring that ripples where the hand taps.")]
         public Sprite tapRing;
+        [Tooltip("The game font file: outlined labels use an SDF copy made from it (the font assets are bitmap fonts, which cannot draw outlines).")]
+        public Font outlineFontSource;
         [Tooltip("Chef speech bubble used by the tutorial (tail at the bottom left).")]
         public Sprite speechBubble;
         [Tooltip("Green gold-trimmed button without text (the tutorial's AAGE button).")]

@@ -76,6 +76,12 @@ namespace Watermelon
             TextAlignmentOptions alignment = TextAlignmentOptions.Center, Color? face = null)
         {
             TextMeshProUGUI text = Text(name, parent, value, size, face ?? Color.white, alignment);
+            // The game font is a bitmap font, which cannot draw outlines: use the SDF copy.
+            if (Watermelon.OutlinedText.Font != null)
+            {
+                Watermelon.OutlinedText.Apply(text, outline, 0.27f, false);
+                return text;
+            }
             Material material = GetOutlineMaterial(outline);
             if (material != null)
                 text.fontSharedMaterial = material;

@@ -260,20 +260,9 @@ namespace Watermelon
 
         private static void Outline(TMP_Text text, Color color, float width)
         {
-            // Own material (only this text): outline plus a soft dark shadow underneath. The
-            // shader ratios must be refreshed, or TMP keeps the old padding and the outline
-            // is clipped away (which is why the name looked flat before).
-            var material = new Material(text.fontSharedMaterial) { name = text.name + " Outline" };
-            material.EnableKeyword("OUTLINE_ON");
-            material.EnableKeyword("UNDERLAY_ON");
-            material.SetColor(ShaderUtilities.ID_OutlineColor, color);
-            material.SetFloat(ShaderUtilities.ID_OutlineWidth, width);
-            material.SetFloat(ShaderUtilities.ID_FaceDilate, width * 0.5f);
-            material.SetColor(ShaderUtilities.ID_UnderlayColor, new Color(0f, 0f, 0f, 0.45f));
-            material.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, -0.6f);
-            material.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 0.35f);
-            ShaderUtilities.UpdateShaderRatios(material);
-            text.fontSharedMaterial = material;
+            // The game font is a bitmap font (no outlines): OutlinedText switches to an SDF
+            // copy of it and adds the outline and a soft shadow.
+            OutlinedText.Apply(text, color, width);
         }
 
         private static Button AddButton(Image image, Action action)
