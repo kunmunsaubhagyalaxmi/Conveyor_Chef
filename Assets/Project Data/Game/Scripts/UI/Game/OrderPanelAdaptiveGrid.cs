@@ -9,9 +9,9 @@ namespace Watermelon
     /// the same content width so nothing reaches the frame's border:
     ///   1-4 orders:  one column of cards, a big dish on the left and the count on the right
     ///   5-6 orders:  two columns of cards, a big dish with the count underneath
-    ///   7-10 orders: three columns of tight cards in the same panel width (a very thin card
-    ///                border so the dish fills the card), so 10 orders fit in 4 short rows
-    ///                without the panel spreading over the level badge
+    ///   7-10 orders: three columns in the same panel width, no card behind the dish: the
+    ///                dish fills its cell and the count sits on a small dark badge on its
+    ///                corner, so the food is as big as the panel allows
     /// The dish pictures have empty space around the food, so the icon is drawn a little larger
     /// than its slot (IconOverscale) to make the food itself fill the card. Cards never shrink
     /// with more orders; the frame grows instead, so the dishes stay easy to see.
@@ -26,11 +26,11 @@ namespace Watermelon
 
         private const int MaxSingleColumnItems = 4;
         private const int MaxTwoColumnItems = 6;
-        private const float CompactCardHeight = 94f;
-        private const float CompactSpacing = 4f;
-        private const float CompactTextOverlap = 8f;       // the count tucks just under the dish
+        private const float CompactCardHeight = 80f;
+        private const float CompactSpacing = 2f;
+        private const float CompactIconOverscale = 1.14f;  // the dish picture's empty edge may overlap neighbours
+        private const string CountBadgeName = "Count Badge";
         private const float CardPixelsPerUnit = 4.5f;      // the card's normal border scale
-        private const float CompactCardPixelsPerUnit = 12f; // very thin border on small cards
         private const float ColumnSpacing = 10f;
         private const float RowSpacing = 10f;
         private const float LargeCardHeight = 112f;
@@ -147,11 +147,22 @@ namespace Watermelon
         {
             RectTransform icon = item.Find("Icon") as RectTransform;
             RectTransform text = item.Find("Order Text") as RectTransform;
-
-            // Small cards draw the card picture with a thinner border (and so a thinner
-            // transparent edge); the visible card inside the item's box shrinks or grows with it.
             Image card = item.GetComponent<Image>();
-            float ppu = style == Style.Compact ? CompactCardPixelsPerUnit : CardPixelsPerUnit;
+            RectTransform badge = item.Find(CountBadgeName) as RectTransform;
+
+            if (style == Style.Compact)
+            {
+                LayoutCompact(item, icon, text, card, ref badge, cell);
+                return;
+            }
+
+            if (card != null)
+                card.enabled = true;
+            if (badge != null)
+                badge.gameObject.SetActive(false);
+
+            // The card picture's normal border scale (compact cells hide the card instead).
+            float ppu = CardPixelsPerUnit;
             if (card != null && card.type == Image.Type.Sliced)
                 card.pixelsPerUnitMultiplier = ppu;
             float insetX = CardInsetX * CardPixelsPerUnit / ppu;
@@ -163,9 +174,9 @@ namespace Watermelon
             if (style == Style.Stacked || style == Style.Compact)
             {
                 // Dish in the upper part of the visible card, count on its own line below.
-                float textHeight = style == Style.Compact ? 22f : 32f;
-                float overlap = style == Style.Compact ? CompactTextOverlap : 0f;
-                float gap = style == Style.Compact ? 1f : 2f;
+                const float textHeight = 32f;
+                const float overlap = 0f;
+                const float gap = 2f;
                 // the count sits on the cream, just above the gold bottom edge
                 float slot = Mathf.Min(innerW - gap * 2f, innerH - textHeight - rim - gap * 3f + overlap);
                 float iconSize = slot * StackedIconOverscale;
@@ -227,13 +238,72 @@ namespace Watermelon
             if (label != null)
             {
                 label.enableAutoSizing = true;
-                label.fontSizeMin = style == Style.Compact ? 16f : style == Style.Stacked ? 22f : 16f;
-                label.fontSizeMax = style == Style.Compact ? 24f : style == Style.Stacked ? 34f : 40f;
+                label.fontSizeMin = style == Style.Stacked ? 22f : 16f;
+                label.fontSizeMax = style == Style.Stacked ? 34f : 40f;
                 label.fontStyle = FontStyles.Bold;
                 label.color = new Color32(92, 52, 24, 255);
                 label.alignment = TextAlignmentOptions.Center;
                 label.overflowMode = TextOverflowModes.Overflow;
             }
         }
-    }
+    
+        // 7-10 orders: the dish fills the whole cell (no card), the count on a dark badge in
+        // the lower-right corner, the tick (when done) in the upper-right corner.
+        private static void LayoutCompact(Transform item, RectTransform icon, RectTransform text, Image card, ref RectTransform badge, Vector2 cell)
+        {
+            if (card != null)
+                card.enabled = false;
+
+            float size = Mathf.Min(cell.x, cell.y) * CompactIconOverscale;
+            if (icon != null)
+            {
+                icon.anchorMin = icon.anchorMax = new Vector2(0.5f, 0.5f);
+                icon.pivot = new Vector2(0.5f, 0.5f);
+                icon.anchoredPosition = new Vector2(0f, 3f);
+                icon.sizeDelta = new Vector2(size, size);
+                icon.SetSiblingIndex(0);
+            }
+
+            if (badge == null)
+            {
+                var go = new GameObject(CountBadgeName, typeof(RectTransform));
+                go.transform.SetParent(item, false);
+                Image back = go.AddComponent<Image>();
+                back.sprite = MenuUI.Rounded(14, 2, new Color32(60, 34, 14, 235), new Color32(255, 214, 120, 255));
+                back.type = Image.Type.Sliced;
+                back.raycastTarget = false;
+                badge = (RectTransform)go.transform;
+            }
+            badge.gameObject.SetActive(true);
+            badge.anchorMin = badge.anchorMax = new Vector2(1f, 0f);
+            badge.pivot = new Vector2(1f, 0f);
+            badge.anchoredPosition = new Vector2(-1f, 1f);
+            badge.sizeDelta = new Vector2(Mathf.Min(48f, cell.x * 0.62f), 24f);
+            badge.SetAsLastSibling();
+
+            if (text != null)
+            {
+                text.anchorMin = text.anchorMax = new Vector2(1f, 0f);
+                text.pivot = new Vector2(1f, 0f);
+                text.anchoredPosition = badge.anchoredPosition;
+                text.sizeDelta = badge.sizeDelta;
+                text.SetAsLastSibling();
+                TextMeshProUGUI label = text.GetComponent<TextMeshProUGUI>();
+                if (label != null)
+                {
+                    label.enableAutoSizing = true;
+                    label.fontSizeMin = 14f;
+                    label.fontSizeMax = 20f;
+                    label.fontStyle = FontStyles.Bold;
+                    label.color = Color.white;
+                    label.alignment = TextAlignmentOptions.Center;
+                    label.overflowMode = TextOverflowModes.Overflow;
+                }
+            }
+
+            Transform check = item.Find("Completed Check");
+            if (check != null)
+                check.SetAsLastSibling();
+        }
+}
 }
