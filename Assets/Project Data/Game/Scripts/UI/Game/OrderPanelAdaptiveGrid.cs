@@ -26,8 +26,9 @@ namespace Watermelon
 
         private const int MaxSingleColumnItems = 4;
         private const int MaxTwoColumnItems = 6;
-        private const float CompactCardHeight = 80f;
+        private const float CompactCardHeight = 92f;
         private const float CompactSpacing = 2f;
+        private const float CompactRowSpacing = 10f;       // air between the rows of dishes
         private const float CompactIconOverscale = 1.14f;  // the dish picture's empty edge may overlap neighbours
         private const string CountBadgeName = "Count Badge";
         private const float CardPixelsPerUnit = 4.5f;      // the card's normal border scale
@@ -113,7 +114,7 @@ namespace Watermelon
             if (style == Style.Compact)
             {
                 grid.constraintCount = 3;
-                grid.spacing = new Vector2(CompactSpacing, CompactSpacing);
+                grid.spacing = new Vector2(CompactSpacing, CompactRowSpacing);
                 grid.cellSize = new Vector2((width - CompactSpacing * 2f) / 3f, CompactCardHeight);
             }
             else if (style == Style.Stacked)
