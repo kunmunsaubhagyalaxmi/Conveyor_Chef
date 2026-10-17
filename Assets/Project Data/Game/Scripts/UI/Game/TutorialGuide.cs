@@ -121,12 +121,23 @@ namespace Watermelon
             yield return Wait(0.6f);
             hand.gameObject.SetActive(false);
 
-            // 2. the waiting row
+            // 2. trays
+            yield return WaitForTray();
+            yield return Step("Shabaash! Tray bhar gayi aur customer khush hokar chala gaya. Har nayi tray ko uske colour ki 3 dishes chahiye.",
+                Tray(), "AAGE");
+
+            // 3. the waiting row
             yield return Step("Galat colour ki dish yahan neeche ruk jaati hai. Sirf 7 jagah hain - sab bhar gayi to level haar jaoge!",
                 Dock(), "AAGE");
-            // 3. the orders
+            // 4. the orders
             yield return Step("Upar ORDERS mein dekho kya chahiye. Saare orders poore karo aur level jeeto!",
                 Orders(), "AAGE");
+            // 5. the power-ups, one by one (also marks their later tips as seen)
+            foreach (var tip in PowerUpTips(int.MaxValue))
+            {
+                yield return Step(tip.text, tip.target(), "AAGE");
+                PlayerPrefs.SetInt(KeyPrefix + tip.key, 1);
+            }
             yield return Step("Bas itna hi! Ab tum khud try karo.", null, "CHALO KHELEIN!");
 
             PlayerPrefs.SetInt(Level1Key, 1);
@@ -144,8 +155,8 @@ namespace Watermelon
                 tips.Add(("Hidden", "Yeh dish dhakki hui hai! Iske aas-paas ki dishes hatao, tab yeh khulegi.", HiddenDish));
             if (LevelController.LoadedStageData != null && LevelController.LoadedStageData.SpawnerData != null &&
                 LevelController.LoadedStageData.SpawnerData.Length > 0)
-                tips.Add(("Spawner", "Yeh dabba nayi dishes deta hai. Iske saamne wali dish uthao, agli apne aap aayegi!", Spawner));
-            AddPowerUpTips(tips, levelIndex);
+                tips.Add(("Spawner", "Yeh hara dabba nayi dishes deta hai! Number batata hai iske andar kitni dishes baaki hain. Iske saamne wali dish uthao, agli apne aap bahar aayegi.", Spawner));
+            tips.AddRange(PowerUpTips(levelIndex));
 
             tips.RemoveAll(t => PlayerPrefs.GetInt(KeyPrefix + t.key, 0) == 1);
             if (tips.Count == 0)
@@ -165,11 +176,13 @@ namespace Watermelon
             End();
         }
 
-        private void AddPowerUpTips(List<(string, string, System.Func<Rect?>)> tips, int levelIndex)
+        // The power-ups available by this level (all of them for the level 1 lesson).
+        private static List<(string key, string text, System.Func<Rect?> target)> PowerUpTips(int levelIndex)
         {
+            var tips = new List<(string key, string text, System.Func<Rect?> target)>();
             PUUIController controller = PUController.PowerUpsUIController;
             if (controller == null || controller.UIBehaviors == null)
-                return;
+                return tips;
             foreach (PUUIBehavior pu in controller.UIBehaviors)
             {
                 if (pu == null || pu.Settings == null || pu.Settings.RequiredLevel > levelIndex)
@@ -182,6 +195,7 @@ namespace Watermelon
                 if (text != null)
                     tips.Add(("PowerUp_" + pu.Settings.GetType().Name, text, () => UiRect(rect)));
             }
+            return tips;
         }
 
         // ------------------------------------------------------------------ steps
