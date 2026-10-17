@@ -82,6 +82,7 @@ namespace Watermelon
             var layer = (RectTransform)transform;
             Vector2 start = LocalPoint(from);
             RectTransform target = counter.RectTransform != null ? counter.RectTransform : (RectTransform)counter.transform;
+            RectTransform aim = IconOf(target);   // looked up once, not every frame per coin
 
             int count = Mathf.Clamp(reward, 5, 12);
             int landed = 0;
@@ -89,7 +90,7 @@ namespace Watermelon
             for (int i = 0; i < count; i++)
             {
                 int index = i;
-                StartCoroutine(Coin(icon, start, target, index, () =>
+                StartCoroutine(Coin(icon, start, aim, index, () =>
                 {
                     landed++;
                     counter.SetAmount(before + Mathf.RoundToInt((float)reward * landed / count));
@@ -108,7 +109,7 @@ namespace Watermelon
             Destroy(gameObject);
         }
 
-        private IEnumerator Coin(Sprite icon, Vector2 start, RectTransform target, int index, System.Action onLanded)
+        private IEnumerator Coin(Sprite icon, Vector2 start, RectTransform aim, int index, System.Action onLanded)
         {
             var go = new GameObject("Coin", typeof(RectTransform));
             go.transform.SetParent(transform, false);
@@ -136,7 +137,7 @@ namespace Watermelon
             float spin = Random.Range(-260f, 260f);
             yield return Tween(0.55f, k =>
             {
-                Vector2 end = LocalPoint(IconOf(target));
+                Vector2 end = LocalPoint(aim);
                 Vector2 control = (from + end) * 0.5f + new Vector2(side, 220f);
                 float e = k * k * (3f - 2f * k);
                 r.anchoredPosition = Bezier(from, control, end, e);

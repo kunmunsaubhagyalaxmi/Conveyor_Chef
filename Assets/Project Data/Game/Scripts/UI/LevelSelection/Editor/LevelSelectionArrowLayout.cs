@@ -10,9 +10,9 @@ namespace Watermelon.EditorTools
     /// <summary>
     /// The page arrows on the Level Selection screen of every country.
     ///
-    /// * Runs once by itself (per project) when LevelSelection.unity is open: puts both arrows of
-    ///   all countries beside the cards, at the spot set on China (Galaxy Note20 Ultra preview),
-    ///   as screen-relative anchors so they stay in place on every phone.
+    /// * Runs once by itself (per project) when LevelSelection.unity is open: gives both arrows
+    ///   of all countries the same blue arrow art (the left one mirrored), 120 x 120, pinned 56
+    ///   from the screen's side and level with the cards' pictures, on every phone.
     /// * "Copy Arrows From Selected Country To All": move the arrows of one country in the
     ///   Scene view (edit mode, not Play mode), select that country, run it - every other
     ///   country gets the same arrow layout.
@@ -21,13 +21,12 @@ namespace Watermelon.EditorTools
     public static class LevelSelectionArrowLayout
     {
         private const string ScenePath = "Assets/Project Data/Game/Scenes/LevelSelection.unity";
-        private const string DoneKey = "ConveyorChef.LevelSelection.ArrowLayout.v1";
+        private const string DoneKey = "ConveyorChef.LevelSelection.ArrowLayout.v2";
 
-        // fractions of the screen (anchors), offsets zero
-        private static readonly Vector2 LeftMin = new Vector2(-0.0098f, 0.4084f);
-        private static readonly Vector2 LeftMax = new Vector2(0.0629f, 0.4782f);
-        private static readonly Vector2 RightMin = new Vector2(0.9212f, 0.4084f);
-        private static readonly Vector2 RightMax = new Vector2(0.9939f, 0.4782f);
+        // centre: 56 canvas units in from the screen side, 46.46% up the screen (card pictures)
+        private const float Height = 0.4646f;
+        private const float Inset = 56f;
+        private static readonly Vector2 Size = new Vector2(120f, 120f);
 
         private static bool queued;
 
@@ -69,8 +68,11 @@ namespace Watermelon.EditorTools
             int count = 0;
             foreach (LevelSelectionCountry country in Countries())
             {
-                count += Set(country.transform.Find("Left Arrow") as RectTransform, LeftMin, LeftMax);
-                count += Set(country.transform.Find("Right Arrow") as RectTransform, RightMin, RightMax);
+                var left = country.transform.Find("Left Arrow") as RectTransform;
+                var right = country.transform.Find("Right Arrow") as RectTransform;
+                count += Set(left, 0f, Inset, -1f);
+                count += Set(right, 1f, -Inset, 1f);
+                CopySprite(right, left);
             }
 
             Finish(scene, wasDirty, count, "arrows placed beside the cards in every country");
@@ -122,16 +124,28 @@ namespace Watermelon.EditorTools
         private static LevelSelectionCountry[] Countries() =>
             Object.FindObjectsByType<LevelSelectionCountry>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
-        private static int Set(RectTransform arrow, Vector2 min, Vector2 max)
+        private static int Set(RectTransform arrow, float side, float x, float scaleX)
         {
             if (arrow == null)
                 return 0;
             Undo.RecordObject(arrow, "Level Selection Arrows");
-            arrow.anchorMin = min;
-            arrow.anchorMax = max;
-            arrow.offsetMin = Vector2.zero;
-            arrow.offsetMax = Vector2.zero;
+            arrow.anchorMin = arrow.anchorMax = new Vector2(side, Height);
+            arrow.pivot = new Vector2(0.5f, 0.5f);
+            arrow.anchoredPosition = new Vector2(x, 0f);
+            arrow.sizeDelta = Size;
+            arrow.localScale = new Vector3(scaleX, 1f, 1f);
             return 1;
+        }
+
+        private static void CopySprite(RectTransform from, RectTransform to)
+        {
+            var source = from != null ? from.GetComponent<UnityEngine.UI.Image>() : null;
+            var target = to != null ? to.GetComponent<UnityEngine.UI.Image>() : null;
+            if (source == null || target == null || target.sprite == source.sprite)
+                return;
+            Undo.RecordObject(target, "Level Selection Arrows");
+            target.sprite = source.sprite;
+            target.preserveAspect = true;
         }
 
         private static int Copy(RectTransform from, RectTransform to)

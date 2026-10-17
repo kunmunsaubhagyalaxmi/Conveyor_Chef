@@ -213,7 +213,10 @@ namespace Watermelon
         }
 
         private CanvasGroup visibility;
-        private const float ChefWidth = 280f, ChefHeight = 640f;
+        // The chef is always drawn this big; the screen edge or the bubble cuts it off instead
+        // of it being shrunk to fit.
+        private const float ChefHeight = 900f;
+        private RectTransform chefArea, skipRect;
 
         private void Show(string text, Rect? target, bool interactive, string button = null)
         {
@@ -458,6 +461,18 @@ namespace Watermelon
             frame = Img("Spotlight Frame", root, MenuUI.Rounded(26, 6, new Color(0f, 0f, 0f, 0f), new Color32(255, 214, 70, 255)), Color.white);
             frame.type = Image.Type.Sliced;
 
+            // the chef (in the chosen outfit) stands right by the bubble, behind it, so it is
+            // clearly the chef who is talking; the area clips it to its side of the bubble
+            chefArea = new GameObject("Chef Area", typeof(RectTransform), typeof(RectMask2D)).transform as RectTransform;
+            chefArea.SetParent(root, false);
+            chefArea.anchorMin = chefArea.anchorMax = new Vector2(0.5f, 0.5f);
+            chef = Img("Chef", chefArea, ChefSprite(), Color.white);
+            chef.preserveAspect = true;
+            chef.rectTransform.anchorMin = chef.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            Sprite chefSprite = chef.sprite;
+            float aspect = chefSprite != null ? chefSprite.rect.width / chefSprite.rect.height : 0.41f;
+            chef.rectTransform.sizeDelta = new Vector2(ChefHeight * aspect, ChefHeight);
+
             hand = Img("Hand", root, art != null ? art.handPointer : null, Color.white);
             hand.preserveAspect = true;
             hand.rectTransform.pivot = new Vector2(0.371f, 0.983f);
@@ -470,15 +485,6 @@ namespace Watermelon
             message.rectTransform.anchorMin = new Vector2(0.115f, 0.265f);
             message.rectTransform.anchorMax = new Vector2(0.925f, 0.645f);
             message.rectTransform.offsetMin = message.rectTransform.offsetMax = Vector2.zero;
-
-            // the whole chef (in the chosen outfit) stands under the bubble's tail, so it is
-            // clearly the chef who is talking
-            chef = Img("Chef", bubble.transform, ChefProgress.FullBody(art), Color.white);
-            chef.preserveAspect = true;
-            chef.rectTransform.anchorMin = chef.rectTransform.anchorMax = new Vector2(0f, 0f);
-            chef.rectTransform.pivot = new Vector2(0.5f, 1f);
-            chef.rectTransform.anchoredPosition = new Vector2(150f, -2f);
-            chef.rectTransform.sizeDelta = new Vector2(ChefWidth, ChefHeight);
 
             // AAGE: the game's green gold-trimmed button with an outlined label (like CONTINUE)
             Image nextImage = Img("Next", bubble.transform, art != null ? art.tutorialButton : null, Color.white);
@@ -499,7 +505,7 @@ namespace Watermelon
             nextLabel.rectTransform.offsetMin = new Vector2(30f, 18f);
             nextLabel.rectTransform.offsetMax = new Vector2(-30f, -16f);
 
-            // SKIP: just outlined text under the bubble, next to the chef (no button shape)
+            // SKIP: just outlined text by the bubble, on the side away from the chef (no button shape)
             TextMeshProUGUI skipText = Txt("Skip", bubble.transform, "SKIP TUTORIAL >>", 30f);
             skipText.color = Color.white;
             skipText.textWrappingMode = TextWrappingModes.NoWrap;
@@ -508,12 +514,8 @@ namespace Watermelon
             skipButton = skipText.gameObject.AddComponent<Button>();
             skipButton.transition = Selectable.Transition.None;
             skipButton.onClick.AddListener(Skip);
-            var sr = skipText.rectTransform;
-            sr.anchorMin = sr.anchorMax = new Vector2(0f, 0f);
-            sr.pivot = new Vector2(0f, 1f);
-            sr.anchoredPosition = new Vector2(300f, -18f);   // beside the chef
-            sr.sizeDelta = new Vector2(300f, 60f);
-            skipText.alignment = TextAlignmentOptions.Left;
+            skipRect = skipText.rectTransform;
+            skipRect.sizeDelta = new Vector2(300f, 60f);
         }
 
         private void SetSpot(Rect? target)
@@ -575,11 +577,68 @@ namespace Watermelon
             bubble.rectTransform.anchorMin = bubble.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
             bubble.rectTransform.anchoredPosition = new Vector2(0f, y);
 
-            // the chef is big, but always fits between the bubble and the bottom of the screen
-            float bubbleBottom = y - bubble.rectTransform.sizeDelta.y * 0.5f;
-            float room = bubbleBottom - (-root.rect.height * 0.5f) - 20f;
-            float height = Mathf.Clamp(room, ChefHeight * 0.5f, ChefHeight);
-            chef.rectTransform.sizeDelta = new Vector2(ChefWidth * height / ChefHeight, height);
+            PlaceChef(y, target.HasValue && spot.HasValue && ToLocal(target.Value.center).y < y);
+        }
+
+        // Bubble low (spotlight above it): the chef stands under the bubble's tail, cut off by
+        // the bottom of the screen. Bubble high (spotlight below it): the chef leans out above
+        // the bubble's right end, so it never covers the spotlight. Either way it stays at
+        // full size, and SKIP goes to the other side of the bubble.
+        private void PlaceChef(float bubbleY, bool above)
+        {
+            Vector2 bubbleSize = bubble.rectTransform.sizeDelta;
+            float halfW = root.rect.width * 0.5f, halfH = root.rect.height * 0.5f;
+            float chefW = chef.rectTransform.sizeDelta.x;
+            RectTransform c = chef.rectTransform;
+
+            // the area runs from the bubble's middle to the screen edge on the chef's side
+            chefArea.pivot = new Vector2(0.5f, above ? 0f : 1f);
+            chefArea.anchoredPosition = new Vector2(0f, bubbleY);
+            chefArea.sizeDelta = new Vector2(root.rect.width, above ? halfH - bubbleY : bubbleY + halfH);
+
+            float minX = -halfW + chefW * 0.5f - 30f, maxX = halfW - chefW * 0.5f + 30f;
+            if (above)
+            {
+                float top = Mathf.Min(bubbleY + bubbleSize.y * 0.5f + ChefHeight * 0.5f, halfH - 10f);
+                c.pivot = new Vector2(0.5f, 1f);
+                c.anchoredPosition = new Vector2(Mathf.Clamp(bubbleSize.x * 0.5f - 210f, minX, maxX), top - bubbleY - chefArea.sizeDelta.y * 0.5f);
+            }
+            else
+            {
+                float top = bubbleY - bubbleSize.y * 0.5f + 40f;   // the hat tucks behind the tail
+                c.pivot = new Vector2(0.5f, 1f);
+                c.anchoredPosition = new Vector2(Mathf.Clamp(-bubbleSize.x * 0.5f + 190f, minX, maxX), top - bubbleY + chefArea.sizeDelta.y * 0.5f);
+            }
+
+            if (above)
+            {
+                // under the bubble, on the left
+                skipRect.anchorMin = skipRect.anchorMax = new Vector2(0f, 0f);
+                skipRect.pivot = new Vector2(0f, 1f);
+                skipRect.anchoredPosition = new Vector2(70f, -18f);
+            }
+            else
+            {
+                // above the bubble, on the right
+                skipRect.anchorMin = skipRect.anchorMax = new Vector2(1f, 1f);
+                skipRect.pivot = new Vector2(1f, 0f);
+                skipRect.anchoredPosition = new Vector2(-50f, 4f);
+            }
+            skipRect.GetComponent<TMP_Text>().alignment =
+                above ? TextAlignmentOptions.Left : TextAlignmentOptions.Right;
+        }
+
+        // The classic chef uses the menu's big chef picture (sharp at this size, already in the
+        // game); outfits use their own full-body art.
+        private Sprite ChefSprite()
+        {
+            if (ChefProgress.Selected.Id == "classic")
+            {
+                Sprite big = Resources.Load<Sprite>("MainMenu/chef");
+                if (big != null)
+                    return big;
+            }
+            return ChefProgress.FullBody(art);
         }
 
         private Vector2 ToLocal(Vector2 screen)
