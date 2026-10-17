@@ -1,0 +1,35 @@
+{
+    "name": "ConveyorChef.Cloud",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Services.Core",
+        "Unity.Services.Authentication",
+        "Unity.Services.CloudSave",
+        "Google.Play.Games"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.services.authentication",
+            "expression": "3.0.0",
+            "define": "CC_UGS_AUTH"
+        },
+        {
+            "name": "com.unity.services.cloudsave",
+            "expression": "3.0.0",
+            "define": "CC_UGS_CLOUDSAVE"
+        },
+        {
+            "name": "com.google.play.games",
+            "expression": "0.0.1",
+            "define": "CC_PLAY_GAMES"
+        }
+    ],
+    "noEngineReferences": false
+}

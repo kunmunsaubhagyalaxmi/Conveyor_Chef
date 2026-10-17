@@ -17,6 +17,11 @@ namespace Watermelon
 
         private static bool isSaveRequired;
 
+        // Set while a cloud save is being restored: the old progress in memory must not be
+        // written over the restored file before the game restarts.
+        private static bool isLocked;
+        public static bool IsLocked => isLocked;
+
         public static float GameTime => globalSave.GameTime;
 
         public static DateTime LastExitTime => globalSave.LastExitTime;
@@ -93,6 +98,7 @@ namespace Watermelon
 
         public static void Save(bool forceSave = false)
         {
+            if (isLocked) return;
             if (!forceSave && !isSaveRequired) return;
             if (globalSave == null) return;
 
@@ -116,12 +122,18 @@ namespace Watermelon
 
         public static void SaveCustom(GlobalSave globalSave)
         {
-            if(globalSave != null)
+            if(globalSave != null && !isLocked)
             {
                 globalSave.Flush();
 
                 BaseSaveWrapper.ActiveWrapper.Save(globalSave, SAVE_FILE_NAME);
             }
+        }
+
+        /// <summary>Stops all saving until the game restarts (a cloud save was restored).</summary>
+        public static void Lock()
+        {
+            isLocked = true;
         }
 
         public static void MarkAsSaveIsRequired()
