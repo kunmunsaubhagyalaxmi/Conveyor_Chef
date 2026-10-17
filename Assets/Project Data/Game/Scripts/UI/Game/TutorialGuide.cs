@@ -443,7 +443,7 @@ namespace Watermelon
             nr.sizeDelta = new Vector2(330f, 110f);
             nextLabel = Txt("Label", nextImage.transform, "AAGE", 46f);
             nextLabel.color = Color.white;
-            Outline(nextLabel, new Color32(18, 80, 10, 255), 0.32f);
+            OutlinedText.Apply(nextLabel, new Color32(18, 80, 10, 255), 0.3f);
             Stretch(nextLabel.rectTransform);
             nextLabel.rectTransform.offsetMin = new Vector2(30f, 18f);
             nextLabel.rectTransform.offsetMax = new Vector2(-30f, -16f);
@@ -452,7 +452,7 @@ namespace Watermelon
             TextMeshProUGUI skipText = Txt("Skip", bubble.transform, "SKIP TUTORIAL >>", 30f);
             skipText.color = Color.white;
             skipText.textWrappingMode = TextWrappingModes.NoWrap;
-            Outline(skipText, new Color32(40, 24, 10, 255), 0.3f);
+            OutlinedText.Apply(skipText, new Color32(40, 24, 10, 255), 0.3f);
             skipText.raycastTarget = true;
             skipButton = skipText.gameObject.AddComponent<Button>();
             skipButton.transition = Selectable.Transition.None;
@@ -542,17 +542,6 @@ namespace Watermelon
                 hand.rectTransform.localScale = Vector3.one * (1f - 0.08f * Mathf.Abs(Mathf.Sin(pulse * 3.2f)));
         }
 
-        // Outline on this text only (own material, ratios refreshed so TMP keeps the outline).
-        private static void Outline(TMP_Text text, Color color, float width)
-        {
-            var material = new Material(text.fontSharedMaterial) { name = text.name + " Outline" };
-            material.EnableKeyword("OUTLINE_ON");
-            material.SetColor(ShaderUtilities.ID_OutlineColor, color);
-            material.SetFloat(ShaderUtilities.ID_OutlineWidth, width);
-            material.SetFloat(ShaderUtilities.ID_FaceDilate, width * 0.5f);
-            ShaderUtilities.UpdateShaderRatios(material);
-            text.fontSharedMaterial = material;
-        }
 
         private static void Place(Image image, float xMin, float yMin, float xMax, float yMax)
         {
