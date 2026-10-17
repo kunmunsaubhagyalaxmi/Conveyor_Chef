@@ -9,8 +9,9 @@ namespace Watermelon
     /// the same content width so nothing reaches the frame's border:
     ///   1-4 orders:  one column of cards, a big dish on the left and the count on the right
     ///   5-6 orders:  two columns of cards, a big dish with the count underneath
-    ///   7-10 orders: three columns of smaller cards (thinner card border), the panel a
-    ///                little wider, so 10 orders still fit in 4 short rows
+    ///   7-10 orders: three columns of tight cards in the same panel width (a very thin card
+    ///                border so the dish fills the card), so 10 orders fit in 4 short rows
+    ///                without the panel spreading over the level badge
     /// The dish pictures have empty space around the food, so the icon is drawn a little larger
     /// than its slot (IconOverscale) to make the food itself fill the card. Cards never shrink
     /// with more orders; the frame grows instead, so the dishes stay easy to see.
@@ -25,10 +26,11 @@ namespace Watermelon
 
         private const int MaxSingleColumnItems = 4;
         private const int MaxTwoColumnItems = 6;
-        private const float CompactContentWidth = 330f;
-        private const float CompactCardHeight = 104f;
+        private const float CompactCardHeight = 94f;
+        private const float CompactSpacing = 4f;
+        private const float CompactTextOverlap = 8f;       // the count tucks just under the dish
         private const float CardPixelsPerUnit = 4.5f;      // the card's normal border scale
-        private const float CompactCardPixelsPerUnit = 7f; // thinner border on small cards
+        private const float CompactCardPixelsPerUnit = 12f; // very thin border on small cards
         private const float ColumnSpacing = 10f;
         private const float RowSpacing = 10f;
         private const float LargeCardHeight = 112f;
@@ -103,15 +105,16 @@ namespace Watermelon
                 : count == MaxSingleColumnItems ? Style.Medium
                 : Style.Large;
 
-            float width = style == Style.Compact ? CompactContentWidth : contentWidth;
+            // same width for every layout: the panel never spreads over the level badge
+            float width = contentWidth;
             layoutElement.minWidth = width;
             layoutElement.preferredWidth = width;
 
             if (style == Style.Compact)
             {
                 grid.constraintCount = 3;
-                grid.spacing = new Vector2(ColumnSpacing * 0.6f, RowSpacing * 0.6f);
-                grid.cellSize = new Vector2((width - ColumnSpacing * 1.2f) / 3f, CompactCardHeight);
+                grid.spacing = new Vector2(CompactSpacing, CompactSpacing);
+                grid.cellSize = new Vector2((width - CompactSpacing * 2f) / 3f, CompactCardHeight);
             }
             else if (style == Style.Stacked)
             {
@@ -160,10 +163,11 @@ namespace Watermelon
             if (style == Style.Stacked || style == Style.Compact)
             {
                 // Dish in the upper part of the visible card, count on its own line below.
-                float textHeight = style == Style.Compact ? 26f : 32f;
-                const float gap = 2f;
+                float textHeight = style == Style.Compact ? 22f : 32f;
+                float overlap = style == Style.Compact ? CompactTextOverlap : 0f;
+                float gap = style == Style.Compact ? 1f : 2f;
                 // the count sits on the cream, just above the gold bottom edge
-                float slot = Mathf.Min(innerW - gap * 2f, innerH - textHeight - rim - gap * 3f);
+                float slot = Mathf.Min(innerW - gap * 2f, innerH - textHeight - rim - gap * 3f + overlap);
                 float iconSize = slot * StackedIconOverscale;
 
                 if (icon != null)
@@ -223,8 +227,8 @@ namespace Watermelon
             if (label != null)
             {
                 label.enableAutoSizing = true;
-                label.fontSizeMin = style == Style.Compact ? 18f : style == Style.Stacked ? 22f : 16f;
-                label.fontSizeMax = style == Style.Compact ? 28f : style == Style.Stacked ? 34f : 40f;
+                label.fontSizeMin = style == Style.Compact ? 16f : style == Style.Stacked ? 22f : 16f;
+                label.fontSizeMax = style == Style.Compact ? 24f : style == Style.Stacked ? 34f : 40f;
                 label.fontStyle = FontStyles.Bold;
                 label.color = new Color32(92, 52, 24, 255);
                 label.alignment = TextAlignmentOptions.Center;
