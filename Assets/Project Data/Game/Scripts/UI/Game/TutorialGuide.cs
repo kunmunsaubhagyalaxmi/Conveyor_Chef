@@ -421,13 +421,18 @@ namespace Watermelon
             nr.pivot = new Vector2(1f, 1f);
             nr.anchoredPosition = new Vector2(-40f, 6f);
             nr.sizeDelta = new Vector2(330f, 110f);
-            nextLabel = MenuUI.OutlinedText("Label", nextImage.transform, "AAGE", 46f, new Color32(18, 80, 10, 255));
+            nextLabel = Txt("Label", nextImage.transform, "AAGE", 46f);
+            nextLabel.color = Color.white;
+            Outline(nextLabel, new Color32(18, 80, 10, 255), 0.32f);
             Stretch(nextLabel.rectTransform);
             nextLabel.rectTransform.offsetMin = new Vector2(30f, 18f);
             nextLabel.rectTransform.offsetMax = new Vector2(-30f, -16f);
 
             // SKIP: just outlined text under the bubble, next to the chef (no button shape)
-            TextMeshProUGUI skipText = MenuUI.OutlinedText("Skip", bubble.transform, "SKIP TUTORIAL >>", 30f, new Color32(40, 24, 10, 255));
+            TextMeshProUGUI skipText = Txt("Skip", bubble.transform, "SKIP TUTORIAL >>", 30f);
+            skipText.color = Color.white;
+            skipText.textWrappingMode = TextWrappingModes.NoWrap;
+            Outline(skipText, new Color32(40, 24, 10, 255), 0.3f);
             skipText.raycastTarget = true;
             skipButton = skipText.gameObject.AddComponent<Button>();
             skipButton.transition = Selectable.Transition.None;
@@ -474,8 +479,15 @@ namespace Watermelon
             frame.rectTransform.anchoredPosition = r.center;
             frame.rectTransform.sizeDelta = r.size + new Vector2(8f, 8f);
 
+            // The hand's pivot is its fingertip. Below the middle of the screen (power-up
+            // buttons, the tray row) it hangs down from above the target, so it never goes off
+            // the bottom of the screen; higher up it points up from below.
             hand.rectTransform.anchorMin = hand.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-            hand.rectTransform.anchoredPosition = new Vector2(r.center.x + 20f, r.yMin + 10f);
+            bool fromAbove = r.center.y < 0f;
+            hand.rectTransform.localEulerAngles = new Vector3(0f, 0f, fromAbove ? 180f : 0f);
+            hand.rectTransform.anchoredPosition = fromAbove
+                ? new Vector2(r.center.x - 10f, r.yMax - 14f)
+                : new Vector2(r.center.x + 20f, r.yMin + 14f);
         }
 
         // The bubble goes in the half of the screen away from the spotlight.
@@ -508,6 +520,18 @@ namespace Watermelon
                 frame.rectTransform.localScale = Vector3.one * (1f + 0.025f * Mathf.Sin(pulse * 5f));
             if (hand != null && hand.gameObject.activeSelf)
                 hand.rectTransform.localScale = Vector3.one * (1f - 0.08f * Mathf.Abs(Mathf.Sin(pulse * 3.2f)));
+        }
+
+        // Outline on this text only (own material, ratios refreshed so TMP keeps the outline).
+        private static void Outline(TMP_Text text, Color color, float width)
+        {
+            var material = new Material(text.fontSharedMaterial) { name = text.name + " Outline" };
+            material.EnableKeyword("OUTLINE_ON");
+            material.SetColor(ShaderUtilities.ID_OutlineColor, color);
+            material.SetFloat(ShaderUtilities.ID_OutlineWidth, width);
+            material.SetFloat(ShaderUtilities.ID_FaceDilate, width * 0.5f);
+            ShaderUtilities.UpdateShaderRatios(material);
+            text.fontSharedMaterial = material;
         }
 
         private static void Place(Image image, float xMin, float yMin, float xMax, float yMax)
