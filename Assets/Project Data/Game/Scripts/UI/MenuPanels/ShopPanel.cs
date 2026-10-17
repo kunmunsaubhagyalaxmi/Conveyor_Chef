@@ -147,7 +147,9 @@ namespace Watermelon
             Image image = MenuUI.Image("Icon", card.transform, icon);
             MenuUI.Anchor(image.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -22f), new Vector2(110f, 110f));
 
-            TextMeshProUGUI text = MenuUI.OutlinedText("Amount", card.transform, amount, 44f, new Color32(150, 90, 10, 255));
+            // gold amount with a brown outline (white was faint on the cream card)
+            TextMeshProUGUI text = MenuUI.OutlinedText("Amount", card.transform, amount, 44f, new Color32(110, 52, 10, 255),
+                TextAlignmentOptions.Center, new Color32(255, 200, 45, 255));
             MenuUI.Anchor(text.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -140f), new Vector2(220f, 56f));
 
             Button buy = MenuUI.LabelButton("Buy", card.transform, button, price, 32f, action, priceIcon, outline);

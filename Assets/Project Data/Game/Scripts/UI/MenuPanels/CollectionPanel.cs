@@ -15,7 +15,7 @@ namespace Watermelon
     /// </summary>
     public sealed class CollectionPanel : MenuPanel
     {
-        private static readonly string[] ContinentTabs = { "ASIA", "N.AM", "S.AM", "EUROPE", "AFRICA", "OCEANIA", "POLAR" };
+        private static readonly string[] ContinentTabs = { "ASIA", "N.AM", "S.AM", "EUR", "AFR", "OCE", "ANT" };
 
         public const int MasterCoins = 300;
         public const int MasterDiamonds = 5;

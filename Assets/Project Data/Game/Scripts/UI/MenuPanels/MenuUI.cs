@@ -62,7 +62,8 @@ namespace Watermelon
             text.color = color;
             text.fontSize = size;
             text.enableAutoSizing = true;
-            text.fontSizeMin = Mathf.Max(18f, size * 0.75f);
+            // long words shrink to fit instead of being cut to "..."
+            text.fontSizeMin = Mathf.Max(16f, size * 0.55f);
             text.fontSizeMax = size;
             text.alignment = alignment;
             text.textWrappingMode = wrap ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
@@ -152,7 +153,10 @@ namespace Watermelon
             }
 
             TextMeshProUGUI text = OutlinedText("Label", row, label, fontSize, outline ?? new Color32(40, 60, 20, 255));
-            text.enableAutoSizing = false;
+            // shrinks to fit narrow buttons (tabs) rather than cutting the word off
+            text.enableAutoSizing = true;
+            text.fontSizeMax = fontSize;
+            text.fontSizeMin = Mathf.Max(14f, fontSize * 0.55f);
             text.fontSize = fontSize;
             return button;
         }
