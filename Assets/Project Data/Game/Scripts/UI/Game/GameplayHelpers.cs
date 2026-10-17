@@ -189,7 +189,7 @@ namespace Watermelon
             return c != null && c.gameObject.activeInHierarchy && c.IsHighlighted && !c.IsSubmitted && !c.IsMovementActive;
         }
 
-        private static BaseCharacterBehavior FindGoodDish()
+        internal static BaseCharacterBehavior FindGoodDish()
         {
             IReadOnlyList<LevelElementBehavior> elements = LevelController.Elements;
             if (elements == null)

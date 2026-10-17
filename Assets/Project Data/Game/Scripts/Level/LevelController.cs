@@ -395,7 +395,9 @@ namespace Watermelon.BusStop
             EnvironmentBehavior.SetBusQueue(loadedLevelData.BusSpawnQueue);
             EnvironmentBehavior.StartSpawningBusses();
 
-            levelTutorial.Initialise(loadedLevelData.TutorialSteps);
+            // Level 1 is taught by the chef (TutorialGuide points at the dishes itself), so the
+            // level's own hand-only pointer is used from level 2.
+            levelTutorial.Initialise(TutorialGuide.TeachesLevel(levelIndex) ? new TutorialStep[0] : loadedLevelData.TutorialSteps);
 
             PUController.PowerUpsUIController.OnLevelStarted(levelIndex);
             GameplayHelpers.Begin();          // idle hint + tray-almost-full warning

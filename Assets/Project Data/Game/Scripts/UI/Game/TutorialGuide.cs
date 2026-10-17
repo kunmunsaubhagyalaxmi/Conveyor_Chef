@@ -37,13 +37,17 @@ namespace Watermelon
 
         // ------------------------------------------------------------------ entry points
 
+        /// <summary>True when the chef lesson runs on this level (level 1, not seen yet).</summary>
+        public static bool TeachesLevel(int levelIndex) =>
+            levelIndex == 0 && PlayerPrefs.GetInt(SkippedKey, 0) == 0 && PlayerPrefs.GetInt(Level1Key, 0) == 0;
+
         public static void OnLevelStarted(int levelIndex)
         {
             End();
             if (PlayerPrefs.GetInt(SkippedKey, 0) == 1)
                 return;
 
-            bool level1 = levelIndex == 0 && PlayerPrefs.GetInt(Level1Key, 0) == 0;
+            bool level1 = TeachesLevel(levelIndex);
             if (!level1 && levelIndex < 2)
                 return;
 
@@ -96,12 +100,13 @@ namespace Watermelon
         {
             yield return WaitForTray();
 
-            // 1. the tray's colour -> the dish of that colour (the level's own hand points at it)
+            // 1. the tray's colour -> the dish of that colour (the chef's hand points at one)
             int start = OrdersDone();
             int lastSeats = -1;
             Show("Tray ka colour dekho! Neeche wahi colour ki dish par tap karo.", Tray(), interactive: true);
             while (OrdersDone() == start)
             {
+                PointAtDish(GameplayHelpers.FindGoodDish());
                 BusBehavior tray = EnvironmentBehavior.CollectingBus;
                 int seats = tray != null ? tray.PassengersCount : 0;
                 if (seats != lastSeats && seats > 0)
@@ -114,6 +119,7 @@ namespace Watermelon
                 yield return null;
             }
             yield return Wait(0.6f);
+            hand.gameObject.SetActive(false);
 
             // 2. the waiting row
             yield return Step("Galat colour ki dish yahan neeche ruk jaati hai. Sirf 7 jagah hain - sab bhar gayi to level haar jaoge!",
@@ -209,6 +215,20 @@ namespace Watermelon
                 nextLabel.text = button;
             hand.gameObject.SetActive(!interactive && target.HasValue);
             PlaceBubble(target);
+        }
+
+        // Interactive step: the hand rests on a dish of the tray's colour.
+        private void PointAtDish(BaseCharacterBehavior dish)
+        {
+            Rect? r = dish != null ? WorldRect(dish.gameObject) : null;
+            hand.gameObject.SetActive(r.HasValue);
+            if (!r.HasValue)
+                return;
+            Vector2 a = ToLocal(r.Value.min), b = ToLocal(r.Value.max);
+            Rect local = Rect.MinMaxRect(a.x, a.y, b.x, b.y);
+            hand.rectTransform.anchorMin = hand.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            hand.rectTransform.localEulerAngles = Vector3.zero;
+            hand.rectTransform.anchoredPosition = new Vector2(local.center.x + 10f, local.center.y - local.height * 0.1f);
         }
 
         private void Next()
