@@ -37,6 +37,9 @@ namespace Watermelon
 
         // ------------------------------------------------------------------ entry points
 
+        /// <summary>The tutorial is on screen (or about to show) on this level.</summary>
+        public static bool IsRunning => instance != null;
+
         /// <summary>True when the chef lesson runs on this level (level 1, not seen yet).</summary>
         public static bool TeachesLevel(int levelIndex) =>
             levelIndex == 0 && PlayerPrefs.GetInt(SkippedKey, 0) == 0 && PlayerPrefs.GetInt(Level1Key, 0) == 0;
@@ -209,8 +212,13 @@ namespace Watermelon
                 yield return null;
         }
 
+        private CanvasGroup visibility;
+
         private void Show(string text, Rect? target, bool interactive, string button = null)
         {
+            if (visibility.alpha < 1f)
+                StartCoroutine(FadeIn());
+            FitBubble();
             message.text = text;
             SetSpot(target);
             float dimAlpha = interactive ? 0.28f : 0.62f;      // the board stays visible while playing
@@ -245,6 +253,25 @@ namespace Watermelon
             hand.rectTransform.anchoredPosition = new Vector2(local.center.x + 10f, local.center.y - local.height * 0.1f);
         }
 
+        private IEnumerator FadeIn()
+        {
+            visibility.blocksRaycasts = true;
+            for (float t = 0f; t < 0.25f; t += Time.unscaledDeltaTime)
+            {
+                visibility.alpha = t / 0.25f;
+                yield return null;
+            }
+            visibility.alpha = 1f;
+        }
+
+        // The bubble is as wide as the screen allows (narrow phones are under 1000 units wide),
+        // keeping the 3:1 shape of its picture; the chef, SKIP and AAGE stay on screen.
+        private void FitBubble()
+        {
+            float width = Mathf.Min(1000f, root.rect.width - 60f);
+            bubble.rectTransform.sizeDelta = new Vector2(width, width / 3f);
+        }
+
         private void Next()
         {
             advance = true;
@@ -263,11 +290,12 @@ namespace Watermelon
 
         private static IEnumerator WaitForTray()
         {
+            // as soon as the first tray is on its way (the spotlight follows it while it drives in)
             float t = 0f;
-            while (t < 6f)
+            while (t < 3f)
             {
                 BusBehavior tray = EnvironmentBehavior.CollectingBus;
-                if (tray != null && tray.IsAvailableToEnter)
+                if (tray != null && t > 0.3f)
                     yield break;
                 t += Time.unscaledDeltaTime;
                 yield return null;
@@ -410,6 +438,11 @@ namespace Watermelon
             scaler.matchWidthOrHeight = 0.5f;
             gameObject.AddComponent<GraphicRaycaster>();
             root = (RectTransform)transform;
+            // nothing shows until the first message is ready (the level is still loading and
+            // the first tray still driving in)
+            visibility = gameObject.AddComponent<CanvasGroup>();
+            visibility.alpha = 0f;
+            visibility.blocksRaycasts = false;
 
             for (int i = 0; i < 4; i++)
                 dims[i] = Img("Dim " + i, root, null, new Color(0f, 0f, 0f, 0.6f));
@@ -440,7 +473,7 @@ namespace Watermelon
             chef = Img("Chef", bubble.transform, ChefProgress.Avatar(art), Color.white);
             chef.preserveAspect = true;
             chef.rectTransform.anchorMin = chef.rectTransform.anchorMax = new Vector2(0f, 0f);
-            chef.rectTransform.anchoredPosition = new Vector2(40f, -70f);
+            chef.rectTransform.anchoredPosition = new Vector2(78f, -70f);   // inside the screen edge
             chef.rectTransform.sizeDelta = new Vector2(150f, 170f);
 
             // AAGE: the game's green gold-trimmed button with an outlined label (like CONTINUE)
@@ -474,7 +507,7 @@ namespace Watermelon
             var sr = skipText.rectTransform;
             sr.anchorMin = sr.anchorMax = new Vector2(0f, 0f);
             sr.pivot = new Vector2(0f, 1f);
-            sr.anchoredPosition = new Vector2(130f, -18f);
+            sr.anchoredPosition = new Vector2(165f, -18f);
             sr.sizeDelta = new Vector2(300f, 60f);
             skipText.alignment = TextAlignmentOptions.Left;
         }
@@ -536,7 +569,7 @@ namespace Watermelon
                     y = 380f;
             }
             bubble.rectTransform.anchorMin = bubble.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-            bubble.rectTransform.anchoredPosition = new Vector2(30f, y);
+            bubble.rectTransform.anchoredPosition = new Vector2(0f, y);
         }
 
         private Vector2 ToLocal(Vector2 screen)

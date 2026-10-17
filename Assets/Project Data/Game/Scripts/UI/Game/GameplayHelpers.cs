@@ -129,7 +129,8 @@ namespace Watermelon
             float dt = Time.unscaledDeltaTime;
             bool playing = RaycastController.IsEnabled && Time.timeScale > 0.01f && LevelController.Dock != null;
 
-            UpdateHint(dt, playing);
+            // the tutorial points at dishes itself: no second (idle) hand while it runs
+            UpdateHint(dt, playing && !TutorialGuide.IsRunning);
             UpdateWarning(dt, playing);
         }
 
