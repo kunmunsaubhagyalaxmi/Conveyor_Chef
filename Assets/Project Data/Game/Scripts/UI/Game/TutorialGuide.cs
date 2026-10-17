@@ -396,10 +396,11 @@ namespace Watermelon
             hand.rectTransform.sizeDelta = new Vector2(150f, 150f);
 
             bubble = Img("Bubble", root, art != null ? art.speechBubble : null, art != null && art.speechBubble != null ? Color.white : new Color32(255, 248, 230, 255));
-            bubble.rectTransform.sizeDelta = new Vector2(960f, 320f);
-            message = Txt("Message", bubble.transform, "", 44f);
-            message.rectTransform.anchorMin = new Vector2(0.09f, 0.24f);
-            message.rectTransform.anchorMax = new Vector2(0.93f, 0.8f);
+            bubble.rectTransform.sizeDelta = new Vector2(1000f, 333f);
+            // the bubble picture's cream area: 14-94% across, 25-66% up (the chef hat sits above)
+            message = Txt("Message", bubble.transform, "", 40f);
+            message.rectTransform.anchorMin = new Vector2(0.115f, 0.265f);
+            message.rectTransform.anchorMax = new Vector2(0.925f, 0.645f);
             message.rectTransform.offsetMin = message.rectTransform.offsetMax = Vector2.zero;
 
             chef = Img("Chef", bubble.transform, ChefProgress.Avatar(art), Color.white);
@@ -408,20 +409,35 @@ namespace Watermelon
             chef.rectTransform.anchoredPosition = new Vector2(40f, -70f);
             chef.rectTransform.sizeDelta = new Vector2(150f, 170f);
 
-            nextButton = MenuUI.LabelButton("Next", bubble.transform, art != null ? art.buttonGreen : null, "AAGE", 38f, Next, null, new Color32(30, 90, 20, 255));
-            var nr = (RectTransform)nextButton.transform;
+            // AAGE: the game's green gold-trimmed button with an outlined label (like CONTINUE)
+            Image nextImage = Img("Next", bubble.transform, art != null ? art.tutorialButton : null, Color.white);
+            nextImage.preserveAspect = true;
+            nextImage.raycastTarget = true;
+            nextButton = nextImage.gameObject.AddComponent<Button>();
+            nextButton.targetGraphic = nextImage;
+            nextButton.onClick.AddListener(Next);
+            var nr = nextImage.rectTransform;
             nr.anchorMin = nr.anchorMax = new Vector2(1f, 0f);
-            nr.pivot = new Vector2(1f, 0.5f);
-            nr.anchoredPosition = new Vector2(-30f, -10f);
-            nr.sizeDelta = new Vector2(330f, 96f);
-            nextLabel = nextButton.GetComponentInChildren<TextMeshProUGUI>();
+            nr.pivot = new Vector2(1f, 1f);
+            nr.anchoredPosition = new Vector2(-40f, 6f);
+            nr.sizeDelta = new Vector2(330f, 110f);
+            nextLabel = MenuUI.OutlinedText("Label", nextImage.transform, "AAGE", 46f, new Color32(18, 80, 10, 255));
+            Stretch(nextLabel.rectTransform);
+            nextLabel.rectTransform.offsetMin = new Vector2(30f, 18f);
+            nextLabel.rectTransform.offsetMax = new Vector2(-30f, -16f);
 
-            skipButton = MenuUI.LabelButton("Skip", root, art != null ? art.buttonGray : null, "SKIP", 32f, Skip, null, new Color32(60, 60, 60, 255));
-            var sr = (RectTransform)skipButton.transform;
-            sr.anchorMin = sr.anchorMax = new Vector2(1f, 1f);
-            sr.pivot = new Vector2(1f, 1f);
-            sr.anchoredPosition = new Vector2(-24f, -250f);
-            sr.sizeDelta = new Vector2(190f, 80f);
+            // SKIP: just outlined text under the bubble, next to the chef (no button shape)
+            TextMeshProUGUI skipText = MenuUI.OutlinedText("Skip", bubble.transform, "SKIP TUTORIAL >>", 30f, new Color32(40, 24, 10, 255));
+            skipText.raycastTarget = true;
+            skipButton = skipText.gameObject.AddComponent<Button>();
+            skipButton.transition = Selectable.Transition.None;
+            skipButton.onClick.AddListener(Skip);
+            var sr = skipText.rectTransform;
+            sr.anchorMin = sr.anchorMax = new Vector2(0f, 0f);
+            sr.pivot = new Vector2(0f, 1f);
+            sr.anchoredPosition = new Vector2(130f, -18f);
+            sr.sizeDelta = new Vector2(300f, 60f);
+            skipText.alignment = TextAlignmentOptions.Left;
         }
 
         private void SetSpot(Rect? target)
@@ -531,7 +547,7 @@ namespace Watermelon
             t.text = value;
             t.fontSize = size;
             t.enableAutoSizing = true;
-            t.fontSizeMin = 26f;
+            t.fontSizeMin = 22f;
             t.fontSizeMax = size;
             t.color = new Color32(92, 52, 24, 255);
             t.alignment = TextAlignmentOptions.Center;

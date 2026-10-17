@@ -31,6 +31,7 @@ MonoBehaviour:
   handPointer: {fileID: 21300000, guid: e47fa5318470f9c4c8d1af4928683ec9, type: 3}
   tapRing: {fileID: 21300000, guid: 2fdfda112d701e64486e84d5e76e9486, type: 3}
   speechBubble: {fileID: 21300000, guid: 5b194db0a8a17c643af573bccf8fdb35, type: 3}
+  tutorialButton: {fileID: 21300000, guid: 08f452f384cd2a94c8576bf014b072c2, type: 3}
   iconShop: {fileID: 21300000, guid: cfb77c598f824ab0a8b61fdb8212dd29, type: 3}
   iconCollection: {fileID: 21300000, guid: 259211e51cea4ebd87774136fd40e205, type: 3}
   iconTrophy: {fileID: 21300000, guid: f2ff9535f66f462fa5747fb66e4d4c85, type: 3}

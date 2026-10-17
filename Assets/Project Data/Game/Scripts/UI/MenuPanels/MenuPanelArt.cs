@@ -44,6 +44,8 @@ namespace Watermelon
         public Sprite tapRing;
         [Tooltip("Chef speech bubble used by the tutorial (tail at the bottom left).")]
         public Sprite speechBubble;
+        [Tooltip("Green gold-trimmed button without text (the tutorial's AAGE button).")]
+        public Sprite tutorialButton;
         public Sprite iconShop;
         public Sprite iconCollection;
         public Sprite iconTrophy;
