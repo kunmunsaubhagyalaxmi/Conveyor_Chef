@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 namespace Watermelon
 {
     /// <summary>
-    /// Conveyor Chef > UI > Line Up Top Bars: gives the Country Map (7 continents) and Level
-    /// Selection (35 countries) scenes the same top bar (<see cref="BackButtonLayout"/>): BACK
+    /// Conveyor Chef > UI > Line Up Top Bars: gives the Country Map (7 continents) the
+    /// standard top bar (<see cref="BackButtonLayout"/>): BACK
     /// button, settings button and coin / gem pills at the Country Map's places and sizes,
     /// then saves the scenes. The World Map keeps its own. The result is ordinary scene data,
     /// visible and editable in the Hierarchy and Inspector.
@@ -21,7 +21,7 @@ namespace Watermelon
         private static readonly string[] ScenePaths =
         {
             "Assets/Project Data/Game/Scenes/CountryMap.unity",
-            "Assets/Project Data/Game/Scenes/LevelSelection.unity",
+            // Level Selection is left out: its 35 countries share China's hand-placed top bar
         };
 
         static BackButtonLayoutTool()
