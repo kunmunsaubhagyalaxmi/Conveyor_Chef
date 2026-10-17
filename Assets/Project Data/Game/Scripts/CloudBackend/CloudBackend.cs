@@ -20,7 +20,8 @@ namespace ConveyorChef.Cloud
     /// * Unity Gaming Services: Authentication (com.unity.services.authentication) and
     ///   Cloud Save (com.unity.services.cloudsave). The project must be linked to a Unity
     ///   Cloud project (Project Settings > Services) for them to work.
-    /// * Google Play Games (com.google.play.games, optional): on Android the player is signed
+    /// * Google Play Games (optional; the GooglePlayGamesPlugin .unitypackage, detected by
+    ///   PlayGamesDefine, or the com.google.play.games package): on Android the player is signed
     ///   in with their Google account, so their progress follows them to a new phone. Without
     ///   it (or in the Editor) the player gets an anonymous account on this device.
     ///
