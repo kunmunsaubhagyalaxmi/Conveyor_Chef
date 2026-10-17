@@ -26,7 +26,7 @@ namespace Watermelon
 
         private const int MaxSingleColumnItems = 4;
         private const int MaxTwoColumnItems = 6;
-        private const float CompactCardHeight = 92f;
+        private const float CompactCardHeight = 100f;
         private const float CompactSpacing = 2f;
         private const float CompactRowSpacing = 10f;       // air between the rows of dishes
         private const float CompactIconOverscale = 1.14f;  // the dish picture's empty edge may overlap neighbours
@@ -260,7 +260,7 @@ namespace Watermelon
             {
                 icon.anchorMin = icon.anchorMax = new Vector2(0.5f, 0.5f);
                 icon.pivot = new Vector2(0.5f, 0.5f);
-                icon.anchoredPosition = new Vector2(0f, 3f);
+                icon.anchoredPosition = new Vector2(0f, 6f);       // a little up, clear of the count badge
                 icon.sizeDelta = new Vector2(size, size);
                 icon.SetSiblingIndex(0);
             }
@@ -279,7 +279,7 @@ namespace Watermelon
             badge.anchorMin = badge.anchorMax = new Vector2(1f, 0f);
             badge.pivot = new Vector2(1f, 0f);
             badge.anchoredPosition = new Vector2(-1f, 1f);
-            badge.sizeDelta = new Vector2(Mathf.Min(48f, cell.x * 0.62f), 24f);
+            badge.sizeDelta = new Vector2(Mathf.Min(60f, cell.x * 0.8f), 31f);
             badge.SetAsLastSibling();
 
             if (text != null)
@@ -293,8 +293,8 @@ namespace Watermelon
                 if (label != null)
                 {
                     label.enableAutoSizing = true;
-                    label.fontSizeMin = 14f;
-                    label.fontSizeMax = 20f;
+                    label.fontSizeMin = 18f;
+                    label.fontSizeMax = 26f;
                     label.fontStyle = FontStyles.Bold;
                     label.color = Color.white;
                     label.alignment = TextAlignmentOptions.Center;
