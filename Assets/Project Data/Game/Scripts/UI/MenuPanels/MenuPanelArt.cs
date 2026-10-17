@@ -42,6 +42,8 @@ namespace Watermelon
         public Sprite handPointer;
         [Tooltip("Ring that ripples where the hand taps.")]
         public Sprite tapRing;
+        [Tooltip("Chef speech bubble used by the tutorial (tail at the bottom left).")]
+        public Sprite speechBubble;
         public Sprite iconShop;
         public Sprite iconCollection;
         public Sprite iconTrophy;

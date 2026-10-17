@@ -399,6 +399,7 @@ namespace Watermelon.BusStop
 
             PUController.PowerUpsUIController.OnLevelStarted(levelIndex);
             GameplayHelpers.Begin();          // idle hint + tray-almost-full warning
+            TutorialGuide.OnLevelStarted(levelIndex);   // level 1 lesson, one-time tips
 
             isStageLoaded = true;
 
@@ -695,6 +696,7 @@ public static void MarkLevelCompleted(int levelIndex, int starsEarned)
                 return;
 
             GameplayHelpers.End();
+            TutorialGuide.End();
 
             isStageLoaded = false;
 
