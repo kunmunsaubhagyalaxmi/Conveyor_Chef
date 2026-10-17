@@ -439,7 +439,7 @@ namespace Watermelon.BusStop
                 string title = WorldArt.CardTitle(levelIndex) ?? WorldCatalog.GetMissionName(selectedCountry, place);
 
                 card.Refresh(levelIndex, title, thumbnail, unlocked, inCountry == selectedLevel, completed, stars,
-                             completed ? "REPLAY" : "PLAY", inCountry + 1);
+                             completed ? "REPLAY" : "PLAY", levelIndex + 1);   // game-wide number: China 1-30, Japan 31-60...
             }
 
             if (statusText != null)
