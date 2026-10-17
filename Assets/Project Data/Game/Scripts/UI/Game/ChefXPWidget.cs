@@ -81,7 +81,7 @@ namespace Watermelon
 
         // Bumped whenever the look changes, so a bar saved in the scene with an older look is
         // rebuilt (in the same place).
-        private const int CurrentLayout = 3;
+        private const int CurrentLayout = 4;
         [SerializeField] private int layoutVersion;
         private bool UsesCurrentArt => layoutVersion == CurrentLayout;
 
@@ -136,9 +136,9 @@ namespace Watermelon
 
             Image valueBadge = Img("Value Badge", r, Art("xp_badge"));
             valueBadge.preserveAspect = true;
-            Place(valueBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(246f, -6f), new Vector2(160f, 80f));
-            xpText = Txt("XP", valueBadge.transform, "0/100", 32f, Brown);
-            Stretch(xpText.rectTransform, 30f, 18f, 30f, 18f);
+            Place(valueBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(236f, -6f), new Vector2(190f, 95f));
+            xpText = Txt("XP", valueBadge.transform, "0/100", 34f, Brown);
+            Stretch(xpText.rectTransform, 30f, 22f, 30f, 22f);
 
             Image ring = Img("Ring", r, Art("xp_ring"));
             ring.preserveAspect = true;
@@ -149,34 +149,19 @@ namespace Watermelon
             face.transform.SetAsFirstSibling();                 // under the ring
             Image badge = Img("Level Badge", ring.transform, Art("xp_badge"));
             badge.preserveAspect = true;
-            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, -12f), new Vector2(124f, 62f));
+            // sits on the ring's bottom edge, like a name plate
+            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 14f), new Vector2(124f, 62f));
             levelText = Txt("Level", badge.transform, "LV 1", 28f, Brown);
-            Stretch(levelText.rectTransform, 20f, 12f, 20f, 12f);
+            Stretch(levelText.rectTransform, 22f, 15f, 22f, 15f);
 
             // "+60 XP" like the gold country name on Country Completed
             gainText = Txt("Gain", r, "+0 XP", 46f, gainColor);
-            Outline(gainText, new Color32(120, 36, 8, 255), 0.3f);
+            OutlinedText.Apply(gainText, new Color32(120, 36, 8, 255), 0.28f);
             Place(gainText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-25f, 74f), new Vector2(380f, 60f));
         }
 
         private static readonly Color32 Brown = new Color32(92, 52, 24, 255);
 
-        // Outline + soft shadow on this text only (own material, ratios refreshed so TMP does
-        // not clip the outline away).
-        private static void Outline(TMP_Text text, Color color, float width)
-        {
-            var material = new Material(text.fontSharedMaterial) { name = text.name + " Outline" };
-            material.EnableKeyword("OUTLINE_ON");
-            material.EnableKeyword("UNDERLAY_ON");
-            material.SetColor(ShaderUtilities.ID_OutlineColor, color);
-            material.SetFloat(ShaderUtilities.ID_OutlineWidth, width);
-            material.SetFloat(ShaderUtilities.ID_FaceDilate, width * 0.5f);
-            material.SetColor(ShaderUtilities.ID_UnderlayColor, new Color(0f, 0f, 0f, 0.35f));
-            material.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, -0.5f);
-            material.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 0.3f);
-            ShaderUtilities.UpdateShaderRatios(material);
-            text.fontSharedMaterial = material;
-        }
 
         private IEnumerator Play(ChefProgress.Gain gain)
         {
