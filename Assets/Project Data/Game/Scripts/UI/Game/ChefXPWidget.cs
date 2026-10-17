@@ -22,6 +22,7 @@ namespace Watermelon
                 private const string SpriteFolder = "UI/ChefXP/";
 
         [SerializeField] private RectTransform fill;
+        private Image fillImage;
         [SerializeField] private Image face;
         [SerializeField] private TextMeshProUGUI levelText, xpText, gainText;
         [SerializeField] private CanvasGroup group;
@@ -42,10 +43,16 @@ namespace Watermelon
             // One placed in the scene is used as it is (its position and look are the editor's).
             Transform existing = parent.Find(ObjectName);
             ChefXPWidget widget = existing != null ? existing.GetComponent<ChefXPWidget>() : null;
-            if (widget == null || !widget.IsComplete)
+            if (widget == null || !widget.IsComplete || !widget.UsesCurrentArt)
             {
+                // an older bar placed in the scene keeps its place, with the current look
                 if (existing != null)
+                {
+                    position = ((RectTransform)existing).anchoredPosition;
+                    existing.gameObject.SetActive(false);
+                    existing.name = ObjectName + " (old)";
                     Destroy(existing.gameObject);
+                }
                 widget = Create(parent, position);
             }
 
@@ -71,6 +78,8 @@ namespace Watermelon
             queued = false;
             StartCoroutine(Play(pending));
         }
+
+        private bool UsesCurrentArt => fill != null && fill.GetComponent<Image>() != null && fill.GetComponent<Image>().type == Image.Type.Filled;
 
         private bool IsComplete => fill != null && face != null && levelText != null && xpText != null && gainText != null && group != null;
 
@@ -108,34 +117,34 @@ namespace Watermelon
             group.alpha = 0f;
             group.blocksRaycasts = false;
 
-            // bar
+            // bar: the game's own progress bar art (a matched track + fill pair, same as the
+            // Country Map), the fill revealed from the left
             Image track = Img("Track", r, Art("xp_track"));
-            track.type = Image.Type.Sliced;
-            Place(track.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(10f, 0f), new Vector2(TrackWidth, 70f));
-            Image fillImage = Img("Fill", track.transform, Art("xp_fill"));
-            fillImage.color = new Color32(84, 196, 64, 255);
-            fillImage.type = Image.Type.Sliced;
+            Place(track.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(45f, -6f), new Vector2(TrackWidth, 104f));
+            fillImage = Img("Fill", track.transform, Art("xp_fill"));
+            fillImage.type = Image.Type.Filled;
+            fillImage.fillMethod = Image.FillMethod.Horizontal;
+            fillImage.fillOrigin = (int)Image.OriginHorizontal.Left;
             fill = fillImage.rectTransform;
-            fill.anchorMin = Vector2.zero;
-            fill.anchorMax = new Vector2(0f, 1f);
-            fill.pivot = new Vector2(0f, 0.5f);
-            fill.offsetMin = new Vector2(6f, 6f);
-            fill.offsetMax = new Vector2(-6f, -6f);
-            xpText = Txt("XP", track.transform, "0 / 100 XP", 36f, new Color32(70, 40, 16, 255));
-            Stretch(xpText.rectTransform, 10f, 2f, 10f, 2f);
+            Stretch(fill, 0f, 0f, 0f, 0f);
+            xpText = MenuUI.OutlinedText("XP", track.transform, "0 / 100 XP", 30f, new Color32(16, 38, 90, 255));
+            Stretch(xpText.rectTransform, 40f, 20f, 40f, 22f);
 
-            // chef face with the level under it, overlapping the bar's left end
-            face = Img("Chef", r, ChefProgress.Avatar(art));
+            // chef face in the gold ring, the level on a gold badge under it
+            Image ring = Img("Ring", r, Art("xp_ring"));
+            ring.preserveAspect = true;
+            Place(ring.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-272f, 4f), new Vector2(132f, 132f));
+            face = Img("Chef", ring.transform, ChefProgress.Avatar(art));
             face.preserveAspect = true;
-            Place(face.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-285f, 12f), new Vector2(124f, 124f));
-            Image badge = Img("Level Badge", face.transform, Art("xp_badge"));
-            badge.type = Image.Type.Sliced;
-            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, -10f), new Vector2(110f, 44f));
-            levelText = Txt("Level", badge.transform, "LV 1", 32f, Color.white);
-            Stretch(levelText.rectTransform, 4f, 1f, 4f, 1f);
+            Place(face.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 2f), new Vector2(100f, 100f));
+            Image badge = Img("Level Badge", ring.transform, Art("xp_badge"));
+            badge.preserveAspect = true;
+            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, -8f), new Vector2(118f, 59f));
+            levelText = Txt("Level", badge.transform, "LV 1", 28f, new Color32(92, 52, 24, 255));
+            Stretch(levelText.rectTransform, 16f, 10f, 16f, 10f);
 
-            gainText = Txt("Gain", r, "+0 XP", 42f, gainColor);
-            Place(gainText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 64f), new Vector2(360f, 56f));
+            gainText = MenuUI.OutlinedText("Gain", r, "+0 XP", 40f, new Color32(255, 255, 255, 255), TMPro.TextAlignmentOptions.Center, gainColor);
+            Place(gainText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(45f, 62f), new Vector2(360f, 54f));
         }
 
         private IEnumerator Play(ChefProgress.Gain gain)
@@ -196,7 +205,12 @@ namespace Watermelon
             int level = ChefProgress.LevelAt(xp, out int into, out int need);
             levelText.text = "LV " + level;
             xpText.text = into + " / " + need + " XP";
-            fill.anchorMax = new Vector2(Mathf.Clamp01((float)into / need), 1f);
+            if (fillImage == null && fill != null)
+                fillImage = fill.GetComponent<Image>();
+            float k = Mathf.Clamp01((float)into / need);
+            // the fill picture's bar runs from 6.6% to 93.4% of its width
+            if (fillImage != null)
+                fillImage.fillAmount = k <= 0f ? 0f : Mathf.Lerp(143f / 2172f, 2028f / 2172f, k);
             return level;
         }
 
