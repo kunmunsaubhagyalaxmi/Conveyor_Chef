@@ -22,8 +22,14 @@ namespace Watermelon
         {
             ApplyApprovedArtwork();
             if (Application.isPlaying)
+            {
                 ChefProgress.OutfitChanged += ApplyOutfit;
+                if (started)            // re-enabled later; the first time Start does it
+                    ApplyOutfit();
+            }
         }
+
+        private bool started;
 
         private void OnDisable()
         {
@@ -41,6 +47,7 @@ namespace Watermelon
             if (!Application.isPlaying)
                 yield break;
             yield return null;          // the canvas has its final size now
+            started = true;
             ApplyOutfit();
         }
 
@@ -119,6 +126,9 @@ namespace Watermelon
                 return;
 
             ApplyApprovedArtwork();
+            // the outfit chef is resized, which Unity does not allow inside OnValidate
+            if (Application.isPlaying)
+                UnityEditor.EditorApplication.delayCall += () => { if (this != null && isActiveAndEnabled) ApplyOutfit(); };
         }
 #endif
 
@@ -173,9 +183,6 @@ namespace Watermelon
             SetActive("Top HUD", true);
             SetActive("Main Buttons", true);
             SetActive("Bottom Navigation", true);
-
-            if (Application.isPlaying)
-                ApplyOutfit();
         }
 
         private void SetSprite(string objectName, string assetName, bool preserveAspect)
