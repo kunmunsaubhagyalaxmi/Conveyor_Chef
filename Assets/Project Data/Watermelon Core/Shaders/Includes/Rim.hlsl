@@ -18,7 +18,7 @@
     {
 #ifdef RIM_ON
 
-        half4 dirRim = half4(RimDirLightingHalf(_RimMin, _RimMax, _RimColor, input.viewDir, input.normWorld, input.worldPos), 0);
+        half4 dirRim = half4(RimDirLightingHalf(_RimMin, _RimMax, _RimColor, input.viewDir, input.normWorld, input.worldPos.xyz), 0);
         half4 rim = half4(RimLightingHalf(_RimMin, _RimMax, _RimColor, input.viewDir, input.normWorld), 0);
 
         color += lerp(rim, dirRim, _DirRim);

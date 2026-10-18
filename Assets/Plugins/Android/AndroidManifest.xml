@@ -4,6 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.VIBRATE" />
     <application>
+        <!--Android 16 (target SDK 36) ignores "portrait only" on tablets and foldables; this
+            official opt-out keeps the game in portrait there. The DesignFrame still fits the UI
+            to any window shape (split screen, desktop mode).-->
+        <property android:name="android.window.PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY"
+                  android:value="true" />
         <!--Used when Application Entry is set to Activity, otherwise remove this activity block-->
         <activity android:name="com.unity3d.player.UnityPlayerActivity"
                   android:theme="@style/UnityThemeSelector">
