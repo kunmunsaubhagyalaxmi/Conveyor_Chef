@@ -30,6 +30,7 @@ namespace Watermelon
             public bool masked;
             public Image image;
             public RawImage rawImage;
+            public Vector2 coverAlign = new Vector2(0.5f, 0.5f);   // which part of a full-screen picture stays put
         }
 
         private readonly Dictionary<RectTransform, Entry> entries = new Dictionary<RectTransform, Entry>();
@@ -210,14 +211,23 @@ namespace Watermelon
                 if (fullX && fullY && picture)
                 {
                     // Full-screen picture: the design frame enlarged to cover the parent, so the
-                    // picture keeps the proportions it had on the design phone.
+                    // picture keeps the proportions it had on the design phone. It grows around
+                    // its centre, or around the edge a DesignFrameCoverAlign keeps in place
+                    // (a picture with words painted near the bottom keeps its bottom).
                     Vector2 frameUnits = Vector2.Scale(frameSize, parentSize);
                     float cover = Mathf.Max(parentSize.x / frameUnits.x, parentSize.y / frameUnits.y);
                     Vector2 coverSize = frameSize * cover;
-                    Map(child, entry, (frameMin + frameMax - coverSize) * 0.5f, coverSize);
+                    Vector2 offset = frameMin + Vector2.Scale(frameSize - coverSize, entry.coverAlign);
+                    if (cover > 1f)
+                    {
+                        // never leave a gap: the enlarged picture still covers the whole parent
+                        offset.x = Mathf.Clamp(offset.x, 1f - coverSize.x, 0f);
+                        offset.y = Mathf.Clamp(offset.y, 1f - coverSize.y, 0f);
+                    }
+                    Map(child, entry, offset, coverSize);
 
-                    childFrameMin = Vector2.one * (0.5f - 0.5f / cover);
-                    childFrameMax = Vector2.one - childFrameMin;
+                    childFrameMin = new Vector2((frameMin.x - offset.x) / coverSize.x, (frameMin.y - offset.y) / coverSize.y);
+                    childFrameMax = new Vector2((frameMax.x - offset.x) / coverSize.x, (frameMax.y - offset.y) / coverSize.y);
                 }
                 else
                 {
@@ -267,6 +277,9 @@ namespace Watermelon
                     image = rect.GetComponent<Image>(),
                     rawImage = rect.GetComponent<RawImage>(),
                 };
+                DesignFrameCoverAlign align = rect.GetComponent<DesignFrameCoverAlign>();
+                if (align != null)
+                    entry.coverAlign = new Vector2(align.horizontal, align.vertical);
                 entries[rect] = entry;
             }
             else if (rect.anchorMin != entry.appliedMin || rect.anchorMax != entry.appliedMax)
