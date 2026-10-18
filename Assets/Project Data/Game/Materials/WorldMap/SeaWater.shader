@@ -89,7 +89,9 @@ Shader "Conveyor Chef/Sea/Water"
 
                 // painted ocean as the water colour, in map space so it looks like the 2D map
                 float2 mapPos = float2(xz.x, xz.y * _SeaFlatten);
-                float2 uv = (mapPos + _Flow.xy * t) / _TileSize + n.xz * _Distort;
+                // the drift is wrapped (frac) so texture coordinates stay small in long sessions;
+                // huge coordinates lose precision on mobile GPUs and the sea turns blocky
+                float2 uv = mapPos / _TileSize + frac(_Flow.xy * t / _TileSize) + n.xz * _Distort;
                 fixed3 albedo = tex2D(_MainTex, uv).rgb * _Tint.rgb;
 
                 float3 L = normalize(_SeaSunDir.xyz);
@@ -99,7 +101,7 @@ Shader "Conveyor Chef/Sea/Water"
                 // light and shade relative to flat water, so the picture keeps its colours
                 float shade = 1.0 + _Shade * (dot(n, L) - L.y);
                 float flat = pow(H.y, _Gloss);      // calm water gives no glint
-                float glint = saturate((pow(saturate(dot(n, H)), _Gloss) - flat) / (1.0 - flat)) * _Specular;
+                float glint = saturate((pow(max(saturate(dot(n, H)), 1e-4), _Gloss) - flat) / max(1.0 - flat, 1e-4)) * _Specular;
 
                 float h = Height(xz);
                 float foam = smoothstep(0.55 * total, 0.95 * total, h) * _Foam;

@@ -14,6 +14,10 @@ namespace Watermelon
     /// * an App Bundle (.aab, for Google Play) puts the game data in an install-time asset
     ///   pack ("Split Application Binary"), so the 200 MB base-module limit is never hit; an
     ///   .apk stays one single file that installs anywhere (phone, BlueStacks).
+    /// * textures are ASTC, with ETC2 as a second format: an App Bundle carries both and Google
+    ///   Play gives each phone only the one its GPU reads (old budget GPUs have no ASTC and would
+    ///   otherwise unpack every texture in memory: slow loading, crashes). An .apk uses only the
+    ///   first format, so its size does not change.
     /// </summary>
     [InitializeOnLoad]
     public sealed class AndroidBuildSize : IPreprocessBuildWithReport
@@ -23,6 +27,17 @@ namespace Watermelon
         static AndroidBuildSize()
         {
             EditorApplication.delayCall += UseLz4HC;
+            EditorApplication.delayCall += UseAstcWithEtc2Fallback;
+        }
+
+        private static void UseAstcWithEtc2Fallback()
+        {
+            TextureCompressionFormat[] wanted = { TextureCompressionFormat.ASTC, TextureCompressionFormat.ETC2 };
+            TextureCompressionFormat[] current = PlayerSettings.Android.textureCompressionFormats;
+            if (current != null && current.Length == wanted.Length && current[0] == wanted[0] && current[1] == wanted[1])
+                return;
+            PlayerSettings.Android.textureCompressionFormats = wanted;
+            Debug.Log("[Build Size] Android textures: ASTC, with ETC2 for older GPUs in App Bundles.");
         }
 
         private static void UseLz4HC()
