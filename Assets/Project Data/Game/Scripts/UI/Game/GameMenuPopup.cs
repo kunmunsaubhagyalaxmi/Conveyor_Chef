@@ -178,14 +178,14 @@ namespace Watermelon
         private const float PanelAspect = 768f / 1024f;
         private const float CreamTop = 0.189f, CreamBottom = 0.895f;
         private const float TitleWidth = 620f, TitleFromTop = 0.085f;
-        private const float ButtonWidth = 480f;                 // Continue, Sound, Vibration
-        private const float RestartWidth = 330f, HomeSize = 120f, RowGap = 30f;
+        private const float ButtonWidth = 450f;                 // Continue, Sound, Vibration, Restart
+        private const float HomeSize = 130f, HomeFromTop = 0.955f; // round Home on the bottom frame
 
         /// <summary>
-        /// Lays the menu out inside the panel's cream area: Continue, Sound and Vibration at one
-        /// width, then Home and Restart side by side, with equal gaps. Sizes follow each picture's
-        /// own shape, so nothing is stretched. Only positions and sizes change (anchors stay), so
-        /// the DesignFrame fit for other screens is kept.
+        /// Lays the menu out: Continue, Sound, Vibration and Restart at one width with equal gaps
+        /// in the cream area, and the round Home button centred on the panel's bottom frame (as
+        /// on the other popups). Sizes follow each picture's own shape, so nothing is stretched.
+        /// Only positions and sizes change (anchors stay), so the DesignFrame fit is kept.
         /// </summary>
         private void Layout()
         {
@@ -209,14 +209,17 @@ namespace Watermelon
                 start = Mathf.Min(start, title.anchoredPosition.y - titleH * 0.5f);
             }
             float bottom = c.y + panelH * (0.5f - CreamBottom);
+            RectTransform home = Rect(homeButton);
+            if (home != null)
+            {
+                float homeY = c.y + panelH * (0.5f - HomeFromTop);
+                Place(home, c.x, homeY, HomeSize, HomeSize);
+                bottom = Mathf.Max(bottom, homeY + HomeSize * 0.5f);
+            }
 
-            RectTransform[] column = { Rect(resumeButton), Rect(soundButton), Rect(vibrationButton) };
-            RectTransform restart = Rect(restartButton), home = Rect(homeButton);
-            float restartH = restart != null ? RestartWidth / Aspect(restart) : 0f;
-            float rowH = Mathf.Max(home != null ? HomeSize : 0f, restartH);
-
-            float content = rowH;
-            int items = 1;
+            RectTransform[] column = { Rect(resumeButton), Rect(soundButton), Rect(vibrationButton), Rect(restartButton) };
+            float content = 0f;
+            int items = 0;
             foreach (RectTransform r in column)
             {
                 if (r == null)
@@ -236,16 +239,9 @@ namespace Watermelon
                 y -= h + gap;
             }
 
-            float rowY = y - rowH * 0.5f;
-            float rowW = (home != null ? HomeSize : 0f) + (restart != null ? RestartWidth : 0f) + (home != null && restart != null ? RowGap : 0f);
-            float x = c.x - rowW * 0.5f;
+            // Home sits on the frame in front of the panel
             if (home != null)
-            {
-                Place(home, x + HomeSize * 0.5f, rowY, HomeSize, HomeSize);
-                x += HomeSize + RowGap;
-            }
-            if (restart != null)
-                Place(restart, x + RestartWidth * 0.5f, rowY, RestartWidth, restartH);
+                home.SetAsLastSibling();
         }
 
         private static RectTransform Rect(Button button) => button != null ? button.transform as RectTransform : null;
