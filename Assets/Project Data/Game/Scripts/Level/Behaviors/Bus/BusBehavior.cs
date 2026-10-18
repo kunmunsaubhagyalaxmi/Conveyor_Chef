@@ -320,6 +320,7 @@ namespace Watermelon
                 passenger.transform.rotation = Quaternion.Euler(0, 90, 0);
                 passenger.PlaySpawnAnimation();
                 passenger.OnElementSubmittedToBus();
+                DiamondDishes.OnSeated(passenger);
 
                 if (!HasAvailableSit)
                     IsAvailableToEnter = false;
@@ -337,6 +338,7 @@ namespace Watermelon
             passenger.transform.rotation = Quaternion.Euler(0, 90, 0);
             passenger.PlaySpawnAnimation();
             passenger.OnElementSubmittedToBus();
+            DiamondDishes.OnSeated(passenger);
 
             if (!HasAvailableSit)
                 IsAvailableToEnter = false;

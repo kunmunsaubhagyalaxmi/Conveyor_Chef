@@ -42,12 +42,15 @@ namespace Watermelon
         /// The coin counter the player can actually see (the game screen's top bar), not one
         /// on a hidden layer. <paramref name="exclude"/>: a page whose own counters are skipped.
         /// </summary>
-        public static CurrencyUIPanelSimple VisibleCoinCounter(Transform exclude)
+        public static CurrencyUIPanelSimple VisibleCoinCounter(Transform exclude) => VisibleCounter(CurrencyType.Coins, exclude);
+
+        /// <summary>The counter of <paramref name="type"/> the player can see (the game screen's top bar).</summary>
+        public static CurrencyUIPanelSimple VisibleCounter(CurrencyType type, Transform exclude)
         {
             CurrencyUIPanelSimple best = null;
             foreach (CurrencyUIPanelSimple panel in FindObjectsByType<CurrencyUIPanelSimple>(FindObjectsSortMode.None))
             {
-                if (panel == null || !panel.isActiveAndEnabled || panel.Currency == null || panel.Currency.CurrencyType != CurrencyType.Coins)
+                if (panel == null || !panel.isActiveAndEnabled || panel.Currency == null || panel.Currency.CurrencyType != type)
                     continue;
                 if (exclude != null && panel.transform.IsChildOf(exclude))
                     continue;

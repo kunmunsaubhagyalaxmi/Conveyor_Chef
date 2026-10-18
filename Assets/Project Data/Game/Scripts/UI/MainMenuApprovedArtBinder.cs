@@ -9,7 +9,8 @@ namespace Watermelon
     /// Canvas -> NEW Main Menu hierarchy.
     ///
     /// This component changes VISUAL SPRITES ONLY.
-    /// It never changes RectTransform positions, sizes, anchors, pivots or scale.
+    /// It never changes RectTransform positions, sizes, anchors, pivots or scale
+    /// (except in Play mode, where an outfit chef is fitted into the classic chef's place).
     /// The layout saved in menu.unity therefore stays authoritative.
     /// </summary>
     [ExecuteAlways]
@@ -20,6 +21,102 @@ namespace Watermelon
         private void OnEnable()
         {
             ApplyApprovedArtwork();
+            if (Application.isPlaying)
+            {
+                ChefProgress.OutfitChanged += ApplyOutfit;
+                if (started)            // re-enabled later; the first time Start does it
+                    ApplyOutfit();
+            }
+        }
+
+        private bool started;
+
+        private void OnDisable()
+        {
+            ChefProgress.OutfitChanged -= ApplyOutfit;
+        }
+
+        // How far an outfit chef may reach further left than the classic chef (canvas units).
+        private const float OutfitExtraWidth = 80f;
+
+        private RectTransform chefRect;
+        private Vector2 chefOffsetMin, chefOffsetMax;
+
+        private System.Collections.IEnumerator Start()
+        {
+            if (!Application.isPlaying)
+                yield break;
+            yield return null;          // the canvas has its final size now
+            started = true;
+            ApplyOutfit();
+        }
+
+        // In the game the big menu chef and the top-left avatar wear the outfit picked in
+        // Customize > CHEF; the classic chef keeps the approved menu art.
+        private void ApplyOutfit()
+        {
+            RestoreChefRect();
+            ChefProgress.Outfit outfit = ChefProgress.Selected;
+            if (outfit.Id == "classic")
+            {
+                SetSprite("Chef Character", "chef", true);
+                SetSprite("Chef Avatar", "avatar", true);
+                return;
+            }
+            Sprite full = ChefProgress.LoadFull(outfit);
+            FitOutfitChef(full);
+            SetOutfitSprite("Chef Character", full);
+            SetOutfitSprite("Chef Avatar", ChefProgress.LoadHud(outfit) ?? ChefProgress.LoadAvatar(outfit));
+        }
+
+        // The outfit pictures are wider than the classic chef (0.5 vs 0.41 of their height), so at
+        // the same height they would reach into the buttons. The outfit chef stands where the
+        // classic one stands: same floor, same right edge, at most a little wider to the left,
+        // and only as tall as that width allows. Play mode only; the scene layout is untouched.
+        private void FitOutfitChef(Sprite outfit)
+        {
+            Sprite classic = ProfessionalMainMenuEmbeddedAssets.GetSprite("chef");
+            if (chefRect == null || outfit == null || classic == null)
+                return;
+
+            Rect r = chefRect.rect;
+            float classicAspect = classic.rect.width / classic.rect.height;
+            float outfitAspect = outfit.rect.width / outfit.rect.height;
+            // the classic chef as preserveAspect shows it: full height, centred
+            float classicW = Mathf.Min(r.width, r.height * classicAspect);
+            float classicH = classicW / classicAspect;
+            float right = r.center.x + classicW * 0.5f;
+            float bottom = r.center.y - classicH * 0.5f;
+
+            float h = Mathf.Min(classicH, (classicW + OutfitExtraWidth) / outfitAspect);
+            float w = h * outfitAspect;
+            chefRect.offsetMin = chefOffsetMin + new Vector2((right - w) - r.xMin, bottom - r.yMin);
+            chefRect.offsetMax = chefOffsetMax + new Vector2(right - r.xMax, (bottom + h) - r.yMax);
+        }
+
+        private void RestoreChefRect()
+        {
+            if (chefRect == null)
+            {
+                Transform t = FindDeep(transform, "Chef Character");
+                chefRect = t as RectTransform;
+                if (chefRect == null)
+                    return;
+                chefOffsetMin = chefRect.offsetMin;
+                chefOffsetMax = chefRect.offsetMax;
+            }
+            chefRect.offsetMin = chefOffsetMin;
+            chefRect.offsetMax = chefOffsetMax;
+        }
+
+        private void SetOutfitSprite(string objectName, Sprite sprite)
+        {
+            Transform target = FindDeep(transform, objectName);
+            Image image = target != null ? target.GetComponent<Image>() : null;
+            if (image == null || sprite == null)
+                return;
+            image.sprite = sprite;
+            image.preserveAspect = true;
         }
 
 #if UNITY_EDITOR
@@ -29,6 +126,9 @@ namespace Watermelon
                 return;
 
             ApplyApprovedArtwork();
+            // the outfit chef is resized, which Unity does not allow inside OnValidate
+            if (Application.isPlaying)
+                UnityEditor.EditorApplication.delayCall += () => { if (this != null && isActiveAndEnabled) ApplyOutfit(); };
         }
 #endif
 

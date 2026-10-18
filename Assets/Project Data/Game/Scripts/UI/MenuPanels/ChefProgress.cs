@@ -120,12 +120,16 @@ namespace Watermelon
             }
         }
 
+        /// <summary>Raised after the player picks another outfit (menu chef pictures follow it).</summary>
+        public static event System.Action OutfitChanged;
+
         public static void Select(Outfit outfit)
         {
             if (outfit == null || !IsUnlocked(outfit) || !HasArt(outfit))
                 return;
             PlayerPrefs.SetString(OutfitKey, outfit.Id);
             PlayerPrefs.Save();
+            OutfitChanged?.Invoke();
         }
 
         /// <summary>The first outfit still locked (for "next outfit at level N").</summary>
@@ -142,6 +146,8 @@ namespace Watermelon
 
         public static Sprite LoadAvatar(Outfit outfit) => outfit == null ? null : Resources.Load<Sprite>(ArtFolder + outfit.Id + "_avatar");
         public static Sprite LoadFull(Outfit outfit) => outfit == null ? null : Resources.Load<Sprite>(ArtFolder + outfit.Id + "_full");
+        /// <summary>The avatar inside the classic gold square, for the main menu HUD (made by Tools/make_chef_hud_avatars.py).</summary>
+        public static Sprite LoadHud(Outfit outfit) => outfit == null ? null : Resources.Load<Sprite>(ArtFolder + outfit.Id + "_hud");
 
         /// <summary>Face of the chosen outfit (the original chef when it has none).</summary>
         public static Sprite Avatar(MenuPanelArt art)
@@ -163,9 +169,11 @@ namespace Watermelon
 
         public static Sprite AvatarOf(Outfit outfit, MenuPanelArt art)
         {
-            if (outfit == null || outfit.Id == "classic")
+            if (outfit == null)
                 return art != null ? art.chefAvatar : null;
-            return LoadAvatar(outfit);
+            // the classic chef has an unframed picture too (Chef/classic_avatar), like the outfits
+            Sprite s = LoadAvatar(outfit);
+            return s != null || outfit.Id != "classic" ? s : (art != null ? art.chefAvatar : null);
         }
     }
 }

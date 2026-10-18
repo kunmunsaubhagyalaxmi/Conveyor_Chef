@@ -399,6 +399,20 @@ namespace Watermelon.BusStop
             clocheRenderer = CreateLayer("Glass Cloche", GetClocheSprite(CountryFoodStyle.Lid), new Vector3(0f, ClocheBaseY, -0.01f), Vector3.one * ClocheSpriteWidth, 3);
         }
 
+        /// <summary>The camera-facing card the dish is drawn on (null until built).</summary>
+        public Transform Card => card;
+
+        /// <summary>
+        /// An extra picture on the dish card (e.g. the diamond badge), drawn above the dish;
+        /// <paramref name="size"/> is in plate widths.
+        /// </summary>
+        public SpriteRenderer AddBadge(string name, Sprite sprite, Vector3 localPosition, float size, int order = 6)
+        {
+            if (card == null)
+                return null;
+            return CreateLayer(name, sprite, localPosition, Vector3.one * size, order);
+        }
+
         private SpriteRenderer CreateLayer(string name, Sprite sprite, Vector3 localPosition, Vector3 localScale, int order)
         {
             GameObject go = new GameObject(name);
