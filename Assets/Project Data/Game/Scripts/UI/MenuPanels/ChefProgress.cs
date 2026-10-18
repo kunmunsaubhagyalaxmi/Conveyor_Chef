@@ -169,9 +169,11 @@ namespace Watermelon
 
         public static Sprite AvatarOf(Outfit outfit, MenuPanelArt art)
         {
-            if (outfit == null || outfit.Id == "classic")
+            if (outfit == null)
                 return art != null ? art.chefAvatar : null;
-            return LoadAvatar(outfit);
+            // the classic chef has an unframed picture too (Chef/classic_avatar), like the outfits
+            Sprite s = LoadAvatar(outfit);
+            return s != null || outfit.Id != "classic" ? s : (art != null ? art.chefAvatar : null);
         }
     }
 }
