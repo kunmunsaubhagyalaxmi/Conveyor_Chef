@@ -1061,7 +1061,7 @@ namespace Watermelon
             {
                 try
                 {
-                    coinText.text = CurrenciesController.Get(CurrencyType.Coins).ToString("N0");
+                    CurrencyText.Set(coinText, CurrenciesController.Get(CurrencyType.Coins));
                 }
                 catch
                 {
@@ -1070,7 +1070,7 @@ namespace Watermelon
             }
 
             if (diamondText != null)
-                diamondText.text = GetDiamondAmount().ToString("N0");
+                CurrencyText.Set(diamondText, GetDiamondAmount());
         }
 
         private void OnCurrencyChanged(Currency currency, int difference)

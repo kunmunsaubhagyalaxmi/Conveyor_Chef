@@ -379,7 +379,7 @@ namespace Watermelon.BusStop
 
             try
             {
-                coinText.text = CurrenciesController.Get(CurrencyType.Coins).ToString("N0");
+                CurrencyText.Set(coinText, CurrenciesController.Get(CurrencyType.Coins));
             }
             catch
             {

@@ -357,10 +357,10 @@ namespace Watermelon.BusStop
         private void RefreshHUD()
         {
             if (coinText != null)
-                coinText.text = GetCurrencyAmountSafe(CurrencyType.Coins).ToString("N0");
+                CurrencyText.Set(coinText, GetCurrencyAmountSafe(CurrencyType.Coins));
 
             if (diamondText != null)
-                diamondText.text = GetDiamondAmount().ToString("N0");
+                CurrencyText.Set(diamondText, GetDiamondAmount());
 
             if (starText != null)
                 starText.text = (levelSave != null ? levelSave.GetTotalStars() : 0).ToString("N0");

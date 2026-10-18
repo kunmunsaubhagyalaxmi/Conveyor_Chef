@@ -61,6 +61,7 @@ namespace Watermelon
         public void Redraw()
         {
             text.text = currency.AmountFormatted;
+            CurrencyText.Fit(text);
 
             rectTransform.sizeDelta = CurrencyUIHelper.GetPanelSize(text.text.Length - 1);
         }
@@ -68,6 +69,7 @@ namespace Watermelon
         public void SetAmount(int amount)
         {
             text.text = CurrenciesHelper.Format(amount);
+            CurrencyText.Fit(text);
 
             rectTransform.sizeDelta = CurrencyUIHelper.GetPanelSize(text.text.Length - 1);
         }

@@ -58,11 +58,13 @@ namespace Watermelon
         public void Redraw()
         {
             text.text = useFormattedAmount ? currency.AmountFormatted : currency.Amount.ToString();
+            CurrencyText.Fit(text);
         }
 
         public void SetAmount(int amount, bool format = true)
         {
             text.text = format ? CurrenciesHelper.Format(amount) : amount.ToString();
+            CurrencyText.Fit(text);
         }
 
         public void Activate()
@@ -84,6 +86,7 @@ namespace Watermelon
         private void OnCurrencyAmountChanged(Currency currency, int amountDifference)
         {
             text.text = useFormattedAmount ? currency.AmountFormatted : currency.Amount.ToString();
+            CurrencyText.Fit(text);
         }
     }
 }

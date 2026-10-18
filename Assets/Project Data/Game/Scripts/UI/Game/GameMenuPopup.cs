@@ -179,7 +179,7 @@ namespace Watermelon
         private const float CreamTop = 0.189f, CreamBottom = 0.895f;
         private const float TitleWidth = 620f, TitleFromTop = 0.085f;
         private const float ButtonWidth = 450f;                 // Continue, Sound, Vibration, Restart
-        private const float HomeSize = 130f, HomeFromTop = 0.955f; // round Home on the bottom frame
+        private const float HomeSize = 130f, HomeFromTop = 0.915f; // round Home over the bottom edge of the cream area
 
         /// <summary>
         /// Lays the menu out: Continue, Sound, Vibration and Restart at one width with equal gaps

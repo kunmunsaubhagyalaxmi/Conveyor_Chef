@@ -543,9 +543,9 @@ namespace Watermelon
         protected void UpdateCurrencies()
         {
             if (coinsText != null)
-                coinsText.text = GetCurrency(CurrencyType.Coins).ToString("N0");
+                CurrencyText.Set(coinsText, GetCurrency(CurrencyType.Coins));
             if (diamondsText != null)
-                diamondsText.text = GetCurrency(CurrencyType.Diamonds).ToString("N0");
+                CurrencyText.Set(diamondsText, GetCurrency(CurrencyType.Diamonds));
         }
 
         #endregion

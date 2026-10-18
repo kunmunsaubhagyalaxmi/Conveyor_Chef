@@ -193,9 +193,10 @@ namespace Watermelon
             if (amount != shownAmount || shownText == null)
             {
                 shownAmount = amount;
-                shownText = amount.ToString("N0");
+                shownText = CurrencyText.Amount(amount);
             }
 
+            CurrencyText.Fit(text);
             if (text.text != shownText)
                 text.text = shownText;
         }
