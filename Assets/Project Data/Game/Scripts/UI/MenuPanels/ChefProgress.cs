@@ -120,12 +120,16 @@ namespace Watermelon
             }
         }
 
+        /// <summary>Raised after the player picks another outfit (menu chef pictures follow it).</summary>
+        public static event System.Action OutfitChanged;
+
         public static void Select(Outfit outfit)
         {
             if (outfit == null || !IsUnlocked(outfit) || !HasArt(outfit))
                 return;
             PlayerPrefs.SetString(OutfitKey, outfit.Id);
             PlayerPrefs.Save();
+            OutfitChanged?.Invoke();
         }
 
         /// <summary>The first outfit still locked (for "next outfit at level N").</summary>

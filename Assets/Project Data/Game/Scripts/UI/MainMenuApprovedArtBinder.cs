@@ -20,6 +20,38 @@ namespace Watermelon
         private void OnEnable()
         {
             ApplyApprovedArtwork();
+            if (Application.isPlaying)
+                ChefProgress.OutfitChanged += ApplyOutfit;
+        }
+
+        private void OnDisable()
+        {
+            ChefProgress.OutfitChanged -= ApplyOutfit;
+        }
+
+        // In the game the big menu chef and the top-left avatar wear the outfit picked in
+        // Customize > CHEF; the classic chef keeps the approved menu art.
+        private void ApplyOutfit()
+        {
+            ChefProgress.Outfit outfit = ChefProgress.Selected;
+            if (outfit.Id == "classic")
+            {
+                SetSprite("Chef Character", "chef", true);
+                SetSprite("Chef Avatar", "avatar", true);
+                return;
+            }
+            SetOutfitSprite("Chef Character", ChefProgress.LoadFull(outfit));
+            SetOutfitSprite("Chef Avatar", ChefProgress.LoadAvatar(outfit));
+        }
+
+        private void SetOutfitSprite(string objectName, Sprite sprite)
+        {
+            Transform target = FindDeep(transform, objectName);
+            Image image = target != null ? target.GetComponent<Image>() : null;
+            if (image == null || sprite == null)
+                return;
+            image.sprite = sprite;
+            image.preserveAspect = true;
         }
 
 #if UNITY_EDITOR
@@ -83,6 +115,9 @@ namespace Watermelon
             SetActive("Top HUD", true);
             SetActive("Main Buttons", true);
             SetActive("Bottom Navigation", true);
+
+            if (Application.isPlaying)
+                ApplyOutfit();
         }
 
         private void SetSprite(string objectName, string assetName, bool preserveAspect)
