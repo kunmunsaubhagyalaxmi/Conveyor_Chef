@@ -115,7 +115,8 @@ Shader "Conveyor Chef/UI/Ocean Waves"
 
                 // whole waves per tile keep the tiling seamless
                 float k = max(1.0, round(_WaveFrequency));
-                float2 flow = uv + _FlowSpeed.xy * t;
+                // drift wrapped with frac (same picture: k is whole) so values stay small in long sessions
+                float2 flow = uv + frac(_FlowSpeed.xy * t);
                 float2 ripple;
                 ripple.x = sin(flow.y * k * TAU + t * _WaveSpeed);
                 ripple.y = cos(flow.x * k * TAU + t * _WaveSpeed * 0.83);
