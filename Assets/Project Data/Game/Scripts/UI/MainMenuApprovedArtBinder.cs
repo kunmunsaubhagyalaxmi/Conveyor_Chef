@@ -41,7 +41,7 @@ namespace Watermelon
                 return;
             }
             SetOutfitSprite("Chef Character", ChefProgress.LoadFull(outfit));
-            SetOutfitSprite("Chef Avatar", ChefProgress.LoadAvatar(outfit));
+            SetOutfitSprite("Chef Avatar", ChefProgress.LoadHud(outfit) ?? ChefProgress.LoadAvatar(outfit));
         }
 
         private void SetOutfitSprite(string objectName, Sprite sprite)

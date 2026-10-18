@@ -146,6 +146,8 @@ namespace Watermelon
 
         public static Sprite LoadAvatar(Outfit outfit) => outfit == null ? null : Resources.Load<Sprite>(ArtFolder + outfit.Id + "_avatar");
         public static Sprite LoadFull(Outfit outfit) => outfit == null ? null : Resources.Load<Sprite>(ArtFolder + outfit.Id + "_full");
+        /// <summary>The avatar inside the classic gold square, for the main menu HUD (made by Tools/make_chef_hud_avatars.py).</summary>
+        public static Sprite LoadHud(Outfit outfit) => outfit == null ? null : Resources.Load<Sprite>(ArtFolder + outfit.Id + "_hud");
 
         /// <summary>Face of the chosen outfit (the original chef when it has none).</summary>
         public static Sprite Avatar(MenuPanelArt art)
