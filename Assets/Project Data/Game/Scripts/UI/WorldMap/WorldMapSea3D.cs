@@ -260,7 +260,7 @@ namespace Watermelon
             seaCamera.nearClipPlane = 10f;
             seaCamera.farClipPlane = 20000f;
             seaCamera.allowHDR = false;
-            seaCamera.allowMSAA = true;
+            seaCamera.allowMSAA = false;
             seaCamera.depth = -100f;
 
             foreach (Camera other in Camera.allCameras)
@@ -310,15 +310,28 @@ namespace Watermelon
                 target.Release();
                 Destroy(target);
             }
+            // No MSAA: on some Samsung (Mali, OpenGL ES) tablets a multisampled render texture
+            // kept the previous frame's depth, so the water could not draw over where a boat or
+            // dolphin had been and they left long trails across the sea.
             target = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32)
             {
                 name = "Sea 3D",
-                antiAliasing = 2,
+                antiAliasing = 1,
                 useMipMap = false,
             };
             target.Create();
             seaCamera.targetTexture = target;
             view.texture = target;
+        }
+
+        // Wipes colour and depth before the sea camera draws, so nothing from the last frame
+        // can survive on GPUs that skip the camera's own clear.
+        private void ClearTarget()
+        {
+            RenderTexture previous = RenderTexture.active;
+            RenderTexture.active = target;
+            GL.Clear(true, true, seaCamera.backgroundColor);
+            RenderTexture.active = previous;
         }
 
         private void BuildWater()
@@ -548,6 +561,7 @@ namespace Watermelon
         private void SyncCamera()
         {
             EnsureTarget();
+            ClearTarget();
             view.rectTransform.GetWorldCorners(corners);
             Vector2 bl = mapProps.InverseTransformPoint(corners[0]);
             Vector2 tr = mapProps.InverseTransformPoint(corners[2]);
