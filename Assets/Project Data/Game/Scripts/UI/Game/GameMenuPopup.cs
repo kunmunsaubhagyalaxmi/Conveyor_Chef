@@ -69,6 +69,7 @@ namespace Watermelon
 
             PlayClick();
             RefreshLabels();
+            Layout();
             root.SetActive(true);
             root.transform.SetAsLastSibling();
             RaycastController.Disable();
@@ -167,6 +168,101 @@ namespace Watermelon
             Resume();
             PlayClick();
             GameController.ReturnToLevelSelection();
+        }
+
+        // ------------------------------------------------------------ layout
+
+        // Panel art (pause_popup_panel.png, 768x1024): the cream area is 18.9-89.5% of its
+        // height and 11.8-87.9% of its width; MENU sits on the blue band at the top.
+        private const float PanelWidth = 800f;
+        private const float PanelAspect = 768f / 1024f;
+        private const float CreamTop = 0.189f, CreamBottom = 0.895f;
+        private const float TitleWidth = 620f, TitleFromTop = 0.085f;
+        private const float ButtonWidth = 480f;                 // Continue, Sound, Vibration
+        private const float RestartWidth = 330f, HomeSize = 120f, RowGap = 30f;
+
+        /// <summary>
+        /// Lays the menu out inside the panel's cream area: Continue, Sound and Vibration at one
+        /// width, then Home and Restart side by side, with equal gaps. Sizes follow each picture's
+        /// own shape, so nothing is stretched. Only positions and sizes change (anchors stay), so
+        /// the DesignFrame fit for other screens is kept.
+        /// </summary>
+        private void Layout()
+        {
+            if (root == null)
+                return;
+            RectTransform panel = root.transform.Find("Panel") as RectTransform;
+            if (panel == null)
+                return;
+            RectTransform title = root.transform.Find("Menu Title") as RectTransform;
+
+            Vector2 c = panel.anchoredPosition;
+            float panelH = PanelWidth / PanelAspect;
+            panel.sizeDelta = new Vector2(PanelWidth, panelH);
+            float top = c.y + panelH * 0.5f;
+
+            float start = c.y + panelH * (0.5f - CreamTop);
+            if (title != null)
+            {
+                float titleH = TitleWidth / Aspect(title);
+                Place(title, c.x, top - panelH * TitleFromTop, TitleWidth, titleH);
+                start = Mathf.Min(start, title.anchoredPosition.y - titleH * 0.5f);
+            }
+            float bottom = c.y + panelH * (0.5f - CreamBottom);
+
+            RectTransform[] column = { Rect(resumeButton), Rect(soundButton), Rect(vibrationButton) };
+            RectTransform restart = Rect(restartButton), home = Rect(homeButton);
+            float restartH = restart != null ? RestartWidth / Aspect(restart) : 0f;
+            float rowH = Mathf.Max(home != null ? HomeSize : 0f, restartH);
+
+            float content = rowH;
+            int items = 1;
+            foreach (RectTransform r in column)
+            {
+                if (r == null)
+                    continue;
+                content += ButtonWidth / Aspect(r);
+                items++;
+            }
+            float gap = Mathf.Max(8f, (start - bottom - content) / (items + 1));
+
+            float y = start - gap;
+            foreach (RectTransform r in column)
+            {
+                if (r == null)
+                    continue;
+                float h = ButtonWidth / Aspect(r);
+                Place(r, c.x, y - h * 0.5f, ButtonWidth, h);
+                y -= h + gap;
+            }
+
+            float rowY = y - rowH * 0.5f;
+            float rowW = (home != null ? HomeSize : 0f) + (restart != null ? RestartWidth : 0f) + (home != null && restart != null ? RowGap : 0f);
+            float x = c.x - rowW * 0.5f;
+            if (home != null)
+            {
+                Place(home, x + HomeSize * 0.5f, rowY, HomeSize, HomeSize);
+                x += HomeSize + RowGap;
+            }
+            if (restart != null)
+                Place(restart, x + RestartWidth * 0.5f, rowY, RestartWidth, restartH);
+        }
+
+        private static RectTransform Rect(Button button) => button != null ? button.transform as RectTransform : null;
+
+        private static float Aspect(RectTransform rect)
+        {
+            Image image = rect.GetComponent<Image>();
+            if (image == null || image.sprite == null)
+                return 3f;
+            Rect r = image.sprite.rect;
+            return r.width / Mathf.Max(1f, r.height);
+        }
+
+        private static void Place(RectTransform rect, float x, float y, float width, float height)
+        {
+            rect.anchoredPosition = new Vector2(x, y);
+            rect.sizeDelta = new Vector2(width, height);
         }
 
         // The toggle art shows the current state (SOUND ON / SOUND OFF, ...); plain
