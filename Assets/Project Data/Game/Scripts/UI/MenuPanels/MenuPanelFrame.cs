@@ -14,16 +14,32 @@ namespace Watermelon
     {
         public const string ResourceFolder = "MenuPanelFrames/";
 
+        /// <summary>
+        /// One frame picture with an EMPTY title ribbon (Resources/MenuPanelFrames/blank.png).
+        /// When it is there every panel uses it and writes its own title on the ribbon, in the
+        /// player's language; without it each panel keeps its own picture with the title drawn in.
+        /// </summary>
+        public const string BlankKey = "blank";
+
         // Measured in the picture's pixels, origin top-left.
         private struct Layout
         {
             public RectInt Cream;          // the cream content area
             public Vector3 Close;          // x, y = centre of the X button, z = radius
+            public RectInt Title;          // where the title is written (blank frame only)
 
             public Layout(int left, int top, int right, int bottom, int closeX, int closeY, int closeRadius)
             {
                 Cream = new RectInt(left, top, right - left, bottom - top);
                 Close = new Vector3(closeX, closeY, closeRadius);
+                Title = default;
+            }
+
+            public Layout WithTitle(int left, int top, int right, int bottom)
+            {
+                Layout copy = this;
+                copy.Title = new RectInt(left, top, right - left, bottom - top);
+                return copy;
             }
         }
 
@@ -36,7 +52,12 @@ namespace Watermelon
             { "shop",         new Layout(72, 263, 868, 1555, 868, 146, 50) },
             { "achievements", new Layout(78, 250, 860, 1531, 860, 136, 52) },
             { "leaderboard",  new Layout(73, 254, 864, 1519, 876, 160, 54) },
+            // measured once blank.png is in (same 941x1672 shape as the pictures above)
+            { BlankKey,       new Layout(72, 263, 868, 1555, 868, 146, 50).WithTitle(270, 62, 670, 150) },
         };
+
+        // Title area on a blank ribbon when not measured: centre of the ribbon, as fractions.
+        private static readonly Rect DefaultTitle = new Rect(0.29f, 0.037f, 0.42f, 0.053f);
 
         // Unknown pictures: the shared layout of these frames, as fractions of the picture.
         private static readonly Rect DefaultCream = new Rect(0.076f, 0.145f, 0.845f, 0.785f);
@@ -55,6 +76,13 @@ namespace Watermelon
         public Vector2 CloseMin { get; private set; }
         public Vector2 CloseMax { get; private set; }
 
+        /// <summary>True for the blank-ribbon frame: the panel writes its own title.</summary>
+        public bool Blank { get; private set; }
+
+        /// <summary>Title box as anchors of the frame (blank frame only).</summary>
+        public Vector2 TitleMin { get; private set; }
+        public Vector2 TitleMax { get; private set; }
+
         public static MenuPanelFrame Load(string key)
         {
             Sprite sprite = Resources.Load<Sprite>(ResourceFolder + key);
@@ -63,7 +91,8 @@ namespace Watermelon
 
             float width = sprite.rect.width;
             float height = sprite.rect.height;
-            MenuPanelFrame frame = new MenuPanelFrame { Sprite = sprite };
+            MenuPanelFrame frame = new MenuPanelFrame { Sprite = sprite, Blank = key == BlankKey };
+            Rect title = DefaultTitle;
 
             if (Layouts.TryGetValue(key, out Layout layout))
             {
@@ -74,6 +103,9 @@ namespace Watermelon
                 Vector3 close = layout.Close;
                 frame.CloseMin = new Vector2((close.x - close.z) / width, 1f - (close.y + close.z) / height);
                 frame.CloseMax = new Vector2((close.x + close.z) / width, 1f - (close.y - close.z) / height);
+
+                if (layout.Title.width > 0)
+                    title = new Rect(layout.Title.xMin / width, layout.Title.yMin / height, layout.Title.width / width, layout.Title.height / height);
             }
             else
             {
@@ -83,6 +115,8 @@ namespace Watermelon
                 frame.CloseMax = new Vector2(DefaultClose.x + DefaultClose.z, 1f - DefaultClose.y + DefaultClose.z * width / height);
             }
 
+            frame.TitleMin = new Vector2(title.xMin, 1f - title.yMax);
+            frame.TitleMax = new Vector2(title.xMax, 1f - title.yMin);
             return frame;
         }
     }
