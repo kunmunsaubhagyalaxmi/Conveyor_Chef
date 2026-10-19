@@ -46,16 +46,16 @@ namespace Watermelon
         {
             Make("first_win", "First Service", "Complete your first level", () => PlayerStats.LevelsCompleted, 1, CurrencyType.Coins, 100, a => a.iconTrophy),
             Make("levels_5", "Line Cook", "Complete 5 levels", () => PlayerStats.LevelsCompleted, 5, CurrencyType.Coins, 200, a => a.iconTrophy),
-            Make("levels_all", "Head Chef", "Complete all " + PlayerStats.TotalLevels + " levels", () => PlayerStats.LevelsCompleted, PlayerStats.TotalLevels, CurrencyType.Diamonds, 15, a => a.iconTrophy),
+            Make("levels_all", "Head Chef", Loc.F("Complete all {0} levels", PlayerStats.TotalLevels), () => PlayerStats.LevelsCompleted, PlayerStats.TotalLevels, CurrencyType.Diamonds, 15, a => a.iconTrophy),
             Make("stars_10", "Rising Star", "Collect 10 stars", () => PlayerStats.StarsEarned, 10, CurrencyType.Coins, 150, a => a.star),
             Make("stars_30", "Star Chef", "Collect 30 stars", () => PlayerStats.StarsEarned, 30, CurrencyType.Coins, 300, a => a.star),
-            Make("stars_all", "Master of Stars", "Collect all " + PlayerStats.TotalStars + " stars", () => PlayerStats.StarsEarned, PlayerStats.TotalStars, CurrencyType.Diamonds, 20, a => a.star),
+            Make("stars_all", "Master of Stars", Loc.F("Collect all {0} stars", PlayerStats.TotalStars), () => PlayerStats.StarsEarned, PlayerStats.TotalStars, CurrencyType.Diamonds, 20, a => a.star),
             Make("serve_100", "Busy Kitchen", "Serve 100 dishes", () => PlayerStats.DishesServed, 100, CurrencyType.Coins, 150, a => a.chefAvatar),
             Make("serve_500", "Food Rush", "Serve 500 dishes", () => PlayerStats.DishesServed, 500, CurrencyType.Coins, 300, a => a.chefAvatar),
             Make("serve_2000", "Conveyor Legend", "Serve 2,000 dishes", () => PlayerStats.DishesServed, 2000, CurrencyType.Diamonds, 15, a => a.chefAvatar),
             Make("country_1", "Passport Stamp", "Complete a whole country", () => PlayerStats.CountriesCompleted, 1, CurrencyType.Coins, 200, a => a.GetFlag(0)),
             Make("country_all", "World Tour", "Complete all 5 countries", () => PlayerStats.CountriesCompleted, 5, CurrencyType.Diamonds, 30, a => a.GetFlag(4)),
-            Make("collect_all", "Gourmet Collector", "Discover all " + PlayerStats.TotalDishes + " dishes", () => PlayerStats.DishesDiscovered, PlayerStats.TotalDishes, CurrencyType.Diamonds, 20, a => a.iconCollection),
+            Make("collect_all", "Gourmet Collector", Loc.F("Discover all {0} dishes", PlayerStats.TotalDishes), () => PlayerStats.DishesDiscovered, PlayerStats.TotalDishes, CurrencyType.Diamonds, 20, a => a.iconCollection),
             Make("power_10", "Helping Hand", "Use 10 power-ups", () => PlayerStats.PowerUpsUsed, 10, CurrencyType.Coins, 100,
                 a => a.powerUpIcons != null && a.powerUpIcons.Length > 1 ? a.powerUpIcons[1] : a.iconShop),
         };
@@ -73,7 +73,7 @@ namespace Watermelon
             ordered.Sort((x, y) => Rank(x).CompareTo(Rank(y)));
 
             RectTransform header = MenuRow.Create("Header", Content, 190f, true, Art.iconTrophy);
-            MenuRow.Title(header, "UNLOCKED " + unlocked + " / " + All.Length, new Color32(160, 56, 18, 255));
+            MenuRow.Title(header, Loc.F("UNLOCKED {0} / {1}", unlocked, All.Length), new Color32(160, 56, 18, 255));
             MenuRow.Subtitle(header, "Finish goals to earn coins and diamonds");
             RectTransform bar = MenuUI.ProgressBar(header, (float)unlocked / All.Length, MenuUI.Gold);
             MenuUI.Anchor(bar, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(MenuRow.TextX, 26f), new Vector2(560f, 42f));

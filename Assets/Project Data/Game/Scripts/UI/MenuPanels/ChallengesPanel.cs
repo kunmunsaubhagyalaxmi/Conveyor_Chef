@@ -69,7 +69,7 @@ namespace Watermelon
                 return;
 
             TimeSpan left = PlayerStats.TimeUntilNextDay;
-            timerText.text = $"New challenges in {(int)left.TotalHours:00}:{left.Minutes:00}:{left.Seconds:00}";
+            timerText.text = Loc.F("New challenges in {0:00}:{1:00}:{2:00}", (int)left.TotalHours, left.Minutes, left.Seconds);
         }
 
         private void BuildChallenge(Challenge challenge)
@@ -98,7 +98,7 @@ namespace Watermelon
 
             MenuUI.Section(Content, "ALL-CLEAR BONUS");
             RectTransform card = MenuRow.Create("Bonus", Content, 200f, ready && !taken, Art.gem);
-            MenuRow.Title(card, "Claim all " + total + " today");
+            MenuRow.Title(card, Loc.F("Claim all {0} today", total));
             MenuRow.SubtitlePill(card, Art.diamond, BonusDiamonds.ToString());
             MenuRow.Bar(card, (float)claimed / total, MenuUI.Gold, claimed + " / " + total);
 

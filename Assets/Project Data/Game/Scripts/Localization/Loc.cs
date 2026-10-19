@@ -83,6 +83,16 @@ namespace Watermelon
             return key;
         }
 
+        /// <summary>Capital letters the way the current language writes them (Turkish i -> İ).</summary>
+        public static string Upper(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+            return Current == GameLanguage.Turkish
+                ? text.ToUpper(new System.Globalization.CultureInfo("tr-TR"))
+                : text.ToUpperInvariant();
+        }
+
         /// <summary><see cref="T"/> with {0}, {1}... filled in.</summary>
         public static string F(string key, params object[] args)
         {

@@ -58,7 +58,7 @@ namespace Watermelon
             TextMeshProUGUI text = rect.gameObject.AddComponent<TextMeshProUGUI>();
             if (Font != null)
                 text.font = Font;
-            text.text = value;
+            text.text = Loc.T(value);      // fixed texts show in the player's language
             text.color = color;
             text.fontSize = size;
             text.enableAutoSizing = true;
