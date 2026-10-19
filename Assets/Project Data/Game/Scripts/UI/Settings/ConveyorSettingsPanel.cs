@@ -31,6 +31,14 @@ namespace Watermelon
         private SettingsPanelArt art;
         private MenuPanelArt menuArt;
 
+        // Optional art in Resources/Settings (glossy pills without text, like SOUND ON / VIBRATION ON).
+        // The game writes the words on them, so they follow the language.
+        private Sprite languageButtonArt;       // wide pill with a globe icon on the left
+        private Sprite languageOptionArt;       // small orange pill (a language in the list)
+        private Sprite languageSelectedArt;     // small green pill (the chosen language)
+        private static readonly Color32 ArtText = new Color32(255, 222, 70, 255);    // yellow letters
+        private static readonly Color32 ArtOutline = new Color32(110, 40, 10, 255);  // dark brown outline
+
         public static bool IsOpen => instance != null && instance.root != null && instance.root.activeSelf;
 
         public static void Show()
@@ -143,8 +151,13 @@ namespace Watermelon
                 versionLabel.text = Loc.T("VERSION") + " " + Application.version;
             foreach (var entry in languageButtons)
             {
-                if (menuArt != null && entry.image != null)
-                    entry.image.sprite = entry.language == Loc.Current ? menuArt.buttonGreen : menuArt.buttonOrange;
+                if (entry.image == null)
+                    continue;
+                bool chosen = entry.language == Loc.Current;
+                if (languageOptionArt != null)
+                    entry.image.sprite = chosen && languageSelectedArt != null ? languageSelectedArt : languageOptionArt;
+                else if (menuArt != null)
+                    entry.image.sprite = chosen ? menuArt.buttonGreen : menuArt.buttonOrange;
             }
         }
 
@@ -232,10 +245,30 @@ namespace Watermelon
             menuArt = Resources.Load<MenuPanelArt>(MenuPanelArt.ResourcePath);
             if (MenuUI.Font == null && menuArt != null)
                 MenuUI.Font = menuArt.font;
-            Button language = MenuUI.LabelButton("Language Button", rootRect, menuArt != null ? menuArt.buttonOrange : null,
-                "LANGUAGE", 44f, OpenPicker, null, new Color32(110, 50, 10, 255));
-            Place((RectTransform)language.transform, new Vector2(0f, top - panelH * 0.705f), new Vector2(470f, 120f));
-            languageLabel = language.GetComponentInChildren<TMP_Text>(true);
+            languageButtonArt = Resources.Load<Sprite>("Settings/language_button");
+            languageOptionArt = Resources.Load<Sprite>("Settings/language_option");
+            languageSelectedArt = Resources.Load<Sprite>("Settings/language_option_selected");
+            if (languageButtonArt != null)
+            {
+                // the glossy pill; the words go right of the globe icon
+                Image image = CreateImage("Language Button", rootRect, languageButtonArt, Color.white);
+                Place(image.rectTransform, new Vector2(0f, top - panelH * 0.705f), new Vector2(470f, 470f / Aspect(languageButtonArt)));
+                image.preserveAspect = true;
+                AddButton(image, OpenPicker);
+                TextMeshProUGUI text = MenuUI.OutlinedText("Label", image.transform, "LANGUAGE", 46f, ArtOutline,
+                    TextAlignmentOptions.Center, ArtText);
+                Stretch(text.rectTransform);
+                text.rectTransform.offsetMin = new Vector2(470f * 0.22f, 10f);
+                text.rectTransform.offsetMax = new Vector2(-24f, -14f);
+                languageLabel = text;
+            }
+            else
+            {
+                Button language = MenuUI.LabelButton("Language Button", rootRect, menuArt != null ? menuArt.buttonOrange : null,
+                    "LANGUAGE", 44f, OpenPicker, null, new Color32(110, 50, 10, 255));
+                Place((RectTransform)language.transform, new Vector2(0f, top - panelH * 0.705f), new Vector2(470f, 120f));
+                languageLabel = language.GetComponentInChildren<TMP_Text>(true);
+            }
 
             versionLabel = CreateText("Version", rootRect, "VERSION " + Application.version, new Color32(35, 48, 70, 255), 34f);
             Place(versionLabel.rectTransform, new Vector2(0f, top - panelH * 0.835f), new Vector2(500f, 56f));
@@ -275,6 +308,20 @@ namespace Watermelon
                 GameLanguage language = languages[i];
                 float x = (i % 2 == 0 ? -1f : 1f) * 128f;
                 float y = top - (i / 2) * step;
+                if (languageOptionArt != null)
+                {
+                    Image image = CreateImage(language.ToString(), rect, languageOptionArt, Color.white);
+                    Place(image.rectTransform, new Vector2(x, y), new Vector2(250f, 250f / Aspect(languageOptionArt)));
+                    image.preserveAspect = true;
+                    AddButton(image, () => ChooseLanguage(language));
+                    TextMeshProUGUI text = MenuUI.OutlinedText("Label", image.transform, Loc.NativeName(language), 40f, ArtOutline,
+                        TextAlignmentOptions.Center, ArtText);
+                    Stretch(text.rectTransform);
+                    text.rectTransform.offsetMin = new Vector2(18f, 8f);
+                    text.rectTransform.offsetMax = new Vector2(-18f, -12f);
+                    languageButtons.Add((language, image));
+                    continue;
+                }
                 Button button = MenuUI.LabelButton(language.ToString(), rect, menuArt != null ? menuArt.buttonOrange : null,
                     Loc.NativeName(language), 40f, () => ChooseLanguage(language), null, new Color32(110, 50, 10, 255));
                 Place((RectTransform)button.transform, new Vector2(x, y), new Vector2(240f, 104f));
@@ -360,6 +407,8 @@ namespace Watermelon
             text.raycastTarget = false;
             return text;
         }
+
+        private static float Aspect(Sprite sprite) => sprite.rect.width / Mathf.Max(1f, sprite.rect.height);
 
         private static Button AddButton(Image image, UnityEngine.Events.UnityAction action)
         {

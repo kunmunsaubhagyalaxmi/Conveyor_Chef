@@ -40,7 +40,8 @@ namespace Watermelon
         private const float OutfitExtraWidth = 80f;
 
         private RectTransform chefRect;
-        private Vector2 chefOffsetMin, chefOffsetMax;
+        private Image outfitChef;
+        private Vector2 fittedSize;
 
         private System.Collections.IEnumerator Start()
         {
@@ -51,62 +52,99 @@ namespace Watermelon
             ApplyOutfit();
         }
 
+        // The main menu animates "Chef Character" (slide-in, breathing) through its position, so
+        // the outfit is shown by a child picture inside it, never by moving or resizing it.
+        private void LateUpdate()
+        {
+            if (outfitChef != null && outfitChef.gameObject.activeSelf && chefRect != null && chefRect.rect.size != fittedSize)
+                LayoutOutfitChef();
+        }
+
         // In the game the big menu chef and the top-left avatar wear the outfit picked in
         // Customize > CHEF; the classic chef keeps the approved menu art.
         private void ApplyOutfit()
         {
-            RestoreChefRect();
             ChefProgress.Outfit outfit = ChefProgress.Selected;
-            if (outfit.Id == "classic")
+            Sprite full = outfit.Id == "classic" ? null : ChefProgress.LoadFull(outfit);
+            ShowOutfitChef(full);
+            if (full == null)
             {
-                SetSprite("Chef Character", "chef", true);
                 SetSprite("Chef Avatar", "avatar", true);
                 return;
             }
-            Sprite full = ChefProgress.LoadFull(outfit);
-            FitOutfitChef(full);
-            SetOutfitSprite("Chef Character", full);
             SetOutfitSprite("Chef Avatar", ChefProgress.LoadHud(outfit) ?? ChefProgress.LoadAvatar(outfit));
+        }
+
+        // Classic: the approved chef picture. Outfit: that picture hidden and the outfit drawn
+        // by a child, so the menu's own chef animation keeps moving it.
+        private void ShowOutfitChef(Sprite outfit)
+        {
+            if (chefRect == null)
+                chefRect = FindDeep(transform, "Chef Character") as RectTransform;
+            if (chefRect == null)
+                return;
+            Image classic = chefRect.GetComponent<Image>();
+
+            if (outfit == null)
+            {
+                if (outfitChef != null)
+                    outfitChef.gameObject.SetActive(false);
+                SetSprite("Chef Character", "chef", true);
+                return;
+            }
+
+            if (outfitChef == null)
+            {
+                var go = new GameObject("Outfit Chef", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                go.layer = chefRect.gameObject.layer;
+                go.transform.SetParent(chefRect, false);
+                outfitChef = go.GetComponent<Image>();
+                outfitChef.raycastTarget = false;
+                RectTransform rt = outfitChef.rectTransform;
+                rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0.5f);
+            }
+            outfitChef.sprite = outfit;
+            outfitChef.preserveAspect = true;
+            outfitChef.gameObject.SetActive(true);
+            if (classic != null)
+                classic.enabled = false;
+            LayoutOutfitChef();
         }
 
         // The outfit pictures are wider than the classic chef (0.5 vs 0.41 of their height), so at
         // the same height they would reach into the buttons. The outfit chef stands where the
         // classic one stands: same floor, same right edge, at most a little wider to the left,
-        // and only as tall as that width allows. Play mode only; the scene layout is untouched.
-        private void FitOutfitChef(Sprite outfit)
+        // and only as tall as that width allows.
+        private void LayoutOutfitChef()
         {
             Sprite classic = ProfessionalMainMenuEmbeddedAssets.GetSprite("chef");
-            if (chefRect == null || outfit == null || classic == null)
+            Sprite outfit = outfitChef != null ? outfitChef.sprite : null;
+            if (chefRect == null || outfit == null)
                 return;
 
             Rect r = chefRect.rect;
+            fittedSize = r.size;
+            RectTransform rt = outfitChef.rectTransform;
+            if (r.width < 10f || r.height < 10f || classic == null)
+            {
+                // not laid out yet (or no classic art): fill the chef box, re-fitted when it has a size
+                rt.anchoredPosition = Vector2.zero;
+                rt.sizeDelta = r.size;
+                return;
+            }
+
             float classicAspect = classic.rect.width / classic.rect.height;
             float outfitAspect = outfit.rect.width / outfit.rect.height;
-            // the classic chef as preserveAspect shows it: full height, centred
+            // the classic chef as preserveAspect shows it: as big as fits, centred
             float classicW = Mathf.Min(r.width, r.height * classicAspect);
             float classicH = classicW / classicAspect;
-            float right = r.center.x + classicW * 0.5f;
-            float bottom = r.center.y - classicH * 0.5f;
+            float right = classicW * 0.5f;          // relative to the box centre
+            float bottom = -classicH * 0.5f;
 
             float h = Mathf.Min(classicH, (classicW + OutfitExtraWidth) / outfitAspect);
             float w = h * outfitAspect;
-            chefRect.offsetMin = chefOffsetMin + new Vector2((right - w) - r.xMin, bottom - r.yMin);
-            chefRect.offsetMax = chefOffsetMax + new Vector2(right - r.xMax, (bottom + h) - r.yMax);
-        }
-
-        private void RestoreChefRect()
-        {
-            if (chefRect == null)
-            {
-                Transform t = FindDeep(transform, "Chef Character");
-                chefRect = t as RectTransform;
-                if (chefRect == null)
-                    return;
-                chefOffsetMin = chefRect.offsetMin;
-                chefOffsetMax = chefRect.offsetMax;
-            }
-            chefRect.offsetMin = chefOffsetMin;
-            chefRect.offsetMax = chefOffsetMax;
+            rt.sizeDelta = new Vector2(w, h);
+            rt.anchoredPosition = new Vector2(right - w * 0.5f, bottom + h * 0.5f);
         }
 
         private void SetOutfitSprite(string objectName, Sprite sprite)
@@ -126,7 +164,7 @@ namespace Watermelon
                 return;
 
             ApplyApprovedArtwork();
-            // the outfit chef is resized, which Unity does not allow inside OnValidate
+            // the outfit chef is laid out, which Unity does not allow inside OnValidate
             if (Application.isPlaying)
                 UnityEditor.EditorApplication.delayCall += () => { if (this != null && isActiveAndEnabled) ApplyOutfit(); };
         }
