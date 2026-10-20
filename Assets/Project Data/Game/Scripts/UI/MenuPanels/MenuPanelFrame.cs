@@ -52,8 +52,8 @@ namespace Watermelon
             { "shop",         new Layout(72, 263, 868, 1555, 868, 146, 50) },
             { "achievements", new Layout(78, 250, 860, 1531, 860, 136, 52) },
             { "leaderboard",  new Layout(73, 254, 864, 1519, 876, 160, 54) },
-            // measured once blank.png is in (same 941x1672 shape as the pictures above)
-            { BlankKey,       new Layout(72, 263, 868, 1555, 868, 146, 50).WithTitle(270, 62, 670, 150) },
+            // blank.png (941x1672): red band 255-690 x 68-150, ball close button at 868,140
+            { BlankKey,       new Layout(72, 250, 867, 1551, 868, 140, 57).WithTitle(280, 76, 660, 148) },
         };
 
         // Title area on a blank ribbon when not measured: centre of the ribbon, as fractions.

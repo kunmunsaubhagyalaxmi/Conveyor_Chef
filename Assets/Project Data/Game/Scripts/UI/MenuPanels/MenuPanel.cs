@@ -447,6 +447,14 @@ namespace Watermelon
 
                 if (design.Blank)
                 {
+                    // the blank frame's close button is a plain ball: the X art goes on it
+                    Image cross = MenuUI.Image("Close Icon", frame, Art.closeButton);
+                    cross.rectTransform.anchorMin = design.CloseMin;
+                    cross.rectTransform.anchorMax = design.CloseMax;
+                    cross.rectTransform.offsetMin = new Vector2(-4f, -4f);
+                    cross.rectTransform.offsetMax = new Vector2(4f, 4f);
+                    cross.transform.SetSiblingIndex(closeArea.transform.GetSiblingIndex());
+
                     // the title on the blank ribbon, like the drawn ones: cream letters, dark red outline
                     titleText = MenuUI.OutlinedText("Title", frame, Title, 78f, new Color32(110, 20, 20, 255),
                         TMPro.TextAlignmentOptions.Center, new Color32(255, 248, 232, 255));
