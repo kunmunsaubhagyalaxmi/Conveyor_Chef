@@ -14,7 +14,7 @@ namespace Watermelon
     {
         private const int DailyGiftCoins = 50;
 
-        private static readonly string[] PowerUpNames = { "UNDO", "HINT", "SHUFFLE" };
+        private static readonly string[] PowerUpNames = { "UNDO", "HINT", "SHUFFLE", "EXTRA PLATE" };
 
         // Coins bought with diamonds: coins, diamonds.
         private static readonly (int, int)[] DiamondTrades = { (500, 10), (1500, 25), (4000, 60) };

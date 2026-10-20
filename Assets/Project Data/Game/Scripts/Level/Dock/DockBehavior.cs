@@ -87,7 +87,98 @@ namespace Watermelon.BusStop
             }
 
             addedDepth = 0;
+
+            RemoveExtraSlot();
         }
+
+        #region Extra slot (EXTRA PLATE power-up)
+
+        private SlotBehavior extraSlot;
+        private readonly List<(Transform transform, Vector3 position, Vector3 scale)> savedSlots = new List<(Transform, Vector3, Vector3)>();
+
+        /// <summary>True while the EXTRA PLATE spot is on the tray (until the level ends).</summary>
+        public static bool HasExtraSlot => instance != null && instance.extraSlot != null;
+
+        /// <summary>
+        /// Adds one more spot to the tray for the rest of the level. The row keeps its outer
+        /// edges, so the spots move a little closer together and the tray never grows off-screen.
+        /// Not while dishes are moving on the tray (the player can tap again a moment later).
+        /// </summary>
+        public static bool AddExtraSlot()
+        {
+            if (instance == null || slots == null || slots.Count < 2 || instance.extraSlot != null || instance.addedDepth > 0)
+                return false;
+
+            for (int i = 0; i < slots.Count; i++)
+            {
+                SlotCase slotCase = slots[i].SlotCase;
+                if (slotCase != null && (slotCase.IsMoving || slotCase.IsBeingRemoved))
+                    return false;
+            }
+
+            instance.InsertExtraSlot();
+            return true;
+        }
+
+        private void InsertExtraSlot()
+        {
+            int count = slots.Count;
+            SlotBehavior last = slots[count - 1];
+            Vector3 first = slots[0].Position;
+            Vector3 step = (last.Position - first) / (count - 1);
+
+            savedSlots.Clear();
+            for (int i = 0; i < count; i++)
+                savedSlots.Add((slots[i].transform, slots[i].transform.position, slots[i].transform.localScale));
+
+            GameObject copy = Instantiate(last.gameObject, last.transform.parent);
+            copy.name = "Extra Slot";
+            extraSlot = copy.GetComponent<SlotBehavior>();
+            extraSlot.Init();
+            extraSlot.ClearColor();
+            slots.Add(extraSlot);
+
+            // count + 1 spots over the width count spots had (outer edge to outer edge)
+            float k = count / (count + 1f);
+            Vector3 newStep = step * k;
+            Vector3 start = first - step * 0.5f + newStep * 0.5f;
+            Vector3 lastScale = savedSlots[count - 1].scale;
+            for (int i = 0; i < slots.Count; i++)
+            {
+                SlotBehavior slot = slots[i];
+                slot.transform.position += start + newStep * i - slot.Position;
+                slot.transform.localScale = (i < count ? savedSlots[i].scale : lastScale) * k;
+                slot.Init();
+                slot.Move();
+            }
+
+            ParticlesController.PlayParticle("Slot Highlight").SetDuration(1).SetPosition(extraSlot.Position + Vector3.back * 0.2f);
+        }
+
+        private void RemoveExtraSlot()
+        {
+            if (extraSlot == null)
+                return;
+
+            slots.Remove(extraSlot);
+            extraSlot.Clear();
+            Destroy(extraSlot.gameObject);
+            extraSlot = null;
+
+            foreach (var saved in savedSlots)
+            {
+                if (saved.transform == null)
+                    continue;
+                saved.transform.position = saved.position;
+                saved.transform.localScale = saved.scale;
+                SlotBehavior slot = saved.transform.GetComponent<SlotBehavior>();
+                if (slot != null)
+                    slot.Init();
+            }
+            savedSlots.Clear();
+        }
+
+        #endregion
 
         public void DisableRevert()
         {

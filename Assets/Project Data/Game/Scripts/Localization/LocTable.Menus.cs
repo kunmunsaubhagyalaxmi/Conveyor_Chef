@@ -47,6 +47,9 @@ namespace Watermelon
             Add("UNDO", "UNDO", "", "DESHACER", "DESFAZER", "URUNGKAN", "ANNULER", "RÜCKGÄNGIG", "GERİ AL");
             Add("HINT", "HINT", "", "PISTA", "DICA", "PETUNJUK", "INDICE", "TIPP", "İPUCU");
             Add("SHUFFLE", "SHUFFLE", "", "MEZCLAR", "EMBARALHAR", "ACAK", "MÉLANGER", "MISCHEN", "KARIŞTIR");
+            Add("EXTRA PLATE", "EXTRA PLATE", "", "PLATO EXTRA", "PRATO EXTRA", "PIRING EKSTRA", "ASSIETTE EN PLUS", "EXTRA-TELLER", "EKSTRA TABAK");
+            Add("EXTRA PLATE!", "EXTRA PLATE!", "", "¡PLATO EXTRA!", "PRATO EXTRA!", "PIRING EKSTRA!", "ASSIETTE EN PLUS !", "EXTRA-TELLER!", "EKSTRA TABAK!");
+            Add("One more spot on the tray for this level", "One more spot on the tray for this level", "Is level ke liye tray mein ek aur jagah", "Un hueco más en la bandeja en este nivel", "Mais um espaço na bandeja nesta fase", "Satu tempat lagi di nampan untuk level ini", "Une place de plus sur le plateau pour ce niveau", "Ein Platz mehr auf dem Tablett für dieses Level", "Bu bölüm için tepside bir yer daha");
             Add("Undo the last move", "Undo the last move", "", "Deshace el último movimiento", "Desfaz a última jogada", "Batalkan langkah terakhir", "Annule le dernier coup", "Macht den letzten Zug rückgängig", "Son hamleyi geri alır");
             Add("Complete pair", "Complete pair", "", "Completa un trío", "Completa um trio", "Lengkapi pasangan", "Complète un trio", "Vervollständigt ein Trio", "Bir üçlüyü tamamlar");
             Add("Shuffle characters on the map", "Shuffle the dishes on the board", "", "Mezcla los platos del tablero", "Embaralha os pratos do tabuleiro", "Acak hidangan di papan", "Mélange les plats du plateau", "Mischt die Gerichte auf dem Brett", "Tahtadaki yemekleri karıştırır");

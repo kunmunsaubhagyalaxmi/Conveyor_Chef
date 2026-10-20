@@ -163,12 +163,22 @@ namespace Watermelon
             float centre = Mathf.Lerp(p.xMin, p.xMax, (chefRect.anchorMin.x + chefRect.anchorMax.x) * 0.5f) + chefRestX;
             float left = p.xMin - centre + OutfitMargin;
             float right = r.width * 0.5f;
-            RectTransform buttons = FindDeep(transform, "Main Buttons") as RectTransform;
+            // the button pictures reach further left than their "Main Buttons" box: measure the pictures
+            Transform buttons = FindDeep(transform, "Main Buttons");
             if (buttons != null)
             {
+                float buttonsLeft = float.MaxValue;
                 Vector3[] corners = new Vector3[4];
-                buttons.GetWorldCorners(corners);
-                right = parent.InverseTransformPoint(corners[0]).x - centre - OutfitMargin;
+                foreach (Graphic graphic in buttons.GetComponentsInChildren<Graphic>())
+                {
+                    if (!graphic.enabled || graphic.color.a < 0.01f)
+                        continue;
+                    graphic.rectTransform.GetWorldCorners(corners);
+                    buttonsLeft = Mathf.Min(buttonsLeft, parent.InverseTransformPoint(corners[0]).x,
+                        parent.InverseTransformPoint(corners[1]).x);
+                }
+                if (buttonsLeft < float.MaxValue)
+                    right = Mathf.Min(right, buttonsLeft - centre - OutfitMargin);
             }
 
             float h = Mathf.Min(classicH, Mathf.Max(10f, right - left) / outfitAspect);

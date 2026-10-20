@@ -53,8 +53,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d2f03d6dd05efa8449df4a8527f378d6, type: 2}
   - {fileID: 11400000, guid: d1151f6189998e648ba7a305e855aa84, type: 2}
   - {fileID: 11400000, guid: c50cec189a97b9a40966a777854d94b5, type: 2}
+  - {fileID: 11400000, guid: f198830dabbd438195d1c278681b3db6, type: 2}
   powerUpIcons:
   - {fileID: 21300000, guid: d81ce34d48036214bb4222e66d16f9bb, type: 3}
   - {fileID: 21300000, guid: cb6fc28d76004234381c41a807ba30f6, type: 3}
   - {fileID: 21300000, guid: 0680de85643a5bd48811a56e9b48977f, type: 3}
+  - {fileID: 21300000, guid: 211ee98f7801432f973b510ae1f1d585, type: 3}
   skinsDatabase: {fileID: 11400000, guid: 347d9515b9d6ea74191531d8f632f542, type: 2}

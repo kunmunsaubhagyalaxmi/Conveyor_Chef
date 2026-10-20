@@ -134,6 +134,15 @@ namespace Watermelon
                 "MÉLANGER : mélange les plats du plateau et ouvre de nouveaux chemins.",
                 "MISCHEN: mischt die Gerichte auf dem Brett und öffnet neue Wege.",
                 "KARIŞTIR: tahtadaki yemekleri karıştırır ve yeni yollar açar.");
+            Add("tut.extraplate",
+                "EXTRA PLATE: tray almost full? It adds one more spot for this level.",
+                "EXTRA PLATE: tray bharne wali hai? Is level ke liye ek aur jagah mil jaati hai.",
+                "PLATO EXTRA: ¿bandeja casi llena? Añade un hueco más en este nivel.",
+                "PRATO EXTRA: bandeja quase cheia? Ganha mais um espaço nesta fase.",
+                "PIRING EKSTRA: nampan hampir penuh? Tambah satu tempat lagi untuk level ini.",
+                "ASSIETTE EN PLUS : plateau presque plein ? Une place de plus pour ce niveau.",
+                "EXTRA-TELLER: Tablett fast voll? Ein Platz mehr für dieses Level.",
+                "EKSTRA TABAK: tepsi dolmak üzere mi? Bu bölüm için bir yer daha ekler.");
             Add("tut.next", "NEXT", "AAGE", "SIGUIENTE", "PRÓXIMO", "LANJUT", "SUIVANT", "WEITER", "İLERİ");
             Add("tut.gotit", "GOT IT!", "SAMAJH GAYA!", "¡ENTENDIDO!", "ENTENDI!", "MENGERTI!", "COMPRIS !", "VERSTANDEN!", "ANLADIM!");
             Add("tut.play", "LET'S PLAY!", "CHALO KHELEIN!", "¡A JUGAR!", "VAMOS JOGAR!", "AYO MAIN!", "ON JOUE !", "LOS GEHT'S!", "HADİ OYNA!");

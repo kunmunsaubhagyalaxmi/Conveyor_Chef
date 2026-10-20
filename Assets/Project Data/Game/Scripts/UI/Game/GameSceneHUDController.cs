@@ -63,6 +63,7 @@ namespace Watermelon
         private void Update()
         {
             TrySkinPowerUps(false);
+            UpdateToolbarSpots();
         }
 
         private void InitialiseCurrencyPanels()
@@ -138,6 +139,8 @@ namespace Watermelon
                     fullButtonSprite = hintButtonSprite;
                 else if (item.Settings is PUShuffleSettings)
                     fullButtonSprite = shuffleButtonSprite;
+                else
+                    fullButtonSprite = item.Settings.Icon;     // newer power-ups bring their full button as the icon
 
                 // In PU Behavior UI the visible art is "Icon" (full size); "Background" is
                 // a disabled 10px image. The full-button sprite therefore goes on Icon.
@@ -168,6 +171,94 @@ namespace Watermelon
                     }
                 }
             }
+        }
+
+        // ------------------------------------------------------------ 5-spot toolbar
+        // bottom_toolbar_panel.png has 4 spots: Home and three power-ups. Once a fourth power-up
+        // is unlocked the bar switches to Resources/Toolbar/bottom_toolbar_panel_5.png (one spot
+        // more, inserted in the middle), keeps its width and shrinks a little, so it still fits.
+        private const string WideToolbarPath = "Toolbar/bottom_toolbar_panel_5";
+        private const float ToolbarCutPx = 768f;      // the column of the narrow picture where the spot was inserted
+
+        private bool toolbarWide;
+        private Sprite narrowToolbarSprite;
+        private Vector2 savedToolbarSize, savedHomePosition, savedPowerUpsPosition, savedPowerUpsSize;
+        private Vector3 savedHomeScale, savedPowerUpsScale;
+
+        private void UpdateToolbarSpots()
+        {
+            PUUIController controller = lastPowerUpsController;
+            if (controller == null || controller.UIBehaviors == null || homeButton == null)
+                return;
+
+            int shown = 0;
+            foreach (PUUIBehavior item in controller.UIBehaviors)
+                if (item != null && item.gameObject.activeSelf)
+                    shown++;
+            bool wide = shown >= 4;
+            if (wide == toolbarWide)
+                return;
+
+            RectTransform toolbar = homeButton.transform.parent as RectTransform;
+            RectTransform home = homeButton.transform as RectTransform;
+            RectTransform powerUps = controller.transform as RectTransform;
+            Image image = toolbar != null ? toolbar.GetComponent<Image>() : null;
+            if (image == null || image.sprite == null || powerUps == null || powerUps.parent != toolbar)
+                return;
+
+            if (wide)
+            {
+                Sprite wideSprite = Resources.Load<Sprite>(WideToolbarPath);
+                if (wideSprite == null)
+                    return;
+
+                narrowToolbarSprite = image.sprite;
+                savedToolbarSize = toolbar.sizeDelta;
+                savedHomePosition = home.anchoredPosition;
+                savedHomeScale = home.localScale;
+                savedPowerUpsPosition = powerUps.anchoredPosition;
+                savedPowerUpsScale = powerUps.localScale;
+                savedPowerUpsSize = powerUps.sizeDelta;
+
+                float oldPx = narrowToolbarSprite.rect.width;
+                float newPx = wideSprite.rect.width;
+                float spotPx = newPx - oldPx;
+                float k = oldPx / newPx;
+                float width = savedToolbarSize.x;
+
+                image.sprite = wideSprite;
+                toolbar.sizeDelta = new Vector2(width, savedToolbarSize.y * k);
+
+                // children are centred on the bar: x follows the picture's columns, y and size shrink by k
+                home.anchoredPosition = new Vector2(Remap(savedHomePosition.x, width, oldPx, newPx, 0f), savedHomePosition.y * k);
+                home.localScale = savedHomeScale * k;
+
+                // the power-ups' row straddles the inserted spot: its centre moves half a spot, it gets one spot wider
+                powerUps.anchoredPosition = new Vector2(Remap(savedPowerUpsPosition.x, width, oldPx, newPx, spotPx * 0.5f), savedPowerUpsPosition.y * k);
+                powerUps.localScale = savedPowerUpsScale * k;
+                powerUps.sizeDelta = new Vector2(savedPowerUpsSize.x + spotPx / oldPx * width / Mathf.Max(0.01f, savedPowerUpsScale.x), savedPowerUpsSize.y);
+            }
+            else
+            {
+                image.sprite = narrowToolbarSprite;
+                toolbar.sizeDelta = savedToolbarSize;
+                home.anchoredPosition = savedHomePosition;
+                home.localScale = savedHomeScale;
+                powerUps.anchoredPosition = savedPowerUpsPosition;
+                powerUps.localScale = savedPowerUpsScale;
+                powerUps.sizeDelta = savedPowerUpsSize;
+            }
+
+            toolbarWide = wide;
+        }
+
+        // x from the bar's centre -> column of the narrow picture (+ shift) -> x on the wide picture
+        private static float Remap(float x, float width, float oldPx, float newPx, float shiftPx)
+        {
+            float column = oldPx * 0.5f + x / width * oldPx;
+            if (column > ToolbarCutPx && shiftPx == 0f)
+                column += newPx - oldPx;
+            return (column + shiftPx) / newPx * width - width * 0.5f;
         }
 
 #if UNITY_EDITOR

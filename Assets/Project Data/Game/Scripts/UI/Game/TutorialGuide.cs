@@ -194,6 +194,7 @@ namespace Watermelon
                 string text = pu.Settings is PUUndoSettings ? Loc.T("tut.undo")
                     : pu.Settings is PUHintSettings ? Loc.T("tut.hint")
                     : pu.Settings is PUShuffleSettings ? Loc.T("tut.shuffle")
+                    : pu.Settings is PUExtraSlotSettings ? Loc.T("tut.extraplate")
                     : null;
                 if (text != null)
                     tips.Add(("PowerUp_" + pu.Settings.GetType().Name, text, () => UiRect(rect)));
