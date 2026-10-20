@@ -38,6 +38,9 @@ namespace Watermelon
             ChefProgress.OutfitChanged -= ApplyOutfit;
         }
 
+        // How far an outfit chef may reach further left than the classic chef (canvas units).
+        private const float OutfitExtraWidth = 80f;
+
         private RectTransform chefRect;
         private Image outfitChef;
         private Vector2 fittedSize;
@@ -84,11 +87,6 @@ namespace Watermelon
                 return;
             Image classic = chefRect.GetComponent<Image>();
 
-            // the logo is drawn over the chef: a wide outfit (a wok, a pizza peel) must not cover it
-            Transform logo = FindDeep(transform, "Game Logo");
-            if (logo != null && logo.parent == chefRect.parent && logo.GetSiblingIndex() < chefRect.GetSiblingIndex())
-                logo.SetSiblingIndex(chefRect.GetSiblingIndex());
-
             if (outfit == null)
             {
                 if (outfitChef != null)
@@ -115,36 +113,10 @@ namespace Watermelon
             LayoutOutfitChef();
         }
 
-        // Every outfit chef stands exactly like the classic chef: the same size (the same boy, so
-        // the same head and body size, not the same height: hats differ), feet on the same floor and
-        // in the same spot. Measured on the pictures: all outfit pictures (512x1024) are drawn at one
-        // scale, 1.435x the classic picture's pixels (the royal chef, in the classic's pose, then
-        // overlaps the classic chef almost exactly), then nudged by outfitNudge (set in the Inspector).
-        private const float OutfitPixelScale = 1.435f;      // outfit picture pixel -> classic picture pixel
-        private const float OutfitSourceHeight = 1024f;     // outfit pictures as painted (imported smaller)
-
-        [Tooltip("Moves every outfit chef together, in pixels of the classic chef picture (x: right, y: up). " +
-                 "Changes apply at once in Play mode.")]
-        [SerializeField] private Vector2 outfitNudge = new Vector2(-20f, 48f);
-
-        // Where each character stands in its picture: the bottom of the shoes (pixel row from the
-        // top) and the middle between the feet (pixel column), measured on the 512x1024 pictures.
-        private static readonly System.Collections.Generic.Dictionary<string, Vector2> OutfitFeet =
-            new System.Collections.Generic.Dictionary<string, Vector2>
-            {
-                { "street_food", new Vector2(252.5f, 976f) },
-                { "pizza",       new Vector2(252.0f, 980f) },
-                { "bbq",         new Vector2(248.0f, 990f) },
-                { "sushi",       new Vector2(272.0f, 988f) },
-                { "royal",       new Vector2(289.0f, 1004f) },
-                { "golden",      new Vector2(273.5f, 982f) },
-                { "pastry",      new Vector2(275.0f, 1005f) },
-            };
-
-        // The classic picture (593x1439): shoes end on row 1430, the feet's middle is column 296.5.
-        private const float ClassicFeetRow = 1430f;
-        private const float ClassicFeetColumn = 296.5f;
-
+        // The outfit pictures are wider than the classic chef (0.5 vs 0.41 of their height), so at
+        // the same height they would reach into the buttons. The outfit chef stands where the
+        // classic one stands: same floor, same right edge, at most a little wider to the left,
+        // and only as tall as that width allows.
         private void LayoutOutfitChef()
         {
             Sprite classic = ProfessionalMainMenuEmbeddedAssets.GetSprite("chef");
@@ -163,74 +135,18 @@ namespace Watermelon
                 return;
             }
 
-            // the classic chef as preserveAspect shows it: as big as fits, centred in the box
-            float classicPxW = classic.rect.width, classicPxH = classic.rect.height;
-            float classicW = Mathf.Min(r.width, r.height * classicPxW / classicPxH);
-            float classicH = classicW * classicPxH / classicPxW;
-            float unit = classicH / classicPxH;              // box units per classic picture pixel
-            // painted size of the classic picture (it may be imported smaller than painted)
-            float classicScale = classicPxH / 1439f;
+            float classicAspect = classic.rect.width / classic.rect.height;
+            float outfitAspect = outfit.rect.width / outfit.rect.height;
+            // the classic chef as preserveAspect shows it: as big as fits, centred
+            float classicW = Mathf.Min(r.width, r.height * classicAspect);
+            float classicH = classicW / classicAspect;
+            float right = classicW * 0.5f;          // relative to the box centre
+            float bottom = -classicH * 0.5f;
 
-            // where the classic chef's feet are, in the box (0 = its centre)
-            float feetX = -classicW * 0.5f + ClassicFeetColumn * classicScale * unit;
-            float feetY = classicH * 0.5f - ClassicFeetRow * classicScale * unit;
-
-            float aspect = outfit.rect.width / outfit.rect.height;
-            float h = OutfitSourceHeight * OutfitPixelScale * classicScale * unit;
-            float w = h * aspect;
-            float k = h / OutfitSourceHeight;                // box units per outfit picture pixel
-
-            Vector2 feet;
-            if (!OutfitFeet.TryGetValue(ChefProgress.Selected.Id, out feet))
-            {
-                // an outfit not measured yet: feet at the bottom of its drawn outline, in the middle
-                Figure o = Measure(outfit);
-                feet = new Vector2(OutfitSourceHeight * aspect * 0.5f, OutfitSourceHeight * (1f - o.feet));
-            }
-
-            float left = feetX + outfitNudge.x * classicScale * unit - feet.x * k;
-            float top = feetY + outfitNudge.y * classicScale * unit + feet.y * k;
+            float h = Mathf.Min(classicH, (classicW + OutfitExtraWidth) / outfitAspect);
+            float w = h * outfitAspect;
             rt.sizeDelta = new Vector2(w, h);
-            rt.anchoredPosition = new Vector2(left + w * 0.5f, top - h * 0.5f);
-        }
-
-        // Where the character is inside its picture, as fractions of the picture (0 = bottom).
-        private struct Figure
-        {
-            public float feet, head;
-        }
-
-        private static readonly System.Collections.Generic.Dictionary<Sprite, Figure> figures =
-            new System.Collections.Generic.Dictionary<Sprite, Figure>();
-
-        private static Figure Measure(Sprite sprite)
-        {
-            if (figures.TryGetValue(sprite, out Figure figure))
-                return figure;
-
-            figure = new Figure { feet = 0f, head = 1f };
-            Vector2[] vertices = sprite.vertices;      // the tight outline of the visible pixels
-            Rect rect = sprite.rect;
-            if (vertices != null && vertices.Length > 2 && rect.width > 0f && rect.height > 0f)
-            {
-                float ppu = sprite.pixelsPerUnit;
-                float bottom = float.MaxValue, top = float.MinValue;
-                foreach (Vector2 v in vertices)
-                {
-                    float y = (v.y * ppu + sprite.pivot.y) / rect.height;
-                    bottom = Mathf.Min(bottom, y);
-                    top = Mathf.Max(top, y);
-                }
-
-                if (top - bottom > 0.05f)
-                {
-                    figure.feet = Mathf.Clamp01(bottom);
-                    figure.head = Mathf.Clamp01(top);
-                }
-            }
-
-            figures[sprite] = figure;
-            return figure;
+            rt.anchoredPosition = new Vector2(right - w * 0.5f, bottom + h * 0.5f);
         }
 
         private void SetOutfitSprite(string objectName, Sprite sprite)
