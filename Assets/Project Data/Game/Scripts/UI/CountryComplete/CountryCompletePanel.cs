@@ -25,6 +25,7 @@ namespace Watermelon
         private RectTransform content;
         private TMP_Text countryName;
         private TMP_Text summary;
+        private TMP_Text youText;
         private Image landmark;
         private Image decorWide;
         private Image decorLeft;
@@ -89,8 +90,8 @@ namespace Watermelon
             if (next >= 0)
             {
                 string nextNameText = CountryCatalog.GetName(next).ToUpperInvariant();
-                summary.text = "Great job! " + name + " is complete.\nYour next destination is <color=" +
-                               NextCountryColor + ">" + nextNameText + "</color>";
+                summary.text = Loc.F("Great job! {0} is complete.\nYour next destination is {1}", name,
+                               "<color=" + NextCountryColor + ">" + nextNameText + "</color>");
                 nextName.text = nextNameText;
                 SetSprite(nextLandmark, art != null ? art.GetLandmark(next) : null);
                 ((RectTransform)nextName.transform).anchoredPosition = new Vector2(0f, nextLandmark.enabled ? -335f : -398f);
@@ -98,9 +99,11 @@ namespace Watermelon
             }
             else
             {
-                summary.text = "Amazing! " + name + " is complete.\nYou have completed every country!";
+                summary.text = Loc.F("Amazing! {0} is complete.\nYou have completed every country!", name);
                 nextCardGroup.SetActive(false);
             }
+            if (youText != null)
+                youText.text = Loc.T("You completed");   // the language may have changed
 
             root.SetActive(true);
 
@@ -166,8 +169,8 @@ namespace Watermelon
             Add("Crown", Art(a => a.crown), 0, 770, 620, 413);
             Add("Title", Art(a => a.title), 0, 560, 820, 273);
 
-            TMP_Text you = AddText("You Completed", "You completed", Brown, 46f, 0, 402, 600, 52);
-            you.fontStyle = FontStyles.Bold;
+            youText = AddText("You Completed", Loc.T("You completed"), Brown, 46f, 0, 402, 600, 52);
+            youText.fontStyle = FontStyles.Bold;
 
             decorWide = Add("Decor", null, 0, 312, 440, 147);
             decorLeft = Add("Decor Left", null, -300, 322, 140, 140);

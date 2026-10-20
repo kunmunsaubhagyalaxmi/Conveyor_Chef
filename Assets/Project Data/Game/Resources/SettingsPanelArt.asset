@@ -19,4 +19,18 @@ MonoBehaviour:
   soundOff: {fileID: 21300000, guid: d301488c5ca049018cf9cea60100de59, type: 3}
   vibrationOn: {fileID: 21300000, guid: a85e67605423455eaf554be11931a299, type: 3}
   vibrationOff: {fileID: 21300000, guid: 334e5e8d7a164cbdb87889dd6992741b, type: 3}
+  musicOn: {fileID: 21300000, guid: 9cf3b9d8c71849a8bf69d6a9da1fbff4, type: 3}
+  musicOff: {fileID: 21300000, guid: b467e0202a3a4c479fffdbe2c141931e, type: 3}
+  languageButton: {fileID: 21300000, guid: 696128c19235483ca90a8a59c7554924, type: 3}
+  languageTitle: {fileID: 21300000, guid: 64ef45831c034baba7ae1e95e4247e1e, type: 3}
+  languages:
+  - {fileID: 21300000, guid: dc86720fc413493f86f23db5ed8816d2, type: 3}
+  - {fileID: 21300000, guid: a70a1047d94c407c9d91a5e1cf170a53, type: 3}
+  - {fileID: 21300000, guid: 5cb3cdfc27ae4412a3263521bc310bf2, type: 3}
+  - {fileID: 21300000, guid: bb034a7054614aa986f3a2b35f24ef2f, type: 3}
+  - {fileID: 21300000, guid: 7549571b835a444cb2566a50c2750a6a, type: 3}
+  - {fileID: 21300000, guid: a3e6769f02f44ec0a4490dc26c3f56f9, type: 3}
+  - {fileID: 21300000, guid: 2899b41534d240178290e4d71ef8f077, type: 3}
+  - {fileID: 21300000, guid: f37cb43bfa654935ba2862b0a2d62808, type: 3}
+  languageTick: {fileID: 21300000, guid: d761830169d448499e3ea175be8db7f5, type: 3}
   font: {fileID: 11400000, guid: 43bda4895b7e2d940ab8ecb8da000216, type: 2}

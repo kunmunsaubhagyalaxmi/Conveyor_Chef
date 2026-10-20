@@ -95,13 +95,13 @@ namespace Watermelon
             Image book = MenuUI.Image("Book", card, Art.iconCollection);
             MenuUI.Anchor(book.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(20f, 0f), new Vector2(140f, 130f));
 
-            TextMeshProUGUI title = MenuUI.Text("Title", card, $"DISHES DISCOVERED  {discovered}/{PlayerStats.TotalDishes}", 34f, new Color32(160, 56, 18, 255), TextAlignmentOptions.Left);
+            TextMeshProUGUI title = MenuUI.Text("Title", card, Loc.F("DISHES DISCOVERED  {0}/{1}", discovered, PlayerStats.TotalDishes), 34f, new Color32(160, 56, 18, 255), TextAlignmentOptions.Left);
             MenuUI.Anchor(title.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(176f, -20f), new Vector2(560f, 44f));
 
             RectTransform bar = MenuUI.ProgressBar(card, (float)discovered / PlayerStats.TotalDishes, MenuUI.Gold);
             MenuUI.Anchor(bar, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(176f, -72f), new Vector2(560f, 38f));
 
-            TextMeshProUGUI masters = MenuUI.Text("Masters", card, $"Country Master badges: {MastersClaimed}/{WorldCatalog.CountryCount}", 28f, MenuUI.TextSoft, TextAlignmentOptions.Left);
+            TextMeshProUGUI masters = MenuUI.Text("Masters", card, Loc.F("Country Master badges: {0}/{1}", MastersClaimed, WorldCatalog.CountryCount), 28f, MenuUI.TextSoft, TextAlignmentOptions.Left);
             MenuUI.Anchor(masters.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(176f, 14f), new Vector2(560f, 40f));
         }
 
@@ -152,9 +152,9 @@ namespace Watermelon
             bool claimed = IsMasterClaimed(country);
 
             RectTransform card = MenuRow.Create("Country Master", Content, 200f, done && !claimed, Flag(country), !done && !claimed);
-            MenuRow.Title(card, CountryCatalog.GetName(country).ToUpperInvariant() + " MASTER", claimed ? new Color32(176, 120, 0, 255) : (Color?)null);
-            MenuRow.Subtitle(card, claimed ? "Badge earned!" : "Serve all " + total + " dishes once");
-            MenuRow.Bar(card, (float)served / total, done ? MenuUI.Gold : MenuUI.Green, served + " / " + total + " served");
+            MenuRow.Title(card, Loc.F("{0} MASTER", CountryCatalog.GetName(country).ToUpperInvariant()), claimed ? new Color32(176, 120, 0, 255) : (Color?)null);
+            MenuRow.Subtitle(card, claimed ? "Badge earned!" : Loc.F("Serve all {0} dishes once", total));
+            MenuRow.Bar(card, (float)served / total, done ? MenuUI.Gold : MenuUI.Green, Loc.F("{0} / {1} served", served, total));
 
             if (claimed)
             {
@@ -170,7 +170,7 @@ namespace Watermelon
                     PlayerStats.SetFlag("country_master_" + country);
                     Grant(CurrencyType.Coins, MasterCoins);
                     Grant(CurrencyType.Diamonds, MasterDiamonds);
-                    Toast(CountryCatalog.GetName(country) + " Master! +" + MasterCoins + " coins, +" + MasterDiamonds + " gems", new Color32(150, 100, 0, 255));
+                    Toast(Loc.F("{0} Master! +{1} coins, +{2} gems", CountryCatalog.GetName(country), MasterCoins, MasterDiamonds), new Color32(150, 100, 0, 255));
                     Refresh();
                 }, new Color32(30, 90, 20, 255), null, -30f, 88f);
             }
@@ -232,7 +232,7 @@ namespace Watermelon
             MenuUI.Anchor(name.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 48f), new Vector2(CellWidth - 20f, 40f));
 
             TextMeshProUGUI detail = MenuUI.Text("Served", cell.transform,
-                discovered ? (served > 0 ? "Served x" + served.ToString("N0") : "Discovered") : "Not found yet", 26f, MenuUI.TextSoft);
+                discovered ? (served > 0 ? Loc.F("Served x{0}", served.ToString("N0")) : "Discovered") : "Not found yet", 26f, MenuUI.TextSoft);
             MenuUI.Anchor(detail.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 14f), new Vector2(CellWidth - 20f, 32f));
         }
     }

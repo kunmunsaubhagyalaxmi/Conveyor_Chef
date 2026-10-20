@@ -1,0 +1,493 @@
+{
+  "generator": "built-in image_gen",
+  "prompt_source": "Docs/UIArt/baked_headers_and_buttons_prompts.md",
+  "workspace_root": "E:/Game Development/Conveyor Chef",
+  "requested_asset_count": 20,
+  "scope": "Generated standalone art assets with baked-in titles and labels as approved by user. Headers saved separately for later panel compositing.",
+  "assets": [
+    {
+      "file": "Docs/UIArt/headers/header_shop.png",
+      "width": 2048,
+      "height": 720,
+      "text": "SHOP",
+      "prompt": "Casual mobile cooking game UI header, premium glossy cartoon style, matching the attached references exactly. A single wide festive RED satin ribbon banner (#E0262B to #A3121A) with thick shiny GOLDEN trim and golden curled scroll ends on both sides, gently arched upward in the middle, folded ribbon tails tucked behind each end, like the attached panel top. Soft top highlight, subtle inner shadow, lighting from above, straight-on symmetrical view.\nOn the ribbon, the title in big chunky rounded bold cartoon letters (like the Lilita One / Luckiest Guy font), ALL CAPITAL LETTERS, bright YELLOW-GOLD gradient fill (light yellow at the top to warm orange-gold at the bottom), a THICK DARK-BROWN outline (#4A2408) and a small soft drop shadow, exactly like the lettering of the attached SETTINGS title. The text is PERFECTLY CENTRED horizontally and vertically on the red band, follows the band's gentle arch, sits fully inside the band with clear space before the golden scrolls on both sides, evenly spaced letters, spelled exactly as given. No other text, no close button, no panel, no background.\nTransparent background PNG, the banner fills the canvas width with a small margin.\n\nThe red and gold ribbon header described above, with the word \"SHOP\" on it. Make letters as tall as band allows. Nothing else. Exact canvas 2048x720. Image 1 is ribbon-shape reference ONLY: exclude all blue frame, cream panel and close button. Image 2 is lettering style ONLY: do not copy its blue banner. Single complete RED ribbon, entirely inside canvas with small transparent margin. Spelling exactly S-H-O-P.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Docs/UIArt/references/panel_top_reference.png",
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/settings_title.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-812e6a1e-6606-4062-872c-5f9d45cca6dd.png",
+      "generated_size": [
+        2115,
+        744
+      ],
+      "verified_size": [
+        2048,
+        720
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 1094437
+    },
+    {
+      "file": "Docs/UIArt/headers/header_collection.png",
+      "width": 2048,
+      "height": 720,
+      "text": "COLLECTION",
+      "prompt": "Casual mobile cooking game UI header, premium glossy cartoon style, matching the attached references exactly. A single wide festive RED satin ribbon banner (#E0262B to #A3121A) with thick shiny GOLDEN trim and golden curled scroll ends on both sides, gently arched upward in the middle, folded ribbon tails tucked behind each end, like the attached panel top. Soft top highlight, subtle inner shadow, lighting from above, straight-on symmetrical view.\nOn the ribbon, the title in big chunky rounded bold cartoon letters (like the Lilita One / Luckiest Guy font), ALL CAPITAL LETTERS, bright YELLOW-GOLD gradient fill (light yellow at the top to warm orange-gold at the bottom), a THICK DARK-BROWN outline (#4A2408) and a small soft drop shadow, exactly like the lettering of the attached SETTINGS title. The text is PERFECTLY CENTRED horizontally and vertically on the red band, follows the band's gentle arch, sits fully inside the band with clear space before the golden scrolls on both sides, evenly spaced letters, spelled exactly as given. No other text, no close button, no panel, no background.\nTransparent background PNG, the banner fills the canvas width with a small margin.\n\nThe red and gold ribbon header described above, with the word \"COLLECTION\" on it. Exact spelling C-O-L-L-E-C-T-I-O-N. For this long word make red band wide enough to fit comfortably, letters as tall as allows, clear space before curls. Exact canvas 2048x720. Image 1 is ribbon shape only; exclude blue panel and close button. Image 2 is lettering style only. Image 3 is matching SHOP sibling: keep its ribbon design, colours and golden scrolls but replace its title completely with COLLECTION, perfectly centred. ONLY one complete red ribbon on alpha; small safe transparent margin all around.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Docs/UIArt/references/panel_top_reference.png",
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/settings_title.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-812e6a1e-6606-4062-872c-5f9d45cca6dd.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-c348cf0e-5965-4d7e-a2d5-99e5e82b0690.png",
+      "generated_size": [
+        2116,
+        743
+      ],
+      "verified_size": [
+        2048,
+        720
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 1078521
+    },
+    {
+      "file": "Docs/UIArt/headers/header_achievements.png",
+      "width": 2048,
+      "height": 720,
+      "text": "ACHIEVEMENTS",
+      "prompt": "Casual mobile cooking game UI header, premium glossy cartoon style, matching the attached references exactly. A single wide festive RED satin ribbon banner (#E0262B to #A3121A) with thick shiny GOLDEN trim and golden curled scroll ends on both sides, gently arched upward in the middle, folded ribbon tails tucked behind each end, like the attached panel top. Soft top highlight, subtle inner shadow, lighting from above, straight-on symmetrical view.\nOn the ribbon, the title in big chunky rounded bold cartoon letters (like the Lilita One / Luckiest Guy font), ALL CAPITAL LETTERS, bright YELLOW-GOLD gradient fill (light yellow at the top to warm orange-gold at the bottom), a THICK DARK-BROWN outline (#4A2408) and a small soft drop shadow, exactly like the lettering of the attached SETTINGS title. The text is PERFECTLY CENTRED horizontally and vertically on the red band, follows the band's gentle arch, sits fully inside the band with clear space before the golden scrolls on both sides, evenly spaced letters, spelled exactly as given. No other text, no close button, no panel, no background.\nTransparent background PNG, the banner fills the canvas width with a small margin.\n\nThe red and gold ribbon header described above, title \"ACHIEVEMENTS\". EXACT spelling A-C-H-I-E-V-E-M-E-N-T-S (12 letters). Widen red band for this long title so every letter fits comfortably with room before curls; all letters same consistent chunky style, largest size that fits. Exact canvas 2048x720. Image 1 is ribbon shape ONLY; exclude blue panel and close button. Image 2 is lettering style ONLY. Image 3 matching SHOP sibling: keep ribbon design, colours, scrolls, replace SHOP with ACHIEVEMENTS, perfectly centred. Single complete red ribbon on alpha with safe small margin. No other text.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Docs/UIArt/references/panel_top_reference.png",
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/settings_title.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-812e6a1e-6606-4062-872c-5f9d45cca6dd.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-9e8895e0-ae87-4321-b863-93131e4cfa4b.png",
+      "generated_size": [
+        2116,
+        743
+      ],
+      "verified_size": [
+        2048,
+        720
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 1101658
+    },
+    {
+      "file": "Docs/UIArt/headers/header_challenges.png",
+      "width": 2048,
+      "height": 720,
+      "text": "CHALLENGES",
+      "prompt": "Casual mobile cooking game UI header, premium glossy cartoon style, matching the attached references exactly. A single wide festive RED satin ribbon banner (#E0262B to #A3121A) with thick shiny GOLDEN trim and golden curled scroll ends on both sides, gently arched upward in the middle, folded ribbon tails tucked behind each end, like the attached panel top. Soft top highlight, subtle inner shadow, lighting from above, straight-on symmetrical view.\nOn the ribbon, the title in big chunky rounded bold cartoon letters (like the Lilita One / Luckiest Guy font), ALL CAPITAL LETTERS, bright YELLOW-GOLD gradient fill (light yellow at the top to warm orange-gold at the bottom), a THICK DARK-BROWN outline (#4A2408) and a small soft drop shadow, exactly like the lettering of the attached SETTINGS title. The text is PERFECTLY CENTRED horizontally and vertically on the red band, follows the band's gentle arch, sits fully inside the band with clear space before the golden scrolls on both sides, evenly spaced letters, spelled exactly as given. No other text, no close button, no panel, no background.\nTransparent background PNG, the banner fills the canvas width with a small margin.\n\nThe red and gold ribbon header described above, with \"CHALLENGES\", exactly C-H-A-L-L-E-N-G-E-S. Largest comfortable chunky letters, wide red band with clear space before scrolls. Exact canvas 2048x720. Image 1 ribbon shape only: exclude panel and close button. Image 2 lettering style only. Image 3 matching SHOP sibling: same ribbon design, colours, gold curls and lighting; replace SHOP with CHALLENGES perfectly centred. ONLY one complete red ribbon, no other text, transparent background, small safe margin around full silhouette.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Docs/UIArt/references/panel_top_reference.png",
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/settings_title.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-812e6a1e-6606-4062-872c-5f9d45cca6dd.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-5f2e541b-21c8-4994-ae51-e8db9c2492b1.png",
+      "generated_size": [
+        2115,
+        743
+      ],
+      "verified_size": [
+        2048,
+        720
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 1109197
+    },
+    {
+      "file": "Docs/UIArt/headers/header_customize.png",
+      "width": 2048,
+      "height": 720,
+      "text": "CUSTOMIZE",
+      "prompt": "Casual mobile cooking game UI header, premium glossy cartoon style, matching the attached references exactly. A single wide festive RED satin ribbon banner (#E0262B to #A3121A) with thick shiny GOLDEN trim and golden curled scroll ends on both sides, gently arched upward in the middle, folded ribbon tails tucked behind each end, like the attached panel top. Soft top highlight, subtle inner shadow, lighting from above, straight-on symmetrical view.\nOn the ribbon, the title in big chunky rounded bold cartoon letters (like the Lilita One / Luckiest Guy font), ALL CAPITAL LETTERS, bright YELLOW-GOLD gradient fill (light yellow at the top to warm orange-gold at the bottom), a THICK DARK-BROWN outline (#4A2408) and a small soft drop shadow, exactly like the lettering of the attached SETTINGS title. The text is PERFECTLY CENTRED horizontally and vertically on the red band, follows the band's gentle arch, sits fully inside the band with clear space before the golden scrolls on both sides, evenly spaced letters, spelled exactly as given. No other text, no close button, no panel, no background.\nTransparent background PNG, the banner fills the canvas width with a small margin.\n\nThe red and gold ribbon header described above, with \"CUSTOMIZE\", exactly C-U-S-T-O-M-I-Z-E. Largest comfortable chunky letters, clear red space before scrolls. Exact canvas 2048x720. Image 1 ribbon shape ONLY, exclude panel/close button. Image 2 lettering style ONLY. Image 3 matching SHOP sibling: same ribbon design, colours, gold curls, proportions and lighting; replace SHOP with CUSTOMIZE perfectly centred. Single complete red ribbon on alpha, small safe transparent margin all around, no other text.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Docs/UIArt/references/panel_top_reference.png",
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/settings_title.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-812e6a1e-6606-4062-872c-5f9d45cca6dd.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-2fe8b97b-00aa-47e2-8de9-2b8ee45f4c40.png",
+      "generated_size": [
+        2112,
+        744
+      ],
+      "verified_size": [
+        2048,
+        720
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 1119171
+    },
+    {
+      "file": "Docs/UIArt/headers/header_leaderboard.png",
+      "width": 2048,
+      "height": 720,
+      "text": "LEADERBOARD",
+      "prompt": "Casual mobile cooking game UI header, premium glossy cartoon style, matching the attached references exactly. A single wide festive RED satin ribbon banner (#E0262B to #A3121A) with thick shiny GOLDEN trim and golden curled scroll ends on both sides, gently arched upward in the middle, folded ribbon tails tucked behind each end, like the attached panel top. Soft top highlight, subtle inner shadow, lighting from above, straight-on symmetrical view.\nOn the ribbon, the title in big chunky rounded bold cartoon letters (like the Lilita One / Luckiest Guy font), ALL CAPITAL LETTERS, bright YELLOW-GOLD gradient fill (light yellow at the top to warm orange-gold at the bottom), a THICK DARK-BROWN outline (#4A2408) and a small soft drop shadow, exactly like the lettering of the attached SETTINGS title. The text is PERFECTLY CENTRED horizontally and vertically on the red band, follows the band's gentle arch, sits fully inside the band with clear space before the golden scrolls on both sides, evenly spaced letters, spelled exactly as given. No other text, no close button, no panel, no background.\nTransparent background PNG, the banner fills the canvas width with a small margin.\n\nThe red and gold ribbon header described above, title \"LEADERBOARD\", exact spelling L-E-A-D-E-R-B-O-A-R-D. Widen red band enough for this long word, largest comfortable letters with space before curls, perfectly centred. Exact canvas 2048x720. Image 1 ribbon shape ONLY: exclude blue panel and close button. Image 2 lettering style ONLY. Image 3 matching SHOP sibling: same ribbon design, colours, gold curls, lighting; replace SHOP with LEADERBOARD. Single complete RED ribbon on alpha, small safe transparent margin all around, no other text.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Docs/UIArt/references/panel_top_reference.png",
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/settings_title.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-812e6a1e-6606-4062-872c-5f9d45cca6dd.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-d062440b-13e6-4700-880a-bf7ce33b4deb.png",
+      "generated_size": [
+        2115,
+        743
+      ],
+      "verified_size": [
+        2048,
+        720
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 1131279
+    },
+    {
+      "file": "Docs/UIArt/headers/header_story.png",
+      "width": 2048,
+      "height": 720,
+      "text": "STORY",
+      "prompt": "Casual mobile cooking game UI header, premium glossy cartoon style, matching the attached references exactly. A single wide festive RED satin ribbon banner (#E0262B to #A3121A) with thick shiny GOLDEN trim and golden curled scroll ends on both sides, gently arched upward in the middle, folded ribbon tails tucked behind each end, like the attached panel top. Soft top highlight, subtle inner shadow, lighting from above, straight-on symmetrical view.\nOn the ribbon, the title in big chunky rounded bold cartoon letters (like the Lilita One / Luckiest Guy font), ALL CAPITAL LETTERS, bright YELLOW-GOLD gradient fill (light yellow at the top to warm orange-gold at the bottom), a THICK DARK-BROWN outline (#4A2408) and a small soft drop shadow, exactly like the lettering of the attached SETTINGS title. The text is PERFECTLY CENTRED horizontally and vertically on the red band, follows the band's gentle arch, sits fully inside the band with clear space before the golden scrolls on both sides, evenly spaced letters, spelled exactly as given. No other text, no close button, no panel, no background.\nTransparent background PNG, the banner fills the canvas width with a small margin.\n\nThe red and gold ribbon header described above, title \"STORY\", exact spelling S-T-O-R-Y. Make letters tall, perfectly centred on red band with comfortable spacing. Exact canvas 2048x720. Image 1 ribbon shape ONLY, no blue panel or close button. Image 2 lettering style ONLY. Image 3 matching SHOP sibling: preserve ribbon design, shape, colours, gold curls and lighting, replace SHOP with STORY. Single complete red ribbon on alpha, no other text, small safe transparent margin all around.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Docs/UIArt/references/panel_top_reference.png",
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/settings_title.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-812e6a1e-6606-4062-872c-5f9d45cca6dd.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-e471ded3-c88a-45d0-867b-c911625155ca.png",
+      "generated_size": [
+        2116,
+        743
+      ],
+      "verified_size": [
+        2048,
+        720
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 1086695
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Menu/title_language.png",
+      "width": 2172,
+      "height": 724,
+      "text": "LANGUAGE",
+      "prompt": "The exact same arched glossy BLUE banner with thick golden border and golden scroll curls as the attached SETTINGS title: same shape, same size, same colours, same lighting. Only the word changes: \"LANGUAGE\" in the same chunky rounded bold yellow-gold letters with the same thick dark-brown outline (#4A2408) and soft shadow, PERFECTLY CENTRED horizontally and vertically on the blue band, same letter height as the reference, evenly spaced, spelled exactly L-A-N-G-U-A-G-E. No other text. Transparent background PNG, 2172x724 exact canvas. Full unclipped banner inside canvas with small transparent margin, symmetrical straight-on view.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/settings_title.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-cb3456ff-8e53-41d7-99e9-5b0ff0a0cbce.png",
+      "generated_size": [
+        2172,
+        724
+      ],
+      "verified_size": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 1354698
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Menu/music_on_button.png",
+      "width": 1800,
+      "height": 610,
+      "text": "MUSIC ON",
+      "prompt": "Casual mobile cooking game UI button, premium glossy cartoon style, exactly matching the attached reference button: the same long rounded pill shape, the same proportions, the same glossy ORANGE body (#FF9A1F to #E0520F) with the same thick shiny GOLDEN rim, the same white highlight streak along the top, the same soft inner shadow and lighting from above. Straight-on view, no perspective.\nOn the left, a chunky cartoon icon in golden yellow with a thick dark-brown outline, the same size and position as the speaker icon in the reference. To its right, the words in the SAME big chunky rounded bold letters as the reference, ALL CAPITAL LETTERS, bright yellow-gold fill with a THICK DARK-BROWN outline (#4A2408) and a soft shadow, vertically centred, the icon and words together centred on the button, spelled exactly as given. No other text.\nTransparent background PNG, the button fills the canvas with a small margin, 1800x610.\n\nThe button described above, with a pair of golden music notes (beamed eighth notes) on the left and words \"MUSIC ON\" to their right, exactly M-U-S-I-C space O-N. Replace speaker icon and SOUND ON text. Nothing else. Same proportions and gold rim, centered icon-plus-words group, large legible evenly spaced letters. Exact canvas 1800x610, full unclipped pill centered within transparent margins.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-069ac600-6dda-40b0-b735-10ee95c0a5d7.png",
+      "generated_size": [
+        2154,
+        730
+      ],
+      "verified_size": [
+        1800,
+        610
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 868858
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Menu/music_off_button.png",
+      "width": 1800,
+      "height": 610,
+      "text": "MUSIC OFF",
+      "prompt": "Casual mobile cooking game UI button, premium glossy cartoon style, exactly matching the attached reference button: the same long rounded pill shape, the same proportions, the same glossy ORANGE body (#FF9A1F to #E0520F) with the same thick shiny GOLDEN rim, the same white highlight streak along the top, the same soft inner shadow and lighting from above. Straight-on view, no perspective.\nOn the left, a chunky cartoon icon in golden yellow with a thick dark-brown outline, the same size and position as the speaker icon in the reference. To its right, the words in the SAME big chunky rounded bold letters as the reference, ALL CAPITAL LETTERS, bright yellow-gold fill with a THICK DARK-BROWN outline (#4A2408) and a soft shadow, vertically centred, the icon and words together centred on the button, spelled exactly as given. No other text.\nTransparent background PNG, the button fills the canvas with a small margin, 1800x610.\n\nThe button described above, pair of golden beamed eighth notes on left with a thick glossy diagonal slash across them (like slashed speaker in second reference), and words \"MUSIC OFF\" to right. Exactly M-U-S-I-C space O-F-F. Reference 3 matching MUSIC ON sibling: keep its orange pill, rim, lighting, golden music notes and layout, change ON to OFF and slash notes. Nothing else. Icon-plus-words group perfectly centered. Exact canvas 1800x610, single full unclipped pill centered in safe transparent margins.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png",
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_off_button.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-069ac600-6dda-40b0-b735-10ee95c0a5d7.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-b74ca464-e5b7-40fb-af9d-1dc36830a0ec.png",
+      "generated_size": [
+        2154,
+        730
+      ],
+      "verified_size": [
+        1800,
+        610
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 873698
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Menu/language_button.png",
+      "width": 1800,
+      "height": 610,
+      "text": "LANGUAGE",
+      "prompt": "Casual mobile cooking game UI button, premium glossy cartoon style, exactly matching the attached reference button: the same long rounded pill shape, the same proportions, the same glossy ORANGE body (#FF9A1F to #E0520F) with the same thick shiny GOLDEN rim, the same white highlight streak along the top, the same soft inner shadow and lighting from above. Straight-on view, no perspective.\nOn the left, a chunky cartoon icon in golden yellow with a thick dark-brown outline, the same size and position as the speaker icon in the reference. To its right, the words in the SAME big chunky rounded bold letters as the reference, ALL CAPITAL LETTERS, bright yellow-gold fill with a THICK DARK-BROWN outline (#4A2408) and a soft shadow, vertically centred, the icon and words together centred on the button, spelled exactly as given. No other text.\nTransparent background PNG, the button fills the canvas with a small margin, 1800x610.\n\nThe button described above, with a round golden globe with clear meridian and latitude lines on the left and word \"LANGUAGE\" to its right. Exact spelling L-A-N-G-U-A-G-E. Replace speaker icon and SOUND ON words. Nothing else. Same long pill shape, gold rim, gloss and lighting as reference. Icon and word together perfectly centred on button with comfortable margins. Exact canvas 1800x610, full unclipped pill centered within transparent margins.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-058e5b5b-9451-4eab-ac95-843ca4759306.png",
+      "generated_size": [
+        2154,
+        730
+      ],
+      "verified_size": [
+        1800,
+        610
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 929789
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Language/lang_english.png",
+      "width": 1800,
+      "height": 610,
+      "text": "ENGLISH",
+      "prompt": "Casual mobile cooking game UI button, premium glossy cartoon style, exactly matching the attached reference button: the same long rounded pill shape, the same proportions, the same glossy ORANGE body (#FF9A1F to #E0520F) with the same thick shiny GOLDEN rim, the same white highlight streak along the top, the same soft inner shadow and lighting from above. Straight-on view, no perspective.\nOn the left, a chunky cartoon icon in golden yellow with a thick dark-brown outline, the same size and position as the speaker icon in the reference. To its right, the words in the SAME big chunky rounded bold letters as the reference, ALL CAPITAL LETTERS, bright yellow-gold fill with a THICK DARK-BROWN outline (#4A2408) and a soft shadow, vertically centred, the icon and words together centred on the button, spelled exactly as given. No other text.\nTransparent background PNG, the button fills the canvas with a small margin, 1800x610.\n\nLANGUAGE LIST VARIANT: override icon instructions above: NO ICON. The same orange pill button as reference, same rim, gloss and lighting, but with NO icon. Only word \"ENGLISH\" in same chunky rounded bold yellow-gold letters with thick dark-brown outline, PERFECTLY CENTRED horizontally and vertically on the entire button, as large as reference words, spelled E-N-G-L-I-S-H. No other text, no symbols. Transparent PNG, exact canvas 1800x610. Keep complete pill within safe transparent margins.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-179a65fe-7073-4142-bca1-f061bc0352cf.png",
+      "generated_size": [
+        2154,
+        730
+      ],
+      "verified_size": [
+        1800,
+        610
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 847351
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Language/lang_hinglish.png",
+      "width": 1800,
+      "height": 610,
+      "text": "HINGLISH",
+      "prompt": "Casual mobile cooking game UI button, premium glossy cartoon style, exactly matching the attached reference button: the same long rounded pill shape, the same proportions, the same glossy ORANGE body (#FF9A1F to #E0520F) with the same thick shiny GOLDEN rim, the same white highlight streak along the top, the same soft inner shadow and lighting from above. Straight-on view, no perspective.\nOn the left, a chunky cartoon icon in golden yellow with a thick dark-brown outline, the same size and position as the speaker icon in the reference. To its right, the words in the SAME big chunky rounded bold letters as the reference, ALL CAPITAL LETTERS, bright yellow-gold fill with a THICK DARK-BROWN outline (#4A2408) and a soft shadow, vertically centred, the icon and words together centred on the button, spelled exactly as given. No other text.\nTransparent background PNG, the button fills the canvas with a small margin, 1800x610.\n\nLANGUAGE LIST VARIANT: NO ICON, overriding icon instructions above. Same orange pill, rim, gloss and lighting, only word \"HINGLISH\", exact H-I-N-G-L-I-S-H, in chunky rounded bold yellow-gold letters with thick dark-brown outline. PERFECTLY CENTRED horizontally and vertically, largest comfortable same-style lettering. Image 2 is matching ENGLISH button: preserve body, shape, rim and text style; replace ENGLISH with HINGLISH. No other text or symbols. Exact canvas 1800x610, full unclipped pill inside safe transparent margins.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-179a65fe-7073-4142-bca1-f061bc0352cf.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-660c8fe7-1327-4294-a45b-6e19602fefbf.png",
+      "generated_size": [
+        2153,
+        730
+      ],
+      "verified_size": [
+        1800,
+        610
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 833357
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Language/lang_spanish.png",
+      "width": 1800,
+      "height": 610,
+      "text": "ESPAÑOL",
+      "prompt": "Casual mobile cooking game UI button, premium glossy cartoon style, exactly matching the attached reference button: the same long rounded pill shape, the same proportions, the same glossy ORANGE body (#FF9A1F to #E0520F) with the same thick shiny GOLDEN rim, the same white highlight streak along the top, the same soft inner shadow and lighting from above. Straight-on view, no perspective.\nOn the left, a chunky cartoon icon in golden yellow with a thick dark-brown outline, the same size and position as the speaker icon in the reference. To its right, the words in the SAME big chunky rounded bold letters as the reference, ALL CAPITAL LETTERS, bright yellow-gold fill with a THICK DARK-BROWN outline (#4A2408) and a soft shadow, vertically centred, the icon and words together centred on the button, spelled exactly as given. No other text.\nTransparent background PNG, the button fills the canvas with a small margin, 1800x610.\n\nLANGUAGE LIST VARIANT: NO ICON, overriding icon instructions above. Same orange pill, rim, gloss and lighting, only word \"ESPAÑOL\" spelled E-S-P-A-Ñ-O-L. CRITICAL: fifth letter is Ñ with a clear raised tilde (~) over N, not plain N. Chunky rounded bold yellow-gold letters, thick dark-brown outline, exactly centered horizontally and vertically as a whole word INCLUDING accent. Image 2 matching ENGLISH sibling: keep pill and lettering style, replace ENGLISH with ESPAÑOL. No other text or symbols. Exact canvas 1800x610, full unclipped pill on alpha with safe margins.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-179a65fe-7073-4142-bca1-f061bc0352cf.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-65d65eee-4e18-4221-855b-4226d5dc100f.png",
+      "generated_size": [
+        2153,
+        730
+      ],
+      "verified_size": [
+        1800,
+        610
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 844315
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Language/lang_portuguese.png",
+      "width": 1800,
+      "height": 610,
+      "text": "PORTUGUÊS",
+      "prompt": "Casual mobile cooking game UI button, premium glossy cartoon style, exactly matching the attached reference button: the same long rounded pill shape, the same proportions, the same glossy ORANGE body (#FF9A1F to #E0520F) with the same thick shiny GOLDEN rim, the same white highlight streak along the top, the same soft inner shadow and lighting from above. Straight-on view, no perspective.\nOn the left, a chunky cartoon icon in golden yellow with a thick dark-brown outline, the same size and position as the speaker icon in the reference. To its right, the words in the SAME big chunky rounded bold letters as the reference, ALL CAPITAL LETTERS, bright yellow-gold fill with a THICK DARK-BROWN outline (#4A2408) and a soft shadow, vertically centred, the icon and words together centred on the button, spelled exactly as given. No other text.\nTransparent background PNG, the button fills the canvas with a small margin, 1800x610.\n\nLANGUAGE LIST VARIANT: NO ICON, overriding icon instructions above. Same orange pill, rim, gloss and lighting, only word \"PORTUGUÊS\", exactly P-O-R-T-U-G-U-Ê-S. CRITICAL: letter Ê has a clear circumflex roof accent (^) above E, not plain E or É. Chunky rounded bold yellow-gold letters with thick dark-brown outline, entire word INCLUDING accent perfectly centred horizontally and vertically on whole button. Image 2 matching ENGLISH sibling: keep pill shape and lettering style; replace text with PORTUGUÊS. Largest comfortable letters, no other words or symbols. Exact canvas 1800x610, complete pill on alpha inside safe margins.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-179a65fe-7073-4142-bca1-f061bc0352cf.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-a2d66b34-c580-4254-a872-b8b6e12f1c95.png",
+      "generated_size": [
+        2153,
+        730
+      ],
+      "verified_size": [
+        1800,
+        610
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 915689
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Language/lang_indonesian.png",
+      "width": 1800,
+      "height": 610,
+      "text": "INDONESIA",
+      "prompt": "Casual mobile cooking game UI button, premium glossy cartoon style, exactly matching the attached reference button: the same long rounded pill shape, the same proportions, the same glossy ORANGE body (#FF9A1F to #E0520F) with the same thick shiny GOLDEN rim, the same white highlight streak along the top, the same soft inner shadow and lighting from above. Straight-on view, no perspective.\nOn the left, a chunky cartoon icon in golden yellow with a thick dark-brown outline, the same size and position as the speaker icon in the reference. To its right, the words in the SAME big chunky rounded bold letters as the reference, ALL CAPITAL LETTERS, bright yellow-gold fill with a THICK DARK-BROWN outline (#4A2408) and a soft shadow, vertically centred, the icon and words together centred on the button, spelled exactly as given. No other text.\nTransparent background PNG, the button fills the canvas with a small margin, 1800x610.\n\nLANGUAGE LIST VARIANT: NO ICON, overriding icon instructions above. Same orange pill, gold rim, gloss and lighting, only word \"INDONESIA\", exactly I-N-D-O-N-E-S-I-A. Chunky rounded bold yellow-gold letters with thick dark-brown outline, PERFECTLY CENTRED horizontally and vertically on whole button, largest comfortable reference-style letters. Image 2 matching ENGLISH sibling: keep pill shape and lettering style; replace text with INDONESIA. No other text or symbols. Exact canvas 1800x610, complete pill within safe transparent margins.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-179a65fe-7073-4142-bca1-f061bc0352cf.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-ab77b51d-01f1-4e28-bc73-fa4e6866f75a.png",
+      "generated_size": [
+        2154,
+        730
+      ],
+      "verified_size": [
+        1800,
+        610
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 839840
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Language/lang_french.png",
+      "width": 1800,
+      "height": 610,
+      "text": "FRANÇAIS",
+      "prompt": "Casual mobile cooking game UI button, premium glossy cartoon style, exactly matching the attached reference button: the same long rounded pill shape, the same proportions, the same glossy ORANGE body (#FF9A1F to #E0520F) with the same thick shiny GOLDEN rim, the same white highlight streak along the top, the same soft inner shadow and lighting from above. Straight-on view, no perspective.\nOn the left, a chunky cartoon icon in golden yellow with a thick dark-brown outline, the same size and position as the speaker icon in the reference. To its right, the words in the SAME big chunky rounded bold letters as the reference, ALL CAPITAL LETTERS, bright yellow-gold fill with a THICK DARK-BROWN outline (#4A2408) and a soft shadow, vertically centred, the icon and words together centred on the button, spelled exactly as given. No other text.\nTransparent background PNG, the button fills the canvas with a small margin, 1800x610.\n\nLANGUAGE LIST VARIANT: NO ICON, overriding icon instructions above. Same orange pill, rim, gloss and lighting, only word \"FRANÇAIS\", exactly F-R-A-N-Ç-A-I-S. CRITICAL: fifth letter is Ç with clear cedilla hook beneath C, not plain C. Chunky rounded bold yellow-gold letters with thick dark-brown outline. Entire word INCLUDING cedilla PERFECTLY CENTRED horizontally and vertically on whole button. Image 2 matching ENGLISH sibling: preserve pill and typography style; replace text with FRANÇAIS. Largest comfortable letters, no other text or symbols. Exact canvas 1800x610, complete pill within safe transparent margins.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-179a65fe-7073-4142-bca1-f061bc0352cf.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-4bef0427-01d9-4c37-96c6-e59a4576dafe.png",
+      "generated_size": [
+        2153,
+        730
+      ],
+      "verified_size": [
+        1800,
+        610
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 878337
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Language/lang_german.png",
+      "width": 1800,
+      "height": 610,
+      "text": "DEUTSCH",
+      "prompt": "Casual mobile cooking game UI button, premium glossy cartoon style, exactly matching the attached reference button: the same long rounded pill shape, the same proportions, the same glossy ORANGE body (#FF9A1F to #E0520F) with the same thick shiny GOLDEN rim, the same white highlight streak along the top, the same soft inner shadow and lighting from above. Straight-on view, no perspective.\nOn the left, a chunky cartoon icon in golden yellow with a thick dark-brown outline, the same size and position as the speaker icon in the reference. To its right, the words in the SAME big chunky rounded bold letters as the reference, ALL CAPITAL LETTERS, bright yellow-gold fill with a THICK DARK-BROWN outline (#4A2408) and a soft shadow, vertically centred, the icon and words together centred on the button, spelled exactly as given. No other text.\nTransparent background PNG, the button fills the canvas with a small margin, 1800x610.\n\nLANGUAGE LIST VARIANT: NO ICON, overriding icon instructions above. Same orange pill, gold rim, gloss and lighting, only word \"DEUTSCH\", exactly D-E-U-T-S-C-H. Chunky rounded bold yellow-gold letters with thick dark-brown outline, PERFECTLY CENTRED horizontally and vertically on whole button, largest comfortable same-style letters. Image 2 matching ENGLISH sibling: preserve pill and typography style; replace text with DEUTSCH. No other text or symbols. Exact canvas 1800x610, single full unclipped pill centered within safe transparent margins.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-179a65fe-7073-4142-bca1-f061bc0352cf.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-4e389319-e4cb-4a9c-8424-41e10cdde5ba.png",
+      "generated_size": [
+        2154,
+        730
+      ],
+      "verified_size": [
+        1800,
+        610
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 815703
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Language/lang_turkish.png",
+      "width": 1800,
+      "height": 610,
+      "text": "TÜRKÇE",
+      "prompt": "Casual mobile cooking game UI button, premium glossy cartoon style, exactly matching the attached reference button: the same long rounded pill shape, the same proportions, the same glossy ORANGE body (#FF9A1F to #E0520F) with the same thick shiny GOLDEN rim, the same white highlight streak along the top, the same soft inner shadow and lighting from above. Straight-on view, no perspective.\nOn the left, a chunky cartoon icon in golden yellow with a thick dark-brown outline, the same size and position as the speaker icon in the reference. To its right, the words in the SAME big chunky rounded bold letters as the reference, ALL CAPITAL LETTERS, bright yellow-gold fill with a THICK DARK-BROWN outline (#4A2408) and a soft shadow, vertically centred, the icon and words together centred on the button, spelled exactly as given. No other text.\nTransparent background PNG, the button fills the canvas with a small margin, 1800x610.\n\nLANGUAGE LIST VARIANT: NO ICON, overriding icon instructions above. Same orange pill, rim, gloss and lighting, ONLY word \"TÜRKÇE\", exactly T-Ü-R-K-Ç-E. CRITICAL accents: second letter Ü has TWO clear dots above U; fifth letter Ç has cedilla hook beneath C. Both accents mandatory. Chunky rounded bold yellow-gold letters with thick dark-brown outline, whole word including accents PERFECTLY CENTRED horizontally and vertically. Image 2 matching ENGLISH sibling: keep pill and typography style; replace text with TÜRKÇE. No other text or symbols. Exact canvas 1800x610, complete pill within safe transparent margins.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png",
+        "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-179a65fe-7073-4142-bca1-f061bc0352cf.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-6999a52b-7be0-42db-9e66-624a11e71eea.png",
+      "generated_size": [
+        2154,
+        730
+      ],
+      "verified_size": [
+        1800,
+        610
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 842809
+    },
+    {
+      "file": "Assets/Project Data/Game/Images/GameUI/Language/lang_selected_tick.png",
+      "width": 512,
+      "height": 512,
+      "text": "",
+      "prompt": "Casual mobile game UI badge, premium glossy cartoon style matching the attached orange button: a round glossy GREEN badge (#4CD137 to #1E8E16) with a thick shiny golden rim and a white highlight on top, with a bold white check mark in the middle that has a thick dark-green outline. Straight-on view, centred and symmetrical circular rim. No text. Transparent background PNG, exact canvas 512x512. Full unclipped badge within safe transparent margin. Reference is STYLE only: do not draw orange pill or any lettering. Single circular green badge with white tick only.",
+      "references": [
+        "E:/Game Development/Conveyor Chef/Assets/Project Data/Game/Images/GameUI/Menu/sound_on_button.png"
+      ],
+      "generated_source": "C:\\Users\\mohdf\\.codex\\generated_images\\01a15807-569b-70d0-b460-e691eb11e926\\exec-633735b6-61e1-4ea9-905b-d99e67a0be03.png",
+      "generated_size": [
+        1254,
+        1254
+      ],
+      "verified_size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "transparent_corners": true,
+      "spelling_visually_checked": true,
+      "bytes": 263981
+    }
+  ],
+  "verified_asset_count": 20,
+  "export_note": "Generated PNGs proportionally resized and centered on exact requested transparent canvases where needed; generated alpha preserved."
+}

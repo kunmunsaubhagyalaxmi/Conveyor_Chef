@@ -106,7 +106,7 @@ namespace Watermelon
             // 1. the tray's colour -> the dish of that colour (the chef's hand points at one)
             int start = OrdersDone();
             int lastSeats = -1;
-            Show("Tray ka colour dekho! Neeche wahi colour ki dish par tap karo.", Tray(), interactive: true);
+            Show(Loc.T("tut.tray"), Tray(), interactive: true);
             while (OrdersDone() == start)
             {
                 PointAtDish(GameplayHelpers.FindGoodDish());
@@ -115,8 +115,8 @@ namespace Watermelon
                 if (seats != lastSeats && seats > 0)
                 {
                     lastSeats = seats;
-                    message.text = seats == 1 ? "Shabaash! Ek tray mein 3 dishes jaati hain - 2 aur!"
-                        : seats == 2 ? "Bas ek aur!" : message.text;
+                    message.text = seats == 1 ? Loc.T("tut.seat1")
+                        : seats == 2 ? Loc.T("tut.seat2") : message.text;
                 }
                 SetSpot(Tray());
                 yield return null;
@@ -126,22 +126,22 @@ namespace Watermelon
 
             // 2. trays
             yield return WaitForTray();
-            yield return Step("Shabaash! Tray bhar gayi aur customer khush hokar chala gaya. Har nayi tray ko uske colour ki 3 dishes chahiye.",
-                Tray(), "AAGE");
+            yield return Step(Loc.T("tut.full"),
+                Tray(), Loc.T("tut.next"));
 
             // 3. the waiting row
-            yield return Step("Galat colour ki dish yahan neeche ruk jaati hai. Sirf 7 jagah hain - sab bhar gayi to level haar jaoge!",
-                Dock(), "AAGE");
+            yield return Step(Loc.T("tut.dock"),
+                Dock(), Loc.T("tut.next"));
             // 4. the orders
-            yield return Step("Upar ORDERS mein dekho kya chahiye. Saare orders poore karo aur level jeeto!",
-                Orders(), "AAGE");
+            yield return Step(Loc.T("tut.orders"),
+                Orders(), Loc.T("tut.next"));
             // 5. the power-ups, one by one (also marks their later tips as seen)
             foreach (var tip in PowerUpTips(int.MaxValue))
             {
-                yield return Step(tip.text, tip.target(), "AAGE");
+                yield return Step(tip.text, tip.target(), Loc.T("tut.next"));
                 PlayerPrefs.SetInt(KeyPrefix + tip.key, 1);
             }
-            yield return Step("Bas itna hi! Ab tum khud try karo.", null, "CHALO KHELEIN!");
+            yield return Step(Loc.T("tut.done"), null, Loc.T("tut.play"));
 
             PlayerPrefs.SetInt(Level1Key, 1);
             PlayerPrefs.Save();
@@ -155,10 +155,10 @@ namespace Watermelon
             var tips = new List<(string key, string text, System.Func<Rect?> target)>();
 
             if (HasHiddenDishes())
-                tips.Add(("Hidden", "Yeh dish dhakki hui hai! Iske aas-paas ki dishes hatao, tab yeh khulegi.", HiddenDish));
+                tips.Add(("Hidden", Loc.T("tut.hidden"), HiddenDish));
             if (LevelController.LoadedStageData != null && LevelController.LoadedStageData.SpawnerData != null &&
                 LevelController.LoadedStageData.SpawnerData.Length > 0)
-                tips.Add(("Spawner", "Yeh hara dabba nayi dishes deta hai! Number batata hai iske andar kitni dishes baaki hain. Iske saamne wali dish uthao, agli apne aap bahar aayegi.", Spawner));
+                tips.Add(("Spawner", Loc.T("tut.spawner"), Spawner));
             tips.AddRange(PowerUpTips(levelIndex));
 
             tips.RemoveAll(t => PlayerPrefs.GetInt(KeyPrefix + t.key, 0) == 1);
@@ -172,7 +172,7 @@ namespace Watermelon
             yield return Wait(0.4f);
             foreach (var tip in tips)
             {
-                yield return Step(tip.text, tip.target(), "SAMAJH GAYA!");
+                yield return Step(tip.text, tip.target(), Loc.T("tut.gotit"));
                 PlayerPrefs.SetInt(KeyPrefix + tip.key, 1);
             }
             PlayerPrefs.Save();
@@ -191,9 +191,9 @@ namespace Watermelon
                 if (pu == null || pu.Settings == null || pu.Settings.RequiredLevel > levelIndex)
                     continue;
                 RectTransform rect = pu.transform as RectTransform;
-                string text = pu.Settings is PUUndoSettings ? "UNDO: galti ho gayi? Aakhri dish wapas board par chali jaayegi."
-                    : pu.Settings is PUHintSettings ? "HINT: phas gaye? Yeh sahi dishes khud tray tak bhej deta hai."
-                    : pu.Settings is PUShuffleSettings ? "SHUFFLE: board ki dishes mix ho jaati hain, naye raste khul jaate hain."
+                string text = pu.Settings is PUUndoSettings ? Loc.T("tut.undo")
+                    : pu.Settings is PUHintSettings ? Loc.T("tut.hint")
+                    : pu.Settings is PUShuffleSettings ? Loc.T("tut.shuffle")
                     : null;
                 if (text != null)
                     tips.Add(("PowerUp_" + pu.Settings.GetType().Name, text, () => UiRect(rect)));
@@ -498,7 +498,7 @@ namespace Watermelon
             nr.pivot = new Vector2(1f, 1f);
             nr.anchoredPosition = new Vector2(-40f, 6f);
             nr.sizeDelta = new Vector2(330f, 110f);
-            nextLabel = Txt("Label", nextImage.transform, "AAGE", 46f);
+            nextLabel = Txt("Label", nextImage.transform, Loc.T("tut.next"), 46f);
             nextLabel.color = Color.white;
             OutlinedText.Apply(nextLabel, new Color32(18, 80, 10, 255), 0.3f);
             Stretch(nextLabel.rectTransform);
@@ -506,7 +506,7 @@ namespace Watermelon
             nextLabel.rectTransform.offsetMax = new Vector2(-30f, -16f);
 
             // SKIP: just outlined text by the bubble, on the side away from the chef (no button shape)
-            TextMeshProUGUI skipText = Txt("Skip", bubble.transform, "SKIP TUTORIAL >>", 30f);
+            TextMeshProUGUI skipText = Txt("Skip", bubble.transform, Loc.T("tut.skip"), 30f);
             skipText.color = Color.white;
             skipText.textWrappingMode = TextWrappingModes.NoWrap;
             OutlinedText.Apply(skipText, new Color32(40, 24, 10, 255), 0.3f);

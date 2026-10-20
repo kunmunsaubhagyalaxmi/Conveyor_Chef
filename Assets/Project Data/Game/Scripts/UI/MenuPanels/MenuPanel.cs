@@ -166,7 +166,7 @@ namespace Watermelon
             }
 
             try { AudioController.PlaySound(AudioController.Sounds.completeSound); } catch { }
-            Toast("+" + amount.ToString("N0") + (currency == CurrencyType.Coins ? " COINS" : " DIAMONDS"), new Color32(30, 18, 8, 255),
+            Toast(Loc.F(currency == CurrencyType.Coins ? "+{0} COINS" : "+{0} DIAMONDS", amount.ToString("N0")), new Color32(30, 18, 8, 255),
                 currency == CurrencyType.Coins ? new Color32(255, 214, 70, 255) : new Color32(120, 220, 255, 255));
             UpdateCurrencies();
         }
