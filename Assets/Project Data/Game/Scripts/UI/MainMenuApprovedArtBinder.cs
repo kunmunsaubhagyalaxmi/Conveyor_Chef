@@ -119,10 +119,13 @@ namespace Watermelon
         // the same head and body size, not the same height: hats differ), feet on the same floor and
         // in the same spot. Measured on the pictures: all outfit pictures (512x1024) are drawn at one
         // scale, 1.435x the classic picture's pixels (the royal chef, in the classic's pose, then
-        // overlaps the classic chef almost exactly), 20 px left and 6 px up of feet-and-legs alignment.
+        // overlaps the classic chef almost exactly), then nudged by outfitNudge (set in the Inspector).
         private const float OutfitPixelScale = 1.435f;      // outfit picture pixel -> classic picture pixel
         private const float OutfitSourceHeight = 1024f;     // outfit pictures as painted (imported smaller)
-        private static readonly Vector2 OutfitNudge = new Vector2(-20f, 6f);   // classic pixels
+
+        [Tooltip("Moves every outfit chef together, in pixels of the classic chef picture (x: right, y: up). " +
+                 "Changes apply at once in Play mode.")]
+        [SerializeField] private Vector2 outfitNudge = new Vector2(-20f, 48f);
 
         // Where each character stands in its picture: the bottom of the shoes (pixel row from the
         // top) and the middle between the feet (pixel column), measured on the 512x1024 pictures.
@@ -185,8 +188,8 @@ namespace Watermelon
                 feet = new Vector2(OutfitSourceHeight * aspect * 0.5f, OutfitSourceHeight * (1f - o.feet));
             }
 
-            float left = feetX + OutfitNudge.x * classicScale * unit - feet.x * k;
-            float top = feetY + OutfitNudge.y * classicScale * unit + feet.y * k;
+            float left = feetX + outfitNudge.x * classicScale * unit - feet.x * k;
+            float top = feetY + outfitNudge.y * classicScale * unit + feet.y * k;
             rt.sizeDelta = new Vector2(w, h);
             rt.anchoredPosition = new Vector2(left + w * 0.5f, top - h * 0.5f);
         }
