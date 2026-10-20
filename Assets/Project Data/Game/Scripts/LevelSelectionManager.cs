@@ -452,6 +452,17 @@ namespace Watermelon.BusStop
             }
         }
 
+        private static void FitText(TextMeshProUGUI text)
+        {
+            if (text == null || text.enableAutoSizing)
+                return;
+
+            text.fontSizeMax = text.fontSize;
+            text.fontSizeMin = Mathf.Min(text.fontSizeMin > 0f ? text.fontSizeMin : 18f, text.fontSize);
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            text.enableAutoSizing = true;
+        }
+
         private void RefreshProgress()
         {
             int completed = 0;
@@ -462,7 +473,12 @@ namespace Watermelon.BusStop
             }
 
             if (progressValueText != null)
+            {
+                // "16/30" is wider than "3/30": it shrinks to fit its box instead of spilling out
+                // of the bar's frame (the authored size stays the maximum), like the Country Map.
+                FitText(progressValueText);
                 progressValueText.text = completed + "/" + LevelsPerCountry;
+            }
 
             if (progressFill == null)
                 return;
