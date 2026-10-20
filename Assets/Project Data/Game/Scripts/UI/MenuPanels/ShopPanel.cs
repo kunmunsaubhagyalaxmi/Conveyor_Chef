@@ -89,7 +89,7 @@ namespace Watermelon
             MenuRow.Title(card, "DAILY GIFT", new Color32(160, 56, 18, 255));
 
             TimeSpan left = PlayerStats.TimeUntilNextDay;
-            MenuRow.Subtitle(card, taken ? Loc.F("Next gift in {0}h {1:00}m", (int)left.TotalHours, left.Minutes) : Loc.F("{0} free coins every day", DailyGiftCoins));
+            MenuRow.Subtitle(card, taken ? $"Next gift in {(int)left.TotalHours}h {left.Minutes:00}m" : DailyGiftCoins + " free coins every day");
 
             if (taken)
             {
@@ -117,7 +117,7 @@ namespace Watermelon
             MenuRow.Title(card, index < PowerUpNames.Length ? PowerUpNames[index] : settings.name);
             MenuRow.Subtitle(card, settings.Description);
 
-            TextMeshProUGUI owned = MenuUI.Text("Owned", card, Loc.F("You have {0}", save != null ? Mathf.Max(0, save.Amount) : 0), 30f, MenuUI.Green, TextAlignmentOptions.Left);
+            TextMeshProUGUI owned = MenuUI.Text("Owned", card, "You have " + (save != null ? Mathf.Max(0, save.Amount) : 0), 30f, MenuUI.Green, TextAlignmentOptions.Left);
             MenuUI.Anchor(owned.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(MenuRow.TextX, 26f), new Vector2(MenuRow.TextWidth, 42f));
 
             TextMeshProUGUI amount = MenuUI.Text("Amount", card, "+" + settings.PurchaseAmount, 34f, MenuUI.TextDark);
@@ -192,7 +192,7 @@ namespace Watermelon
             save.Amount = Mathf.Max(0, save.Amount) + settings.PurchaseAmount;
             SaveNow();
             try { AudioController.PlaySound(AudioController.Sounds.buttonSound); } catch { }
-            Toast("+" + settings.PurchaseAmount + " " + Loc.T(index < PowerUpNames.Length ? PowerUpNames[index] : "POWER-UPS"), new Color32(40, 110, 30, 255));
+            Toast("+" + settings.PurchaseAmount + " " + (index < PowerUpNames.Length ? PowerUpNames[index] : "POWER-UPS"), new Color32(40, 110, 30, 255));
             Refresh();
         }
 

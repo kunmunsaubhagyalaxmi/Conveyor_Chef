@@ -30,7 +30,6 @@ namespace Watermelon
 
         private RectTransform root;
         private RectTransform frame;
-        private TMPro.TextMeshProUGUI titleText;
         private MenuPanelFrame design;
         private CanvasGroup rootGroup;
         private ScrollRect scroll;
@@ -101,8 +100,6 @@ namespace Watermelon
         {
             selectedTab = index;
             BuildTabs();
-            if (titleText != null)
-                titleText.text = Loc.Upper(Loc.T(Title));   // the language may have changed
             RebuildContent();
             if (scroll != null)
                 scroll.verticalNormalizedPosition = 1f;
@@ -169,7 +166,7 @@ namespace Watermelon
             }
 
             try { AudioController.PlaySound(AudioController.Sounds.completeSound); } catch { }
-            Toast(Loc.F(currency == CurrencyType.Coins ? "+{0} COINS" : "+{0} DIAMONDS", amount.ToString("N0")), new Color32(30, 18, 8, 255),
+            Toast("+" + amount.ToString("N0") + (currency == CurrencyType.Coins ? " COINS" : " DIAMONDS"), new Color32(30, 18, 8, 255),
                 currency == CurrencyType.Coins ? new Color32(255, 214, 70, 255) : new Color32(120, 220, 255, 255));
             UpdateCurrencies();
         }
@@ -367,8 +364,7 @@ namespace Watermelon
             MenuUI.Stretch(dim.rectTransform);
             MenuUI.Button(dim, Close, false).transition = Selectable.Transition.None;
 
-            // the panel's own picture (title painted in); otherwise the blank frame with the title written on
-            design = MenuPanelFrame.Load(DesignKey) ?? MenuPanelFrame.Load(MenuPanelFrame.BlankKey);
+            design = MenuPanelFrame.Load(DesignKey);
 
             RectTransform body;
             if (design != null)
@@ -444,24 +440,6 @@ namespace Watermelon
                 closeArea.rectTransform.offsetMin = new Vector2(-12f, -12f);   // a little larger than the drawn button
                 closeArea.rectTransform.offsetMax = new Vector2(12f, 12f);
                 MenuUI.Button(closeArea, Close, false).transition = Selectable.Transition.None;
-
-                if (design.Blank)
-                {
-                    // the blank frame's close button is a plain ball: the X art goes on it
-                    Image cross = MenuUI.Image("Close Icon", frame, Art.closeButton);
-                    cross.rectTransform.anchorMin = design.CloseMin;
-                    cross.rectTransform.anchorMax = design.CloseMax;
-                    cross.rectTransform.offsetMin = new Vector2(-4f, -4f);
-                    cross.rectTransform.offsetMax = new Vector2(4f, 4f);
-                    cross.transform.SetSiblingIndex(closeArea.transform.GetSiblingIndex());
-
-                    // the title on the blank ribbon, like the drawn ones: cream letters, dark red outline
-                    titleText = MenuUI.OutlinedText("Title", frame, Title, 78f, new Color32(110, 20, 20, 255),
-                        TMPro.TextAlignmentOptions.Center, new Color32(255, 248, 232, 255));
-                    titleText.rectTransform.anchorMin = design.TitleMin;
-                    titleText.rectTransform.anchorMax = design.TitleMax;
-                    titleText.rectTransform.offsetMin = titleText.rectTransform.offsetMax = Vector2.zero;
-                }
                 return;
             }
 

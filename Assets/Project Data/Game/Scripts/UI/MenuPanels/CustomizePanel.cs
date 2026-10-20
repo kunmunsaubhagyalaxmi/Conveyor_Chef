@@ -46,7 +46,7 @@ namespace Watermelon
             Image chef = MenuUI.Image("Chef", card, ChefProgress.FullBody(Art));
             MenuUI.Anchor(chef.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(26f, 0f), new Vector2(170f, 310f));
 
-            TextMeshProUGUI title = MenuUI.Text("Title", card, Loc.F("CHEF LEVEL {0}", level), 52f, new Color32(160, 56, 18, 255), TextAlignmentOptions.Left);
+            TextMeshProUGUI title = MenuUI.Text("Title", card, "CHEF LEVEL " + level, 52f, new Color32(160, 56, 18, 255), TextAlignmentOptions.Left);
             MenuUI.Anchor(title.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(222f, -30f), new Vector2(560f, 64f));
             TextMeshProUGUI outfit = MenuUI.Text("Outfit", card, ChefProgress.Selected.Name, 32f, MenuUI.TextSoft, TextAlignmentOptions.Left);
             MenuUI.Anchor(outfit.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(222f, -98f), new Vector2(560f, 44f));
@@ -56,11 +56,11 @@ namespace Watermelon
 
             ChefProgress.Outfit next = ChefProgress.NextLocked;
             string hint = next != null
-                ? Loc.F("Next outfit: {0} at level {1}", Loc.T(next.Name), next.UnlockLevel)
+                ? "Next outfit: " + next.Name + " at level " + next.UnlockLevel
                 : "Every outfit unlocked!";
             TextMeshProUGUI nextText = MenuUI.Text("Next", card, hint, 28f, MenuUI.TextSoft, TextAlignmentOptions.Left);
             MenuUI.Anchor(nextText.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(222f, -226f), new Vector2(560f, 40f));
-            TextMeshProUGUI how = MenuUI.Text("How", card, Loc.F("Win levels to earn XP: +{0} XP per win", ChefProgress.XPPerWin + 3 * ChefProgress.XPPerStar),
+            TextMeshProUGUI how = MenuUI.Text("How", card, "Win levels to earn XP: +" + (ChefProgress.XPPerWin + 3 * ChefProgress.XPPerStar) + " XP per win",
                 24f, MenuUI.TextSoft, TextAlignmentOptions.Left);
             MenuUI.Anchor(how.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(222f, -270f), new Vector2(560f, 36f));
 
@@ -88,7 +88,7 @@ namespace Watermelon
                 {
                     Image lockBadge = MenuUI.Image("Lock", preview, Art.lockBadge);
                     MenuUI.Anchor(lockBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(110f, 96f));
-                    TextMeshProUGUI need2 = MenuUI.Text("Needs", cell.transform, Loc.F("CHEF LEVEL {0}", o.UnlockLevel), 32f, MenuUI.TextSoft);
+                    TextMeshProUGUI need2 = MenuUI.Text("Needs", cell.transform, "CHEF LEVEL " + o.UnlockLevel, 32f, MenuUI.TextSoft);
                     MenuUI.Anchor(need2.rectTransform, anchor, new Vector2(0.5f, 0f), new Vector2(0f, 34f), new Vector2(CellWidth - 30f, 60f));
                 }
                 else if (!hasArt)
@@ -102,7 +102,7 @@ namespace Watermelon
                     CellAction(cell.transform, false, true, 0, CurrencyType.Coins, () =>
                     {
                         ChefProgress.Select(chosen);
-                        Toast(Loc.F("{0} selected", Loc.T(chosen.Name)), new Color32(40, 110, 30, 255));
+                        Toast(chosen.Name + " selected", new Color32(40, 110, 30, 255));
                         Refresh();
                     }, null, false);
                 }
@@ -181,7 +181,7 @@ namespace Watermelon
         {
             Art.skinsDatabase[SkinTab.Bus] = tray.UniqueId;
             SaveNow();
-            Toast(Loc.F("{0} selected", tray.Name.Replace("Bus", "Tray")), new Color32(40, 110, 30, 255));
+            Toast(tray.Name.Replace("Bus", "Tray") + " selected", new Color32(40, 110, 30, 255));
             Refresh();
         }
 
@@ -266,7 +266,7 @@ namespace Watermelon
             else
                 CountryFoodStyle.Plate = style;
 
-            Toast(Loc.F("{0} selected", name), new Color32(40, 110, 30, 255));
+            Toast(name + " selected", new Color32(40, 110, 30, 255));
             Refresh();
         }
 
@@ -319,7 +319,7 @@ namespace Watermelon
 
         private static void CellName(Transform cell, string name)
         {
-            TextMeshProUGUI text = MenuUI.Text("Name", cell, Loc.Upper(Loc.T(name)), 34f, MenuUI.TextDark);
+            TextMeshProUGUI text = MenuUI.Text("Name", cell, name.ToUpperInvariant(), 34f, MenuUI.TextDark);
             MenuUI.Anchor(text.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -272f), new Vector2(CellWidth - 24f, 46f));
         }
 

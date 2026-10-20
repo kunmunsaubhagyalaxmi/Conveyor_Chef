@@ -77,7 +77,6 @@ namespace Watermelon
             int next = CountryCatalog.GetNext(country);
 
             countryName.text = name.ToUpperInvariant();
-            WriteWords();                    // the language may have changed since the panel was built
 
             SetSprite(landmark, art != null ? art.GetLandmark(country) : null);
 
@@ -90,8 +89,8 @@ namespace Watermelon
             if (next >= 0)
             {
                 string nextNameText = CountryCatalog.GetName(next).ToUpperInvariant();
-                summary.text = Loc.F("Great job! {0} is complete.\nYour next destination is {1}", name,
-                               "<color=" + NextCountryColor + ">" + nextNameText + "</color>");
+                summary.text = "Great job! " + name + " is complete.\nYour next destination is <color=" +
+                               NextCountryColor + ">" + nextNameText + "</color>";
                 nextName.text = nextNameText;
                 SetSprite(nextLandmark, art != null ? art.GetLandmark(next) : null);
                 ((RectTransform)nextName.transform).anchoredPosition = new Vector2(0f, nextLandmark.enabled ? -335f : -398f);
@@ -99,7 +98,7 @@ namespace Watermelon
             }
             else
             {
-                summary.text = Loc.F("Amazing! {0} is complete.\nYou have completed every country!", name);
+                summary.text = "Amazing! " + name + " is complete.\nYou have completed every country!";
                 nextCardGroup.SetActive(false);
             }
 
@@ -165,10 +164,10 @@ namespace Watermelon
             Add("Sparkle", Art(a => a.sparkle), 0, 760, 900, 675);
             Add("Frame", Art(a => a.frame), 0, -60, 1020, 1600, preserveAspect: false);
             Add("Crown", Art(a => a.crown), 0, 770, 620, 413);
-            titleImage = Add("Title", Art(a => a.title), 0, 560, 820, 273);
+            Add("Title", Art(a => a.title), 0, 560, 820, 273);
 
-            youText = AddText("You Completed", "You completed", Brown, 46f, 0, 402, 600, 52);
-            youText.fontStyle = FontStyles.Bold;
+            TMP_Text you = AddText("You Completed", "You completed", Brown, 46f, 0, 402, 600, 52);
+            you.fontStyle = FontStyles.Bold;
 
             decorWide = Add("Decor", null, 0, 312, 440, 147);
             decorLeft = Add("Decor Left", null, -300, 322, 140, 140);
@@ -204,36 +203,17 @@ namespace Watermelon
             nextLandmark = AddTo(card, "Next Landmark", null, 0, -440, 330, 248);
             nextName = AddTextTo(card, "Next Name", "NEXT", new Color32(200, 30, 40, 255), 70f, 0, -335, 420, 80);
             Outline(nextName, Color.white, 0.3f);
-            nextLabelImage = AddTo(card, "Next Label", Art(a => a.nextLabel), 0, -258, 380, 107);
+            AddTo(card, "Next Label", Art(a => a.nextLabel), 0, -258, 320, 107);
 
-            continueImage = Add("Continue Button", Art(a => a.continueButton), 0, -606, 420, 140);
-            Button continueButton = AddButton(continueImage, Continue);
+            Button continueButton = AddButton(Add("Continue Button", Art(a => a.continueButton), 0, -606, 420, 140), Continue);
             Button homeButton = AddButton(Add("Home Button", Art(a => a.homeButton), 0, -732, 130, 130), Home);
 
             if (art == null || art.continueButton == null)
                 AddTextTo(continueButton.transform, "Label", "CONTINUE", Color.white, 48f, 0, 0, 380, 110);
-            WriteWords();
             if (art == null || art.homeButton == null)
                 AddTextTo(homeButton.transform, "Label", "HOME", Color.white, 30f, 0, 0, 120, 60);
 
             root.SetActive(false);
-        }
-
-        private Image titleImage, nextLabelImage, continueImage;
-        private TMP_Text youText;
-
-        // The title, the next-country label and the continue button are text-free art:
-        // the words are written on them in the player's language.
-        private void WriteWords()
-        {
-            if (youText != null)
-                youText.text = Loc.T("You completed");
-            if (titleImage != null && titleImage.sprite != null && titleImage.sprite.name == "country_title_blank")
-                UIArt.Title(titleImage, null, "COUNTRY COMPLETED!", UIArt.CountryTitleArea, UIArt.BlueTitleOutline);
-            if (nextLabelImage != null && nextLabelImage.sprite != null && nextLabelImage.sprite.name == "next_country_blank")
-                UIArt.Title(nextLabelImage, null, "NEXT COUNTRY", UIArt.NextCountryArea, UIArt.GoldTitleOutline);
-            if (continueImage != null && continueImage.sprite != null && continueImage.sprite.name.StartsWith("pill_"))
-                UIArt.Button(continueImage, "green", "play", "CONTINUE");
         }
 
         private Image Add(string name, Sprite sprite, float x, float y, float w, float h, bool preserveAspect = true)

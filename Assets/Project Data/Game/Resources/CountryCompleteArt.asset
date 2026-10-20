@@ -15,7 +15,7 @@ MonoBehaviour:
   frame: {fileID: 21300000, guid: a20ef6c8c938456fb7202766dd714bd6, type: 3}
   sparkle: {fileID: 21300000, guid: b150518a17ba45d0bbca8fc0babfe9fd, type: 3}
   crown: {fileID: 21300000, guid: 84ea39168c084753a5c90c330ce8ba74, type: 3}
-  title: {fileID: 21300000, guid: df72bda586474b08beb9f594a4ab869a, type: 3}
+  title: {fileID: 21300000, guid: 8367a33e9f9f4d0b8780ae1bc96f4539, type: 3}
   ribbon: {fileID: 21300000, guid: 5ce4235d0cdb475f812aee19b3cf9ab1, type: 3}
   starSlot: {fileID: 21300000, guid: 61ab96c3f6ed4af2bf5a068c45351e8a, type: 3}
   star: {fileID: 21300000, guid: 28d48e0f76eb45f38e22c7b4e08aa591, type: 3}
@@ -23,8 +23,8 @@ MonoBehaviour:
   flowersLeft: {fileID: 21300000, guid: 7fa7daabfa3a4ce98ce74d91aa9199bb, type: 3}
   flowersRight: {fileID: 21300000, guid: 68ba4aa176f742f498b6a13318038584, type: 3}
   nextCard: {fileID: 21300000, guid: 5fc36d13cd57416a88234e032c57dbc3, type: 3}
-  nextLabel: {fileID: 21300000, guid: 10ecf44263884894b290dc350d8c554b, type: 3}
-  continueButton: {fileID: 21300000, guid: cc5371fa335c4e8a99a02a64fb5dd0f1, type: 3}
+  nextLabel: {fileID: 21300000, guid: 9fdf0530095847f99930e723b1af29a2, type: 3}
+  continueButton: {fileID: 21300000, guid: 8f2c1c3db2f74c8c92460186ab881cc4, type: 3}
   homeButton: {fileID: 21300000, guid: d20b058567c6411e8c276688fcd7df72, type: 3}
   font: {fileID: 11400000, guid: 43bda4895b7e2d940ab8ecb8da000216, type: 2}
   landmarks:

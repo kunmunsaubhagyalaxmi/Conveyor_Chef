@@ -41,7 +41,6 @@ namespace Watermelon
 
         private bool paused;
         private float timeScaleBeforePause = 1f;
-        private Button musicButton;       // made at start from the Sound button
 
         private void Awake()
         {
@@ -50,22 +49,11 @@ namespace Watermelon
             MakeUsable(pauseButton);
             MakeUsable(openButton);
 
-            // MUSIC: a copy of the Sound button, right under it
-            if (soundButton != null && musicButton == null)
-            {
-                GameObject copy = Instantiate(soundButton.gameObject, soundButton.transform.parent);
-                copy.name = "Music Button";
-                copy.transform.SetSiblingIndex(soundButton.transform.GetSiblingIndex() + 1);
-                musicButton = copy.GetComponent<Button>();
-                musicButton.onClick.RemoveAllListeners();
-            }
-
             Wire(openButton, Open);
             Wire(pauseButton, Open);      // the HUD pause button pauses with this menu
             Wire(backgroundButton, Close);
             Wire(resumeButton, Close);
             Wire(soundButton, ToggleSound);
-            Wire(musicButton, ToggleMusic);
             Wire(vibrationButton, ToggleVibration);
             Wire(restartButton, Restart);
             Wire(homeButton, Home);
@@ -134,13 +122,6 @@ namespace Watermelon
         {
             bool enabled = AudioController.GetVolume() > 0.001f;
             AudioController.SetVolume(enabled ? 0f : 1f);
-            PlayClick();
-            RefreshLabels();
-        }
-
-        private void ToggleMusic()
-        {
-            MusicSetting.Set(!MusicSetting.On);
             PlayClick();
             RefreshLabels();
         }
@@ -236,7 +217,7 @@ namespace Watermelon
                 bottom = Mathf.Max(bottom, homeY + HomeSize * 0.5f);
             }
 
-            RectTransform[] column = { Rect(resumeButton), Rect(soundButton), Rect(musicButton), Rect(vibrationButton), Rect(restartButton) };
+            RectTransform[] column = { Rect(resumeButton), Rect(soundButton), Rect(vibrationButton), Rect(restartButton) };
             float content = 0f;
             int items = 0;
             foreach (RectTransform r in column)
@@ -286,27 +267,9 @@ namespace Watermelon
         {
             bool soundOn = AudioController.GetVolume() > 0.001f;
             bool vibrationOn = AudioController.IsVibrationEnabled();
-            bool musicOn = MusicSetting.On;
 
-            // text-free pills: orange when on, gray when off, with the matching icon
-            Toggle(soundButton, soundOn, "sound", "SOUND ON", "SOUND OFF");
-            Toggle(musicButton, musicOn, "music", "MUSIC ON", "MUSIC OFF");
-            Toggle(vibrationButton, vibrationOn, "vibration", "VIBRATION ON", "VIBRATION OFF");
-            if (resumeButton != null)
-                UIArt.Button(resumeButton.targetGraphic as Image, "green", "play", "CONTINUE");
-            if (restartButton != null)
-                UIArt.Button(restartButton.targetGraphic as Image, "red", "restart", "RESTART");
-            Transform title = root != null ? root.transform.Find("Menu Title") : null;
-            Image titleImage = title != null ? title.GetComponent<Image>() : null;
-            if (titleImage != null)
-                UIArt.Title(titleImage, UIArt.Panel("title_ribbon_blue"), "MENU", UIArt.BlueRibbonArea, UIArt.BlueTitleOutline);
-        }
-
-        private static void Toggle(Button button, bool on, string icon, string onKey, string offKey)
-        {
-            Image image = button != null ? button.targetGraphic as Image : null;
-            if (image != null)
-                UIArt.Button(image, on ? "orange" : "gray", icon + (on ? "_on" : "_off"), on ? onKey : offKey);
+            SetState(soundButton, soundLabel, soundOn, soundOnSprite, soundOffSprite, "SOUND");
+            SetState(vibrationButton, vibrationLabel, vibrationOn, vibrationOnSprite, vibrationOffSprite, "VIBRATION");
         }
 
         private static void SetState(Button button, TMP_Text label, bool on, Sprite onSprite, Sprite offSprite, string name)

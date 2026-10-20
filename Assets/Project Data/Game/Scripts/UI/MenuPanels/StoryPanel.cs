@@ -122,7 +122,7 @@ namespace Watermelon
                 MenuUI.Anchor(flag.rectTransform, new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(84f, -300f), new Vector2(116f, 116f));
             }
 
-            TextMeshProUGUI chapter = MenuUI.Text("Chapter", card, Loc.F("CHAPTER {0}", country + 1), 30f, MenuUI.TextSoft, TextAlignmentOptions.Left);
+            TextMeshProUGUI chapter = MenuUI.Text("Chapter", card, "CHAPTER " + (country + 1), 30f, MenuUI.TextSoft, TextAlignmentOptions.Left);
             MenuUI.Anchor(chapter.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(160f, -262f), new Vector2(380f, 38f));
 
             TextMeshProUGUI name = MenuUI.Text("Country", card, CountryCatalog.GetName(country).ToUpperInvariant(), 52f, Heading, TextAlignmentOptions.Left);
@@ -138,7 +138,7 @@ namespace Watermelon
 
             // Bottom row: level progress and the action.
             RectTransform bar = MenuUI.ProgressBar(card, (float)levels / CountryCatalog.LevelsPerCountry, complete ? MenuUI.Gold : MenuUI.Green,
-                Loc.F("LEVELS {0}/{1}", levels, CountryCatalog.LevelsPerCountry));
+                "LEVELS " + levels + "/" + CountryCatalog.LevelsPerCountry);
             MenuUI.Anchor(bar, new Vector2(0f, 0f), new Vector2(0f, 0.5f), new Vector2(28f, 72f), new Vector2(460f, 52f));
 
             if (!unlocked)
@@ -146,7 +146,7 @@ namespace Watermelon
                 Image lockBadge = MenuUI.Image("Lock", card, Art.lockBadge);
                 MenuUI.Anchor(lockBadge.rectTransform, new Vector2(1f, 0f), new Vector2(0.5f, 0.5f), new Vector2(-134f, 84f), new Vector2(112f, 90f));
 
-                TextMeshProUGUI hint = MenuUI.Text("Locked", card, Loc.F("Finish {0}", CountryCatalog.GetName(country - 1)), 26f, MenuUI.TextSoft);
+                TextMeshProUGUI hint = MenuUI.Text("Locked", card, "Finish " + CountryCatalog.GetName(country - 1), 26f, MenuUI.TextSoft);
                 MenuUI.Anchor(hint.rectTransform, new Vector2(1f, 0f), new Vector2(0.5f, 0.5f), new Vector2(-134f, 26f), new Vector2(240f, 34f));
             }
             else
