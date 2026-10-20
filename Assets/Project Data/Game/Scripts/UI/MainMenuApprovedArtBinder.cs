@@ -24,6 +24,7 @@ namespace Watermelon
             if (Application.isPlaying)
             {
                 ChefProgress.OutfitChanged += ApplyOutfit;
+                Loc.Changed += WriteWords;
                 if (started)            // re-enabled later; the first time Start does it
                     ApplyOutfit();
             }
@@ -34,6 +35,7 @@ namespace Watermelon
         private void OnDisable()
         {
             ChefProgress.OutfitChanged -= ApplyOutfit;
+            Loc.Changed -= WriteWords;
         }
 
         // How far an outfit chef may reach further left than the classic chef (canvas units).
@@ -179,25 +181,25 @@ namespace Watermelon
             SetSprite("Chef Character", "chef", true);
             SetSprite("Chef Avatar", "avatar", true);
 
-            // Main action buttons.
-            SetSprite("PLAY", "play", false);
-            SetSprite("STORY", "story", false);
-            SetSprite("CHALLENGES", "challenges", false);
-            SetSprite("CUSTOMIZE", "customize", false);
-            SetSprite("SETTINGS", "settings", false);
+            // Main action buttons: text-free pills (UIArt); icon and word are added in Play mode.
+            SetArt("PLAY", UIArt.Pill("green"));
+            SetArt("STORY", UIArt.Pill("blue"));
+            SetArt("CHALLENGES", UIArt.Pill("blue"));
+            SetArt("CUSTOMIZE", UIArt.Pill("blue"));
+            SetArt("SETTINGS", UIArt.Pill("blue"));
 
             // HUD artwork.
             SetSprite("Coin Counter", "coin_bar", false);
             SetSprite("Diamond Counter", "diamond_bar", false);
             SetSprite("Star Icon", "star", true);
 
-            // Bottom navigation.
-            SetSprite("SHOP", "shop", true);
-            SetSprite("COLLECTION", "collection", true);
-            SetSprite("ACHIEVEMENTS", "achievements", true);
-            SetSprite("LEADERBOARD", "leaderboard", true);
+            // Bottom navigation: pictures without the word plaque; plaque and word added in Play mode.
+            SetSprite("SHOP", "nav_shop", true);
+            SetSprite("COLLECTION", "nav_collection", true);
+            SetSprite("ACHIEVEMENTS", "nav_achievements", true);
+            SetSprite("LEADERBOARD", "nav_leaderboard", true);
 
-            // The approved button/navigation sprites already contain their labels.
+            // Words come from the game (WriteWords), not from these old label objects.
             HideDirectChild("PLAY", "Label");
             HideDirectChild("STORY", "Label");
             HideDirectChild("CHALLENGES", "Label");
@@ -221,6 +223,69 @@ namespace Watermelon
             SetActive("Top HUD", true);
             SetActive("Main Buttons", true);
             SetActive("Bottom Navigation", true);
+
+            if (Application.isPlaying)
+                WriteWords();
+        }
+
+        // Icons and words on the text-free art, in the player's language. Play mode only, so no
+        // generated objects end up saved in the scene.
+        private void WriteWords()
+        {
+            Button("PLAY", "green", "play", "PLAY");
+            Button("STORY", "blue", "story", "STORY");
+            Button("CHALLENGES", "blue", "challenges", "CHALLENGES");
+            Button("CUSTOMIZE", "blue", "customize", "CUSTOMIZE");
+            Button("SETTINGS", "blue", "settings", "SETTINGS");
+            NavLabel("SHOP", "SHOP");
+            NavLabel("COLLECTION", "COLLECTION");
+            NavLabel("ACHIEVEMENTS", "ACHIEVEMENTS");
+            NavLabel("LEADERBOARD", "LEADERBOARD");
+        }
+
+        private void Button(string objectName, string colour, string icon, string key)
+        {
+            Transform target = FindDeep(transform, objectName);
+            Image image = target != null ? target.GetComponent<Image>() : null;
+            if (image != null)
+                UIArt.Button(image, colour, icon, key);
+        }
+
+        // The word plaque under a bottom-bar picture (nav_plaque) with the translated word on it.
+        private void NavLabel(string objectName, string key)
+        {
+            Transform target = FindDeep(transform, objectName);
+            if (target == null)
+                return;
+            Transform existing = target.Find("Art Plaque");
+            Image plaque = existing != null ? existing.GetComponent<Image>() : null;
+            if (plaque == null)
+            {
+                var go = new GameObject("Art Plaque", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                go.layer = target.gameObject.layer;
+                go.transform.SetParent(target, false);
+                plaque = go.GetComponent<Image>();
+                plaque.raycastTarget = false;
+                RectTransform r = plaque.rectTransform;
+                r.anchorMin = new Vector2(-0.12f, -0.06f);
+                r.anchorMax = new Vector2(1.12f, 0.22f);
+                r.offsetMin = r.offsetMax = Vector2.zero;
+            }
+            UIArt.Title(plaque, ProfessionalMainMenuEmbeddedAssets.GetSprite("nav_plaque"), key,
+                new Rect(0.12f, 0.16f, 0.76f, 0.64f), UIArt.GoldTitleOutline);
+        }
+
+        private void SetArt(string objectName, Sprite sprite)
+        {
+            Transform target = FindDeep(transform, objectName);
+            Image image = target != null ? target.GetComponent<Image>() : null;
+            if (image == null || sprite == null)
+                return;
+            image.sprite = sprite;
+            image.color = Color.white;
+            image.enabled = true;
+            image.preserveAspect = true;
+            image.raycastTarget = target.GetComponent<Button>() != null;
         }
 
         private void SetSprite(string objectName, string assetName, bool preserveAspect)

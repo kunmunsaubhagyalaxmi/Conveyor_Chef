@@ -20,6 +20,7 @@ namespace Watermelon
             Common();
             Panels();
             Menus();
+            ArtWords();
         }
 
         // ------------------------------------------------------------------ tutorial

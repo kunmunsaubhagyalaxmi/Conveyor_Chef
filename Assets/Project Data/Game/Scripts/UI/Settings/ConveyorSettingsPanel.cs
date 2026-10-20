@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,34 +11,35 @@ namespace Watermelon
     /// World Map, Country Map, Continent Map, Level Selection, Game HUD) through
     /// <see cref="Show"/>. It builds itself on first use on its own overlay canvas above
     /// all scene UI, survives scene loads, and closes when a new scene loads.
-    /// Art comes from Resources/SettingsPanelArt.
+    ///
+    /// Panel and close button from Resources/SettingsPanelArt; the title ribbon, buttons and
+    /// icons are the text-free art (UIArt): SOUND / MUSIC / VIBRATION are orange pills when on,
+    /// gray when off, LANGUAGE opens a list of the languages (small pills, the chosen one green).
+    /// Every word is written by the game in the player's language.
     /// </summary>
     public sealed class ConveyorSettingsPanel : MonoBehaviour
     {
         private const int SortingOrder = 5000;
 
+        // Layout at 1080x1920 on the popup panel art (768x1024: blue band at the top, cream area
+        // 19-88% of its height).
+        private const float PanelWidth = 700f;
+        private const float PanelHeight = PanelWidth * 1024f / 768f;
+        private const float CreamTop = 0.19f, CreamBottom = 0.88f;
+        private const float TitleWidth = 560f, TitleFromTop = 0.095f;
+        private const float ButtonWidth = 470f;
+        private const float OptionWidth = 262f;
+
         private static ConveyorSettingsPanel instance;
 
         private GameObject root;
-        private Image soundImage;
-        private Image vibrationImage;
-        private TMP_Text soundLabel;
-        private TMP_Text vibrationLabel;
-        private TMP_Text languageLabel;
+        private Image titleImage;
+        private Image soundImage, musicImage, vibrationImage, languageImage;
         private TMP_Text versionLabel;
         private GameObject picker;
-        private readonly System.Collections.Generic.List<(GameLanguage language, Image image)> languageButtons =
-            new System.Collections.Generic.List<(GameLanguage, Image)>();
+        private Image pickerTitle;
+        private readonly List<(GameLanguage language, Image image)> languageButtons = new List<(GameLanguage, Image)>();
         private SettingsPanelArt art;
-        private MenuPanelArt menuArt;
-
-        // Optional art in Resources/Settings (glossy pills without text, like SOUND ON / VIBRATION ON).
-        // The game writes the words on them, so they follow the language.
-        private Sprite languageButtonArt;       // wide pill with a globe icon on the left
-        private Sprite languageOptionArt;       // small orange pill (a language in the list)
-        private Sprite languageSelectedArt;     // small green pill (the chosen language)
-        private static readonly Color32 ArtText = new Color32(255, 222, 70, 255);    // yellow letters
-        private static readonly Color32 ArtOutline = new Color32(110, 40, 10, 255);  // dark brown outline
 
         public static bool IsOpen => instance != null && instance.root != null && instance.root.activeSelf;
 
@@ -107,10 +109,19 @@ namespace Watermelon
             root.SetActive(false);
         }
 
+        // ------------------------------------------------------------ toggles
+
         private void ToggleSound()
         {
             bool enabled = IsSoundOn();
             try { AudioController.SetVolume(enabled ? 0f : 1f); } catch { }
+            PlayClick();
+            Refresh();
+        }
+
+        private void ToggleMusic()
+        {
+            MusicSetting.Set(!MusicSetting.On);
             PlayClick();
             Refresh();
         }
@@ -137,57 +148,47 @@ namespace Watermelon
 
         private void Refresh()
         {
-            bool soundOn = IsSoundOn();
-            bool vibrationOn = IsVibrationOn();
+            if (root == null)
+                return;
+            Toggle(soundImage, IsSoundOn(), "sound", "SOUND ON", "SOUND OFF");
+            Toggle(musicImage, MusicSetting.On, "music", "MUSIC ON", "MUSIC OFF");
+            Toggle(vibrationImage, IsVibrationOn(), "vibration", "VIBRATION ON", "VIBRATION OFF");
 
-            ApplyState(soundImage, soundLabel, soundOn,
-                art != null ? art.soundOn : null, art != null ? art.soundOff : null, "SOUND");
-            ApplyState(vibrationImage, vibrationLabel, vibrationOn,
-                art != null ? art.vibrationOn : null, art != null ? art.vibrationOff : null, "VIBRATION");
+            TMP_Text language = UIArt.Button(languageImage, "orange", "language", "LANGUAGE");
+            if (language != null)
+                language.text = Loc.NativeName(Loc.Current).ToUpperInvariant() == "ENGLISH"
+                    ? Loc.Upper(Loc.T("LANGUAGE"))
+                    : Loc.Upper(Loc.T("LANGUAGE")) + ": " + Loc.Upper(Loc.NativeName(Loc.Current));
 
-            if (languageLabel != null)
-                languageLabel.text = Loc.T("LANGUAGE") + ": " + Loc.NativeName(Loc.Current);
+            UIArt.Title(titleImage, UIArt.Panel("title_ribbon_blue"), "SETTINGS", UIArt.BlueRibbonArea, UIArt.BlueTitleOutline);
+            UIArt.Title(pickerTitle, UIArt.Panel("title_ribbon_blue"), "LANGUAGE", UIArt.BlueRibbonArea, UIArt.BlueTitleOutline);
+
             if (versionLabel != null)
                 versionLabel.text = Loc.T("VERSION") + " " + Application.version;
+
             foreach (var entry in languageButtons)
             {
-                if (entry.image == null)
-                    continue;
-                bool chosen = entry.language == Loc.Current;
-                if (languageOptionArt != null)
-                    entry.image.sprite = chosen && languageSelectedArt != null ? languageSelectedArt : languageOptionArt;
-                else if (menuArt != null)
-                    entry.image.sprite = chosen ? menuArt.buttonGreen : menuArt.buttonOrange;
+                TMP_Text label = UIArt.Button(entry.image, entry.language == Loc.Current ? "green" : "orange", null, "", small: true);
+                if (label != null)
+                    label.text = Loc.NativeName(entry.language);
             }
         }
 
-        private static void ApplyState(Image image, TMP_Text label, bool on, Sprite onSprite, Sprite offSprite, string name)
+        private static void Toggle(Image image, bool on, string icon, string onKey, string offKey)
         {
-            Sprite sprite = on ? onSprite : offSprite;
-            if (sprite != null)
-            {
-                image.sprite = sprite;
-                image.color = Color.white;
-            }
-            else
-            {
-                image.sprite = null;
-                image.color = on ? new Color(0.2f, 0.65f, 0.25f) : new Color(0.75f, 0.25f, 0.2f);
-            }
-
-            label.gameObject.SetActive(sprite == null);
-            label.text = Loc.T(name) + ": " + Loc.T(on ? "ON" : "OFF");
+            UIArt.Button(image, on ? "orange" : "gray", icon + (on ? "_on" : "_off"), on ? onKey : offKey);
         }
 
         #region Build
 
-        // Layout at 1080x1920. Panel: pause_popup_panel.png (660x880, blue title band at
-        // 11%, cream area 19-88% of its height).
         private void Build(SettingsPanelArt panelArt)
         {
             art = panelArt;
             if (art == null)
-                Debug.LogWarning("[Settings] Resources/" + SettingsPanelArt.ResourcePath + " not found; using plain buttons.");
+                Debug.LogWarning("[Settings] Resources/" + SettingsPanelArt.ResourcePath + " not found; using plain shapes.");
+            MenuPanelArt menuArt = Resources.Load<MenuPanelArt>(MenuPanelArt.ResourcePath);
+            if (MenuUI.Font == null && menuArt != null)
+                MenuUI.Font = menuArt.font;
 
             Canvas canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -210,76 +211,61 @@ namespace Watermelon
             Stretch(dim.rectTransform);
             AddButton(dim, () => Close(playSound: true)).transition = Selectable.Transition.None;
 
-            const float panelH = 880f;
-            float top = panelH * 0.5f;
+            float top = BuildPanel(rootRect, out titleImage, () => Close(playSound: true));
 
-            Image panel = CreateImage("Panel", rootRect, art != null ? art.panel : null, new Color(0.98f, 0.93f, 0.8f));
-            Place(panel.rectTransform, Vector2.zero, new Vector2(660f, panelH));
-            panel.preserveAspect = true;
-            panel.raycastTarget = true; // taps on the panel itself do not close it
-
-            if (art != null && art.title != null)
-            {
-                Image title = CreateImage("Title", rootRect, art.title, Color.white);
-                Place(title.rectTransform, new Vector2(0f, top - panelH * 0.11f), new Vector2(500f, 150f));
-                title.preserveAspect = true;
-            }
-            else
-            {
-                TMP_Text title = CreateText("Title", rootRect, "SETTINGS", Color.white, 64f);
-                Place(title.rectTransform, new Vector2(0f, top - panelH * 0.11f), new Vector2(500f, 110f));
-            }
-
-            Image close = CreateImage("Close Button", rootRect, art != null ? art.closeButton : null, new Color(0.85f, 0.2f, 0.2f));
-            Place(close.rectTransform, new Vector2(282f, top - 52f), new Vector2(100f, 100f));
-            close.preserveAspect = true;
-            AddButton(close, () => Close(playSound: true));
-
-            soundImage = CreateToggle("Sound Button", rootRect, new Vector2(0f, top - panelH * 0.335f), out soundLabel);
-            AddButton(soundImage, ToggleSound);
-
-            vibrationImage = CreateToggle("Vibration Button", rootRect, new Vector2(0f, top - panelH * 0.525f), out vibrationLabel);
-            AddButton(vibrationImage, ToggleVibration);
-
-            // LANGUAGE: the game's orange menu button; opens the language picker
-            menuArt = Resources.Load<MenuPanelArt>(MenuPanelArt.ResourcePath);
-            if (MenuUI.Font == null && menuArt != null)
-                MenuUI.Font = menuArt.font;
-            languageButtonArt = Resources.Load<Sprite>("Settings/language_button");
-            languageOptionArt = Resources.Load<Sprite>("Settings/language_option");
-            languageSelectedArt = Resources.Load<Sprite>("Settings/language_option_selected");
-            if (languageButtonArt != null)
-            {
-                // the glossy pill; the words go right of the globe icon
-                Image image = CreateImage("Language Button", rootRect, languageButtonArt, Color.white);
-                Place(image.rectTransform, new Vector2(0f, top - panelH * 0.705f), new Vector2(470f, 470f / Aspect(languageButtonArt)));
-                image.preserveAspect = true;
-                AddButton(image, OpenPicker);
-                TextMeshProUGUI text = MenuUI.OutlinedText("Label", image.transform, "LANGUAGE", 46f, ArtOutline,
-                    TextAlignmentOptions.Center, ArtText);
-                Stretch(text.rectTransform);
-                text.rectTransform.offsetMin = new Vector2(470f * 0.22f, 10f);
-                text.rectTransform.offsetMax = new Vector2(-24f, -14f);
-                languageLabel = text;
-            }
-            else
-            {
-                Button language = MenuUI.LabelButton("Language Button", rootRect, menuArt != null ? menuArt.buttonOrange : null,
-                    "LANGUAGE", 44f, OpenPicker, null, new Color32(110, 50, 10, 255));
-                Place((RectTransform)language.transform, new Vector2(0f, top - panelH * 0.705f), new Vector2(470f, 120f));
-                languageLabel = language.GetComponentInChildren<TMP_Text>(true);
-            }
-
+            // SOUND, MUSIC, VIBRATION, LANGUAGE: one width, equal gaps, the version line under them
+            soundImage = CreateButton("Sound Button", rootRect, ToggleSound);
+            musicImage = CreateButton("Music Button", rootRect, ToggleMusic);
+            vibrationImage = CreateButton("Vibration Button", rootRect, ToggleVibration);
+            languageImage = CreateButton("Language Button", rootRect, OpenPicker);
             versionLabel = CreateText("Version", rootRect, "VERSION " + Application.version, new Color32(35, 48, 70, 255), 34f);
-            Place(versionLabel.rectTransform, new Vector2(0f, top - panelH * 0.835f), new Vector2(500f, 56f));
+
+            Image[] column = { soundImage, musicImage, vibrationImage, languageImage };
+            Sprite pill = UIArt.Pill("orange");
+            float h = pill != null ? ButtonWidth * pill.rect.height / pill.rect.width : 124f;
+            const float versionH = 50f;
+            float start = top, bottom = PanelHeight * 0.5f - PanelHeight * CreamBottom;
+            float gap = Mathf.Max(8f, (start - bottom - column.Length * h - versionH) / (column.Length + 2));
+            float y = start - gap;
+            foreach (Image image in column)
+            {
+                Place(image.rectTransform, new Vector2(0f, y - h * 0.5f), new Vector2(ButtonWidth, h));
+                y -= h + gap;
+            }
+            Place(versionLabel.rectTransform, new Vector2(0f, y - versionH * 0.5f), new Vector2(500f, versionH));
 
             BuildPicker(rootRect);
             root.SetActive(false);
         }
 
+        /// <summary>Dim-free panel art + title ribbon + close X; returns the y where content can start.</summary>
+        private float BuildPanel(RectTransform parent, out Image title, UnityEngine.Events.UnityAction close)
+        {
+            float top = PanelHeight * 0.5f;
+            Image panel = CreateImage("Panel", parent, art != null ? art.panel : null, new Color(0.98f, 0.93f, 0.8f));
+            Place(panel.rectTransform, Vector2.zero, new Vector2(PanelWidth, PanelHeight));
+            panel.preserveAspect = true;
+            panel.raycastTarget = true; // taps on the panel itself do not close it
+
+            Sprite ribbon = UIArt.Panel("title_ribbon_blue");
+            float titleH = ribbon != null ? TitleWidth * ribbon.rect.height / ribbon.rect.width : 180f;
+            title = CreateImage("Title", parent, ribbon, Color.white);
+            title.preserveAspect = true;
+            float titleY = top - PanelHeight * TitleFromTop;
+            Place(title.rectTransform, new Vector2(0f, titleY), new Vector2(TitleWidth, titleH));
+
+            Image x = CreateImage("Close Button", parent, art != null ? art.closeButton : null, new Color(0.85f, 0.2f, 0.2f));
+            Place(x.rectTransform, new Vector2(PanelWidth * 0.5f - 44f, top - 50f), new Vector2(100f, 100f));
+            x.preserveAspect = true;
+            AddButton(x, close);
+
+            float creamTop = top - PanelHeight * CreamTop;
+            return Mathf.Min(creamTop, titleY - titleH * 0.5f);
+        }
+
         // ------------------------------------------------------------ language picker
 
-        // The languages in two columns on the Settings panel art; the chosen one is green.
+        // The languages in two columns; the chosen one is green.
         private void BuildPicker(RectTransform parent)
         {
             RectTransform rect = CreateRect("Language Picker", parent);
@@ -290,54 +276,30 @@ namespace Watermelon
             Stretch(dim.rectTransform);
             AddButton(dim, ClosePicker).transition = Selectable.Transition.None;
 
-            const float panelH = 880f;
-            Image panel = CreateImage("Panel", rect, art != null ? art.panel : null, new Color(0.98f, 0.93f, 0.8f));
-            Place(panel.rectTransform, Vector2.zero, new Vector2(660f, panelH));
-            panel.preserveAspect = true;
-            panel.raycastTarget = true;
-
-            pickerTitle = MenuUI.OutlinedText("Title", rect, Loc.T("LANGUAGE"), 60f, new Color32(20, 50, 110, 255));
-            Place(pickerTitle.rectTransform, new Vector2(0f, panelH * 0.5f - panelH * 0.11f), new Vector2(460f, 100f));
+            float start = BuildPanel(rect, out pickerTitle, ClosePicker);
 
             GameLanguage[] languages = Loc.All;
+            Sprite small = UIArt.Small("orange");
+            float h = small != null ? OptionWidth * small.rect.height / small.rect.width : 88f;
             int rows = (languages.Length + 1) / 2;
-            float top = panelH * 0.5f - panelH * 0.27f, bottom = -panelH * 0.5f + panelH * 0.19f;
-            float step = (top - bottom) / Mathf.Max(1, rows - 1);
+            float bottom = PanelHeight * 0.5f - PanelHeight * CreamBottom;
+            float gap = Mathf.Max(8f, (start - bottom - rows * h) / (rows + 1));
             for (int i = 0; i < languages.Length; i++)
             {
                 GameLanguage language = languages[i];
-                float x = (i % 2 == 0 ? -1f : 1f) * 128f;
-                float y = top - (i / 2) * step;
-                if (languageOptionArt != null)
-                {
-                    Image image = CreateImage(language.ToString(), rect, languageOptionArt, Color.white);
-                    Place(image.rectTransform, new Vector2(x, y), new Vector2(250f, 250f / Aspect(languageOptionArt)));
-                    image.preserveAspect = true;
-                    AddButton(image, () => ChooseLanguage(language));
-                    TextMeshProUGUI text = MenuUI.OutlinedText("Label", image.transform, Loc.NativeName(language), 40f, ArtOutline,
-                        TextAlignmentOptions.Center, ArtText);
-                    Stretch(text.rectTransform);
-                    text.rectTransform.offsetMin = new Vector2(18f, 8f);
-                    text.rectTransform.offsetMax = new Vector2(-18f, -12f);
-                    languageButtons.Add((language, image));
-                    continue;
-                }
-                Button button = MenuUI.LabelButton(language.ToString(), rect, menuArt != null ? menuArt.buttonOrange : null,
-                    Loc.NativeName(language), 40f, () => ChooseLanguage(language), null, new Color32(110, 50, 10, 255));
-                Place((RectTransform)button.transform, new Vector2(x, y), new Vector2(240f, 104f));
-                languageButtons.Add((language, (Image)button.targetGraphic));
+                float x = (i % 2 == 0 ? -1f : 1f) * (OptionWidth * 0.5f + 12f);
+                float y = start - gap - (i / 2) * (h + gap) - h * 0.5f;
+                Image image = CreateButton(language.ToString(), rect, () => ChooseLanguage(language));
+                Place(image.rectTransform, new Vector2(x, y), new Vector2(OptionWidth, h));
+                languageButtons.Add((language, image));
             }
 
             picker.SetActive(false);
         }
 
-        private TMP_Text pickerTitle;
-
         private void OpenPicker()
         {
             Refresh();
-            if (pickerTitle != null)
-                pickerTitle.text = Loc.T("LANGUAGE");
             if (picker != null)
             {
                 picker.SetActive(true);
@@ -358,14 +320,13 @@ namespace Watermelon
             ClosePicker();
         }
 
-        private Image CreateToggle(string name, Transform parent, Vector2 position, out TMP_Text label)
+        // ------------------------------------------------------------ helpers
+
+        private Image CreateButton(string name, Transform parent, UnityEngine.Events.UnityAction action)
         {
             Image image = CreateImage(name, parent, null, Color.white);
-            Place(image.rectTransform, position, new Vector2(470f, 157f));
             image.preserveAspect = true;
-
-            label = CreateText("Label", image.transform, name, Color.white, 44f);
-            Stretch(label.rectTransform);
+            AddButton(image, action);
             return image;
         }
 
@@ -407,8 +368,6 @@ namespace Watermelon
             text.raycastTarget = false;
             return text;
         }
-
-        private static float Aspect(Sprite sprite) => sprite.rect.width / Mathf.Max(1f, sprite.rect.height);
 
         private static Button AddButton(Image image, UnityEngine.Events.UnityAction action)
         {
