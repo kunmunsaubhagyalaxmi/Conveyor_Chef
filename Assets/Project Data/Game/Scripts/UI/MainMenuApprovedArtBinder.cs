@@ -116,9 +116,10 @@ namespace Watermelon
         }
 
         // Every outfit chef stands exactly like the classic chef: the same height from the top of
-        // the head (or hat) to the feet, the feet on the same floor and the legs on the same line.
-        // The pictures have different empty margins, so this is measured on the drawn character
-        // (the sprite's tight outline), not on the picture's frame.
+        // the head (or hat) to the feet, the feet on the same floor, and centred where the classic
+        // chef stands (the characters are drawn centred in their pictures). The pictures have
+        // different empty margins above and below, so the height is measured on the drawn
+        // character (the sprite's tight outline), not on the picture's frame.
         private void LayoutOutfitChef()
         {
             Sprite classic = ProfessionalMainMenuEmbeddedAssets.GetSprite("chef");
@@ -144,19 +145,18 @@ namespace Watermelon
             Figure c = Measure(classic);
             float feetY = -classicH * 0.5f + c.feet * classicH;
             float headY = -classicH * 0.5f + c.head * classicH;
-            float legsX = -classicW * 0.5f + c.legs * classicW;
 
             Figure o = Measure(outfit);
             float h = (headY - feetY) / Mathf.Max(0.05f, o.head - o.feet);
             float w = h * outfit.rect.width / outfit.rect.height;
             rt.sizeDelta = new Vector2(w, h);
-            rt.anchoredPosition = new Vector2(legsX - o.legs * w + w * 0.5f, feetY - o.feet * h + h * 0.5f);
+            rt.anchoredPosition = new Vector2(0f, feetY - o.feet * h + h * 0.5f);
         }
 
         // Where the character is inside its picture, as fractions of the picture (0 = left/bottom).
         private struct Figure
         {
-            public float feet, head, legs;
+            public float feet, head;
         }
 
         private static readonly System.Collections.Generic.Dictionary<Sprite, Figure> figures =
@@ -167,7 +167,7 @@ namespace Watermelon
             if (figures.TryGetValue(sprite, out Figure figure))
                 return figure;
 
-            figure = new Figure { feet = 0f, head = 1f, legs = 0.5f };
+            figure = new Figure { feet = 0f, head = 1f };
             Vector2[] vertices = sprite.vertices;      // the tight outline of the visible pixels
             Rect rect = sprite.rect;
             if (vertices != null && vertices.Length > 2 && rect.width > 0f && rect.height > 0f)
@@ -181,25 +181,11 @@ namespace Watermelon
                     top = Mathf.Max(top, y);
                 }
 
-                // the legs: the outline across the lowest part of the figure
-                float legsTop = bottom + (top - bottom) * 0.12f;
-                float left = float.MaxValue, right = float.MinValue;
-                foreach (Vector2 v in vertices)
-                {
-                    if ((v.y * ppu + sprite.pivot.y) / rect.height > legsTop)
-                        continue;
-                    float x = (v.x * ppu + sprite.pivot.x) / rect.width;
-                    left = Mathf.Min(left, x);
-                    right = Mathf.Max(right, x);
-                }
-
                 if (top - bottom > 0.05f)
                 {
                     figure.feet = Mathf.Clamp01(bottom);
                     figure.head = Mathf.Clamp01(top);
                 }
-                if (right > left)
-                    figure.legs = Mathf.Clamp01((left + right) * 0.5f);
             }
 
             figures[sprite] = figure;
