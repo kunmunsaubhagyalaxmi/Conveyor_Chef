@@ -38,20 +38,9 @@ namespace Watermelon
             ChefProgress.OutfitChanged -= ApplyOutfit;
         }
 
-        // Gap kept between an outfit chef and the screen's left edge / the main buttons (canvas units).
-        private const float OutfitMargin = 16f;
-
         private RectTransform chefRect;
         private Image outfitChef;
         private Vector2 fittedSize;
-
-        // What the fit was made for (screen edge and buttons, in the chef's own units). The menu
-        // canvas is re-anchored at runtime (DesignFrame) after the first fit, so it is checked again.
-        private Vector2 fittedBounds = NotFitted;
-        private static readonly Vector2 NotFitted = new Vector2(-1e6f, -1e6f);
-        private Graphic[] buttonGraphics;
-        private float nextBoundsCheck;
-        private readonly Vector3[] corners = new Vector3[4];
 
         private System.Collections.IEnumerator Start()
         {
@@ -62,24 +51,11 @@ namespace Watermelon
             ApplyOutfit();
         }
 
-        // The main menu animates "Chef Character" (slide-in, breathing) through its position, so
-        // the outfit is shown by a child picture inside it, never by moving or resizing it.
+        // Re-fitted only when the chef box itself changes size (another screen); the chef never
+        // moves or resizes otherwise.
         private void LateUpdate()
         {
-            if (outfitChef == null || !outfitChef.gameObject.activeSelf || chefRect == null)
-                return;
-
-            if (chefRect.rect.size != fittedSize)
-            {
-                LayoutOutfitChef();
-                return;
-            }
-
-            if (Time.unscaledTime < nextBoundsCheck)
-                return;
-            nextBoundsCheck = Time.unscaledTime + 0.25f;
-            if (TryGetFreeSpace(out float left, out float right) &&
-                (Mathf.Abs(left - fittedBounds.x) > 0.5f || Mathf.Abs(right - fittedBounds.y) > 0.5f))
+            if (outfitChef != null && outfitChef.gameObject.activeSelf && chefRect != null && chefRect.rect.size != fittedSize)
                 LayoutOutfitChef();
         }
 
@@ -139,10 +115,10 @@ namespace Watermelon
             LayoutOutfitChef();
         }
 
-        // The outfit pictures are wider than the classic chef (0.5 vs 0.41 of their height) and hold
-        // their prop (wok, pizza, knife) out to the right, so in the classic chef's place the prop
-        // would be hidden behind the main buttons. The outfit chef stands on the classic chef's
-        // floor, fitted between the screen's left edge and the buttons, no taller than the classic.
+        // Every outfit chef stands exactly like the classic chef: the same height from the top of
+        // the head (or hat) to the feet, the feet on the same floor and the legs on the same line.
+        // The pictures have different empty margins, so this is measured on the drawn character
+        // (the sprite's tight outline), not on the picture's frame.
         private void LayoutOutfitChef()
         {
             Sprite classic = ProfessionalMainMenuEmbeddedAssets.GetSprite("chef");
@@ -153,63 +129,81 @@ namespace Watermelon
             Rect r = chefRect.rect;
             fittedSize = r.size;
             RectTransform rt = outfitChef.rectTransform;
-            if (r.width < 10f || r.height < 10f || classic == null || !TryGetFreeSpace(out float left, out float right))
+            if (r.width < 10f || r.height < 10f || classic == null)
             {
                 // not laid out yet (or no classic art): fill the chef box, re-fitted when it has a size
                 rt.anchoredPosition = Vector2.zero;
                 rt.sizeDelta = r.size;
-                fittedBounds = NotFitted;
                 return;
             }
-            fittedBounds = new Vector2(left, right);
 
+            // the classic chef as preserveAspect shows it: as big as fits, centred in the box
             float classicAspect = classic.rect.width / classic.rect.height;
-            float outfitAspect = outfit.rect.width / outfit.rect.height;
-            // the classic chef as preserveAspect shows it: as big as fits, centred
             float classicW = Mathf.Min(r.width, r.height * classicAspect);
             float classicH = classicW / classicAspect;
-            float bottom = -classicH * 0.5f;
+            Figure c = Measure(classic);
+            float feetY = -classicH * 0.5f + c.feet * classicH;
+            float headY = -classicH * 0.5f + c.head * classicH;
+            float legsX = -classicW * 0.5f + c.legs * classicW;
 
-            float h = Mathf.Min(classicH, Mathf.Max(10f, right - left) / outfitAspect);
-            float w = h * outfitAspect;
+            Figure o = Measure(outfit);
+            float h = (headY - feetY) / Mathf.Max(0.05f, o.head - o.feet);
+            float w = h * outfit.rect.width / outfit.rect.height;
             rt.sizeDelta = new Vector2(w, h);
-            rt.anchoredPosition = new Vector2((left + right) * 0.5f, bottom + h * 0.5f);
+            rt.anchoredPosition = new Vector2(legsX - o.legs * w + w * 0.5f, feetY - o.feet * h + h * 0.5f);
         }
 
-        // Free space for the outfit chef, in the chef box's own units (0 = its centre): from the
-        // screen's left edge to the left edge of the button pictures, each with a small margin.
-        // Measured where things are drawn now, so it holds however the canvas was fitted to the screen.
-        private bool TryGetFreeSpace(out float left, out float right)
+        // Where the character is inside its picture, as fractions of the picture (0 = left/bottom).
+        private struct Figure
         {
-            left = right = 0f;
-            Canvas canvas = chefRect != null ? chefRect.GetComponentInParent<Canvas>() : null;
-            RectTransform screen = canvas != null ? canvas.rootCanvas.transform as RectTransform : null;
-            if (screen == null)
-                return false;
+            public float feet, head, legs;
+        }
 
-            screen.GetWorldCorners(corners);
-            left = chefRect.InverseTransformPoint(corners[0]).x + OutfitMargin;
-            right = chefRect.rect.width * 0.5f;
+        private static readonly System.Collections.Generic.Dictionary<Sprite, Figure> figures =
+            new System.Collections.Generic.Dictionary<Sprite, Figure>();
 
-            if (buttonGraphics == null)
+        private static Figure Measure(Sprite sprite)
+        {
+            if (figures.TryGetValue(sprite, out Figure figure))
+                return figure;
+
+            figure = new Figure { feet = 0f, head = 1f, legs = 0.5f };
+            Vector2[] vertices = sprite.vertices;      // the tight outline of the visible pixels
+            Rect rect = sprite.rect;
+            if (vertices != null && vertices.Length > 2 && rect.width > 0f && rect.height > 0f)
             {
-                Transform buttons = FindDeep(transform, "Main Buttons");
-                buttonGraphics = buttons != null ? buttons.GetComponentsInChildren<Graphic>(true) : new Graphic[0];
+                float ppu = sprite.pixelsPerUnit;
+                float bottom = float.MaxValue, top = float.MinValue;
+                foreach (Vector2 v in vertices)
+                {
+                    float y = (v.y * ppu + sprite.pivot.y) / rect.height;
+                    bottom = Mathf.Min(bottom, y);
+                    top = Mathf.Max(top, y);
+                }
+
+                // the legs: the outline across the lowest part of the figure
+                float legsTop = bottom + (top - bottom) * 0.12f;
+                float left = float.MaxValue, right = float.MinValue;
+                foreach (Vector2 v in vertices)
+                {
+                    if ((v.y * ppu + sprite.pivot.y) / rect.height > legsTop)
+                        continue;
+                    float x = (v.x * ppu + sprite.pivot.x) / rect.width;
+                    left = Mathf.Min(left, x);
+                    right = Mathf.Max(right, x);
+                }
+
+                if (top - bottom > 0.05f)
+                {
+                    figure.feet = Mathf.Clamp01(bottom);
+                    figure.head = Mathf.Clamp01(top);
+                }
+                if (right > left)
+                    figure.legs = Mathf.Clamp01((left + right) * 0.5f);
             }
 
-            float buttonsLeft = float.MaxValue;
-            foreach (Graphic graphic in buttonGraphics)
-            {
-                if (graphic == null || !graphic.isActiveAndEnabled || graphic.color.a < 0.01f)
-                    continue;
-                graphic.rectTransform.GetWorldCorners(corners);
-                buttonsLeft = Mathf.Min(buttonsLeft, chefRect.InverseTransformPoint(corners[0]).x,
-                    chefRect.InverseTransformPoint(corners[1]).x);
-            }
-            if (buttonsLeft < float.MaxValue)
-                right = Mathf.Min(right, buttonsLeft - OutfitMargin);
-
-            return right - left > 10f;
+            figures[sprite] = figure;
+            return figure;
         }
 
         private void SetOutfitSprite(string objectName, Sprite sprite)

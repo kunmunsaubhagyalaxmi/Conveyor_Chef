@@ -51,10 +51,28 @@ namespace Watermelon
             float median = frames[Window / 2];
             if (median > 0f && 1f / median < target * Keep)
             {
+                // A 120 Hz screen that can't hold 120 often still holds 90: try that before 60.
+                float fps = 1f / median;
+                if (target > 90 && fps >= 90 * Keep && DisplayOffers(90))
+                {
+                    Application.targetFrameRate = 90;
+                    startAt = Time.realtimeSinceStartup + 2f;   // let the new rate settle, then check it too
+                    Debug.Log("[FrameRate] " + target + " fps not reachable (typical " + Mathf.RoundToInt(fps) + "), using 90.");
+                    return;
+                }
+
                 Application.targetFrameRate = 60;
-                Debug.Log("[FrameRate] " + target + " fps not reachable (typical " + Mathf.RoundToInt(1f / median) + "), using a steady 60.");
+                Debug.Log("[FrameRate] " + target + " fps not reachable (typical " + Mathf.RoundToInt(fps) + "), using a steady 60.");
                 enabled = false;
             }
+        }
+
+        private static bool DisplayOffers(int rate)
+        {
+            foreach (Resolution mode in Screen.resolutions)
+                if (Mathf.Abs((float)mode.refreshRateRatio.value - rate) < 1.5f)
+                    return true;
+            return false;
         }
     }
 }
