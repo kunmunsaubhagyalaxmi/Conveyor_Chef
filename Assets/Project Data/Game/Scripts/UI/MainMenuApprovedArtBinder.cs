@@ -99,7 +99,11 @@ namespace Watermelon
 
             if (outfitChef == null)
             {
-                var go = new GameObject("Outfit Chef", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                // DesignFrameIgnore: the screen fitter (DesignFrame) re-anchors every child into the
+                // design phone's frame. For a child of the full-screen chef box that moved its centre
+                // from the chef box's centre to the screen's centre (+211, +80 here), so every outfit
+                // chef stood far right and too high, over the logo and the buttons, on every screen.
+                var go = new GameObject("Outfit Chef", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(DesignFrameIgnore));
                 go.layer = chefRect.gameObject.layer;
                 go.transform.SetParent(chefRect, false);
                 outfitChef = go.GetComponent<Image>();
@@ -119,13 +123,13 @@ namespace Watermelon
         // the same head and body size, not the same height: hats differ), feet on the same floor and
         // in the same spot. Measured on the pictures: all outfit pictures (512x1024) are drawn at one
         // scale, 1.435x the classic picture's pixels (the royal chef, in the classic's pose, then
-        // overlaps the classic chef almost exactly), then nudged by outfitNudge (set in the Inspector).
+        // overlaps the classic chef almost exactly), then nudged by outfitOffset (set in the Inspector).
         private const float OutfitPixelScale = 1.435f;      // outfit picture pixel -> classic picture pixel
         private const float OutfitSourceHeight = 1024f;     // outfit pictures as painted (imported smaller)
 
         [Tooltip("Moves every outfit chef together, in pixels of the classic chef picture (x: right, y: up). " +
                  "Changes apply at once in Play mode.")]
-        [SerializeField] private Vector2 outfitNudge = new Vector2(-20f, 48f);
+        [SerializeField] private Vector2 outfitOffset = new Vector2(-20f, 6f);
 
         // Where each character stands in its picture: the bottom of the shoes (pixel row from the
         // top) and the middle between the feet (pixel column), measured on the 512x1024 pictures.
@@ -188,8 +192,8 @@ namespace Watermelon
                 feet = new Vector2(OutfitSourceHeight * aspect * 0.5f, OutfitSourceHeight * (1f - o.feet));
             }
 
-            float left = feetX + outfitNudge.x * classicScale * unit - feet.x * k;
-            float top = feetY + outfitNudge.y * classicScale * unit + feet.y * k;
+            float left = feetX + outfitOffset.x * classicScale * unit - feet.x * k;
+            float top = feetY + outfitOffset.y * classicScale * unit + feet.y * k;
             rt.sizeDelta = new Vector2(w, h);
             rt.anchoredPosition = new Vector2(left + w * 0.5f, top - h * 0.5f);
         }
