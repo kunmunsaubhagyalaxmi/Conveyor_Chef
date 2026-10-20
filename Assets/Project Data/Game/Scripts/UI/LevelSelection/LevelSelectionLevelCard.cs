@@ -55,6 +55,7 @@ namespace Watermelon.BusStop
         private Image selectionGlow;
         private bool glowTarget;
         private float glowVisibility;
+        private bool glowAtRest;
         private static Sprite glowSprite;
 
         // The Level Selection scene is designer-authored. Cache every RectTransform
@@ -304,13 +305,23 @@ namespace Watermelon.BusStop
                 if (state.rect == null)
                     continue;
 
-                state.rect.anchorMin = state.anchorMin;
-                state.rect.anchorMax = state.anchorMax;
-                state.rect.pivot = state.pivot;
-                state.rect.anchoredPosition = state.anchoredPosition;
-                state.rect.sizeDelta = state.sizeDelta;
-                state.rect.localScale = state.localScale;
-                state.rect.localRotation = state.localRotation;
+                // Only put back what something else changed: rewriting equal values on every
+                // card each frame kept re-dirtying the map's canvas.
+                RectTransform rect = state.rect;
+                if (rect.anchorMin != state.anchorMin)
+                    rect.anchorMin = state.anchorMin;
+                if (rect.anchorMax != state.anchorMax)
+                    rect.anchorMax = state.anchorMax;
+                if (rect.pivot != state.pivot)
+                    rect.pivot = state.pivot;
+                if (rect.anchoredPosition != state.anchoredPosition)
+                    rect.anchoredPosition = state.anchoredPosition;
+                if (rect.sizeDelta != state.sizeDelta)
+                    rect.sizeDelta = state.sizeDelta;
+                if (rect.localScale != state.localScale)
+                    rect.localScale = state.localScale;
+                if (rect.localRotation != state.localRotation)
+                    rect.localRotation = state.localRotation;
             }
         }
 
@@ -377,6 +388,10 @@ namespace Watermelon.BusStop
             if (selectionGlow == null)
                 return;
 
+            // A card that is not selected has nothing to animate once its glow has faded out.
+            if (glowAtRest && !glowTarget)
+                return;
+
             LayoutSelectionGlow();
 
             glowVisibility = Mathf.MoveTowards(glowVisibility, glowTarget ? 1f : 0f, selectionGlowFadeSpeed * Time.unscaledDeltaTime);
@@ -388,6 +403,7 @@ namespace Watermelon.BusStop
 
             float scale = 1f + 0.025f * pulse * glowVisibility;
             selectionGlow.rectTransform.localScale = new Vector3(scale, scale, 1f);
+            glowAtRest = !glowTarget && glowVisibility <= 0f;
         }
 
         // Glow width in texture pixels and the corner radius of the card shape.

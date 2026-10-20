@@ -36,6 +36,8 @@ namespace Watermelon
         private Image ringImage;
         private float idle, handAlpha, handTime;
         private BaseCharacterBehavior hinted;
+        private Renderer[] hintedRenderers;     // looked up once per hinted dish, not every frame
+        private float searchCooldown;           // no pickable dish: look again a bit later, not every frame
 
         // tray warning
         private RectTransform frame, label;
@@ -147,10 +149,13 @@ namespace Watermelon
                 idle += dt;
             }
 
-            if (idle >= IdleSeconds && (hinted == null || !CanPick(hinted)))
+            searchCooldown -= dt;
+            if (idle >= IdleSeconds && (hinted == null || !CanPick(hinted)) && searchCooldown <= 0f)
             {
                 hinted = FindGoodDish();
+                hintedRenderers = hinted != null ? hinted.GetComponentsInChildren<Renderer>() : null;
                 handTime = 0f;
+                searchCooldown = hinted == null ? 0.5f : 0f;
             }
 
             bool show = idle >= IdleSeconds && hinted != null && CanPick(hinted);
@@ -162,7 +167,7 @@ namespace Watermelon
                 return;
             }
 
-            Vector2 target = ToLocal(ScreenCentre(hinted.gameObject));
+            Vector2 target = ToLocal(ScreenCentre(hinted.transform, hintedRenderers));
             handTime += dt;
             float cycle = (handTime % TapCycle) / TapCycle;
             // lift, press, release, rest
@@ -364,17 +369,16 @@ namespace Watermelon
             return local;
         }
 
-        private static Vector2 ScreenCentre(GameObject go)
+        private static Vector2 ScreenCentre(Transform go, Renderer[] renderers)
         {
             Camera cam = Camera.main;
             if (cam == null)
                 return Vector2.zero;
-            Renderer[] renderers = go.GetComponentsInChildren<Renderer>();
-            Bounds b = new Bounds(go.transform.position, Vector3.zero);
+            Bounds b = new Bounds(go.position, Vector3.zero);
             bool any = false;
-            foreach (Renderer r in renderers)
+            foreach (Renderer r in renderers ?? System.Array.Empty<Renderer>())
             {
-                if (!r.enabled || r is ParticleSystemRenderer)
+                if (r == null || !r.enabled || r is ParticleSystemRenderer)
                     continue;
                 if (!any) { b = r.bounds; any = true; }
                 else b.Encapsulate(r.bounds);

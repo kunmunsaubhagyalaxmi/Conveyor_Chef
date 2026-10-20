@@ -165,7 +165,15 @@ namespace Watermelon
 
         protected virtual void RedrawBusyVisuals(bool state)
         {
-            busyStateVisualsObject.SetActive(behavior.IsBusy);
+            if (busyStateVisualsObject != null)
+            {
+                busyStateVisualsObject.SetActive(state);
+                return;
+            }
+
+            // The redesigned PU Behavior UI has no busy overlay: grey the button art instead.
+            if (iconImage != null && !isTimerActive)
+                iconImage.color = state ? new Color(0.5f, 0.5f, 0.5f, 0.6f) : Color.white;
         }
     }
 }

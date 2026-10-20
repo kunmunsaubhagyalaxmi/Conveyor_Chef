@@ -37,9 +37,12 @@ namespace Watermelon
 
         private PUUIController lastPowerUpsController;
         private int lastPowerUpCount = -1;
+        private UIGame game;
 
         private void Awake()
         {
+            game = GetComponent<UIGame>();
+
             if (coinPanel != null && coinPanel.AddButton != null)
                 coinPanel.AddButton.onClick.AddListener(OpenCurrencyStore);
 
@@ -113,7 +116,6 @@ namespace Watermelon
 
         private void TrySkinPowerUps(bool force)
         {
-            UIGame game = GetComponent<UIGame>();
             PUUIController controller = game != null ? game.PowerUpsUIController : null;
 
             if (controller == null || controller.UIBehaviors == null)
@@ -173,92 +175,80 @@ namespace Watermelon
             }
         }
 
-        // ------------------------------------------------------------ 5-spot toolbar
-        // bottom_toolbar_panel.png has 4 spots: Home and three power-ups. Once a fourth power-up
-        // is unlocked the bar switches to Resources/Toolbar/bottom_toolbar_panel_5.png (one spot
-        // more, inserted in the middle), keeps its width and shrinks a little, so it still fits.
-        private const string WideToolbarPath = "Toolbar/bottom_toolbar_panel_5";
-        private const float ToolbarCutPx = 768f;      // the column of the narrow picture where the spot was inserted
-
-        private bool toolbarWide;
-        private Sprite narrowToolbarSprite;
-        private Vector2 savedToolbarSize, savedHomePosition, savedPowerUpsPosition, savedPowerUpsSize;
-        private Vector3 savedHomeScale, savedPowerUpsScale;
+        // ------------------------------------------------------------ Extra Plate spot
+        // The toolbar's first spot held the menu button (the pause button opens the same menu).
+        // It is hidden and EXTRA PLATE sits there instead; Undo/Hint/Shuffle keep spots 2-4.
+        // The button lives in a holder scaled like the power-ups' row, because the button
+        // itself is animated to scale 1 when it appears.
+        private RectTransform extraPlateSpot;
+        private PUUIBehavior extraPlateItem;
+        private RectTransform firstSpotButton;
 
         private void UpdateToolbarSpots()
         {
             PUUIController controller = lastPowerUpsController;
-            if (controller == null || controller.UIBehaviors == null || homeButton == null)
+            if (controller == null || controller.UIBehaviors == null)
                 return;
 
-            int shown = 0;
+            // Already in place: nothing to do this frame.
+            if (extraPlateItem != null && extraPlateItem.transform.parent == extraPlateSpot
+                && firstSpotButton != null && !firstSpotButton.gameObject.activeSelf
+                && extraPlateSpot.localScale == controller.transform.localScale)
+                return;
+
+            if (firstSpotButton == null)
+                firstSpotButton = FindFirstSpotButton(controller);
+            RectTransform toolbar = firstSpotButton != null ? firstSpotButton.parent as RectTransform : null;
+            if (toolbar == null)
+                return;
+
+            if (firstSpotButton.gameObject.activeSelf)
+                firstSpotButton.gameObject.SetActive(false);
+
             foreach (PUUIBehavior item in controller.UIBehaviors)
-                if (item != null && item.gameObject.activeSelf)
-                    shown++;
-            bool wide = shown >= 4;
-            if (wide == toolbarWide)
-                return;
-
-            RectTransform toolbar = homeButton.transform.parent as RectTransform;
-            RectTransform home = homeButton.transform as RectTransform;
-            RectTransform powerUps = controller.transform as RectTransform;
-            Image image = toolbar != null ? toolbar.GetComponent<Image>() : null;
-            if (image == null || image.sprite == null || powerUps == null || powerUps.parent != toolbar)
-                return;
-
-            if (wide)
             {
-                Sprite wideSprite = Resources.Load<Sprite>(WideToolbarPath);
-                if (wideSprite == null)
-                    return;
+                if (item == null || !(item.Settings is PUExtraSlotSettings))
+                    continue;
 
-                narrowToolbarSprite = image.sprite;
-                savedToolbarSize = toolbar.sizeDelta;
-                savedHomePosition = home.anchoredPosition;
-                savedHomeScale = home.localScale;
-                savedPowerUpsPosition = powerUps.anchoredPosition;
-                savedPowerUpsScale = powerUps.localScale;
-                savedPowerUpsSize = powerUps.sizeDelta;
+                extraPlateItem = item;
 
-                float oldPx = narrowToolbarSprite.rect.width;
-                float newPx = wideSprite.rect.width;
-                float spotPx = newPx - oldPx;
-                float k = oldPx / newPx;
-                float width = savedToolbarSize.x;
+                if (extraPlateSpot == null)
+                {
+                    extraPlateSpot = new GameObject("Extra Plate Spot", typeof(RectTransform)).GetComponent<RectTransform>();
+                    extraPlateSpot.SetParent(toolbar, false);
+                    extraPlateSpot.anchorMin = extraPlateSpot.anchorMax = firstSpotButton.anchorMin;
+                    extraPlateSpot.pivot = new Vector2(0.5f, 0.5f);
+                    extraPlateSpot.sizeDelta = Vector2.zero;
+                }
 
-                image.sprite = wideSprite;
-                toolbar.sizeDelta = new Vector2(width, savedToolbarSize.y * k);
+                extraPlateSpot.anchoredPosition = firstSpotButton.anchoredPosition;
+                extraPlateSpot.localScale = controller.transform.localScale;
 
-                // children are centred on the bar: x follows the picture's columns, y and size shrink by k
-                home.anchoredPosition = new Vector2(Remap(savedHomePosition.x, width, oldPx, newPx, 0f), savedHomePosition.y * k);
-                home.localScale = savedHomeScale * k;
-
-                // the power-ups' row straddles the inserted spot: its centre moves half a spot, it gets one spot wider
-                powerUps.anchoredPosition = new Vector2(Remap(savedPowerUpsPosition.x, width, oldPx, newPx, spotPx * 0.5f), savedPowerUpsPosition.y * k);
-                powerUps.localScale = savedPowerUpsScale * k;
-                powerUps.sizeDelta = new Vector2(savedPowerUpsSize.x + spotPx / oldPx * width / Mathf.Max(0.01f, savedPowerUpsScale.x), savedPowerUpsSize.y);
+                if (item.transform.parent != extraPlateSpot)
+                {
+                    RectTransform rect = (RectTransform)item.transform;
+                    rect.SetParent(extraPlateSpot, false);
+                    rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0.5f);
+                    rect.anchoredPosition = Vector2.zero;
+                }
             }
-            else
-            {
-                image.sprite = narrowToolbarSprite;
-                toolbar.sizeDelta = savedToolbarSize;
-                home.anchoredPosition = savedHomePosition;
-                home.localScale = savedHomeScale;
-                powerUps.anchoredPosition = savedPowerUpsPosition;
-                powerUps.localScale = savedPowerUpsScale;
-                powerUps.sizeDelta = savedPowerUpsSize;
-            }
-
-            toolbarWide = wide;
         }
 
-        // x from the bar's centre -> column of the narrow picture (+ shift) -> x on the wide picture
-        private static float Remap(float x, float width, float oldPx, float newPx, float shiftPx)
+        // The old HUD wires its "Home Button"; GAME MAIN CANVAS [NEW UI] has no reference here and
+        // calls the same toolbar spot "Menu Button" (a sibling of the power-ups' row).
+        private RectTransform FindFirstSpotButton(PUUIController controller)
         {
-            float column = oldPx * 0.5f + x / width * oldPx;
-            if (column > ToolbarCutPx && shiftPx == 0f)
-                column += newPx - oldPx;
-            return (column + shiftPx) / newPx * width - width * 0.5f;
+            if (homeButton != null)
+                return homeButton.transform as RectTransform;
+
+            Transform toolbar = controller.transform.parent;
+            if (toolbar == null)
+                return null;
+
+            Transform menu = toolbar.Find("Menu Button");
+            if (menu == null)
+                menu = toolbar.Find("Home Button");
+            return menu as RectTransform;
         }
 
 #if UNITY_EDITOR

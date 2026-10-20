@@ -57,8 +57,11 @@ namespace Watermelon
             if (cam == null)
                 return;
 
-            canvas.worldCamera = cam;
-            canvas.planeDistance = cam.farClipPlane * farPlaneFraction;
+            if (canvas.worldCamera != cam)
+                canvas.worldCamera = cam;
+            float planeDistance = cam.farClipPlane * farPlaneFraction;
+            if (!Mathf.Approximately(canvas.planeDistance, planeDistance))
+                canvas.planeDistance = planeDistance;
 
             if (Application.isPlaying && LevelController.Environment != environment)
             {
@@ -91,6 +94,8 @@ namespace Watermelon
             }
         }
 
+        private Vector3 lastLayout = new Vector3(-1f, -1f, -1f);
+
         private void Layout(Camera cam)
         {
             RectTransform root = (RectTransform)transform;
@@ -108,6 +113,12 @@ namespace Watermelon
             float artWidth = artPixelSize.x * scale;
             float kitchenHeight = artPixelSize.y * floorStartRow * scale;
             float floorHeight = Mathf.Max(artPixelSize.y * (1f - floorStartRow) * scale, height - kitchenHeight);
+
+            // Same layout as last frame: writing it again would only re-dirty the canvas.
+            Vector3 layout = new Vector3(artWidth, kitchenHeight, floorHeight);
+            if (layout == lastLayout && Application.isPlaying)
+                return;
+            lastLayout = layout;
 
             SetRect(artwork, 0f, new Vector2(artWidth, kitchenHeight + floorHeight));
 
