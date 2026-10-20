@@ -367,8 +367,8 @@ namespace Watermelon
             MenuUI.Stretch(dim.rectTransform);
             MenuUI.Button(dim, Close, false).transition = Selectable.Transition.None;
 
-            // the blank-ribbon frame (if added) is used by every panel; its title is written in
-            design = MenuPanelFrame.Load(MenuPanelFrame.BlankKey) ?? MenuPanelFrame.Load(DesignKey);
+            // the panel's own picture (title painted in); otherwise the blank frame with the title written on
+            design = MenuPanelFrame.Load(DesignKey) ?? MenuPanelFrame.Load(MenuPanelFrame.BlankKey);
 
             RectTransform body;
             if (design != null)

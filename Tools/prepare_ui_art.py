@@ -29,7 +29,10 @@ ART = [
     ("Resources/UI/Panels/next_country_blank.png", "trim", 1024),
     ("Resources/UI/Panels/level_completed_blank.png", None, 2048),
     ("Resources/UI/Panels/level_failed_blank.png", None, 2048),
-    ("Resources/MenuPanelFrames/blank.png", None, 2048),
+    ("Resources/MenuPanelFrames/*.png", None, 2048),                  # blank + the panels with painted titles
+    ("Resources/UI/Panels/title_*.png", "trim", 1024),                 # popup titles with painted words
+    ("Resources/UI/Panels/level_completed.png", None, 2048),
+    ("Resources/UI/Panels/level_failed.png", None, 2048),
     ("Resources/MainMenu/nav_*.png", None, 512),
     ("Resources/MainMenu/nav_plaque.png", "trim", 512),
 ]

@@ -102,10 +102,30 @@ namespace Watermelon
         }
 
         /// <summary>A title written on a ribbon picture; <paramref name="area"/> is the word band (0-1 of the picture).</summary>
+        // Title pictures with the word painted in (Resources/UI/Panels): used as they are when present.
+        private static readonly Dictionary<string, string> PaintedTitles = new Dictionary<string, string>
+        {
+            { "MENU", "title_menu" }, { "SETTINGS", "title_settings" }, { "LANGUAGE", "title_language" },
+            { "LEVEL COMPLETED", "level_completed" }, { "LEVEL FAILED", "level_failed" },
+            { "COUNTRY COMPLETED!", "title_country_completed" }, { "NEXT COUNTRY", "title_next_country" },
+        };
+
         public static TextMeshProUGUI Title(Image ribbon, Sprite art, string textKey, Rect area, Color32 outline)
         {
             if (ribbon == null)
                 return null;
+            Sprite painted = PaintedTitles.TryGetValue(textKey, out string file) ? Panel(file) : null;
+            if (painted != null)
+            {
+                ribbon.sprite = painted;
+                ribbon.preserveAspect = true;
+                ribbon.color = Color.white;
+                FitHeight(ribbon.rectTransform, painted);
+                Transform written = ribbon.transform.Find("Art Title");
+                if (written != null)
+                    written.gameObject.SetActive(false);
+                return null;
+            }
             if (art != null)
             {
                 ribbon.sprite = art;
