@@ -23,6 +23,13 @@ namespace Watermelon
             ApplyApprovedArtwork();
             if (Application.isPlaying)
             {
+                // where the chef rests, read before the menu's slide-in moves him
+                if (chefRect == null)
+                {
+                    chefRect = FindDeep(transform, "Chef Character") as RectTransform;
+                    if (chefRect != null)
+                        chefRestX = chefRect.anchoredPosition.x;
+                }
                 ChefProgress.OutfitChanged += ApplyOutfit;
                 if (started)            // re-enabled later; the first time Start does it
                     ApplyOutfit();
@@ -36,10 +43,11 @@ namespace Watermelon
             ChefProgress.OutfitChanged -= ApplyOutfit;
         }
 
-        // How far an outfit chef may reach further left than the classic chef (canvas units).
-        private const float OutfitExtraWidth = 80f;
+        // Gap kept between an outfit chef and the screen's left edge / the main buttons (canvas units).
+        private const float OutfitMargin = 16f;
 
         private RectTransform chefRect;
+        private float chefRestX;
         private Image outfitChef;
         private Vector2 fittedSize;
 
@@ -80,7 +88,11 @@ namespace Watermelon
         private void ShowOutfitChef(Sprite outfit)
         {
             if (chefRect == null)
+            {
                 chefRect = FindDeep(transform, "Chef Character") as RectTransform;
+                if (chefRect != null)
+                    chefRestX = chefRect.anchoredPosition.x;
+            }
             if (chefRect == null)
                 return;
             Image classic = chefRect.GetComponent<Image>();
@@ -116,10 +128,10 @@ namespace Watermelon
             LayoutOutfitChef();
         }
 
-        // The outfit pictures are wider than the classic chef (0.5 vs 0.41 of their height), so at
-        // the same height they would reach into the buttons. The outfit chef stands where the
-        // classic one stands: same floor, same right edge, at most a little wider to the left,
-        // and only as tall as that width allows.
+        // The outfit pictures are wider than the classic chef (0.5 vs 0.41 of their height) and hold
+        // their prop (wok, pizza, knife) out to the right, so in the classic chef's place the prop
+        // would be hidden behind the main buttons. The outfit chef stands on the classic chef's
+        // floor, fitted between the screen's left edge and the buttons, no taller than the classic.
         private void LayoutOutfitChef()
         {
             Sprite classic = ProfessionalMainMenuEmbeddedAssets.GetSprite("chef");
@@ -130,7 +142,8 @@ namespace Watermelon
             Rect r = chefRect.rect;
             fittedSize = r.size;
             RectTransform rt = outfitChef.rectTransform;
-            if (r.width < 10f || r.height < 10f || classic == null)
+            RectTransform parent = chefRect.parent as RectTransform;
+            if (r.width < 10f || r.height < 10f || classic == null || parent == null)
             {
                 // not laid out yet (or no classic art): fill the chef box, re-fitted when it has a size
                 rt.anchoredPosition = Vector2.zero;
@@ -143,13 +156,25 @@ namespace Watermelon
             // the classic chef as preserveAspect shows it: as big as fits, centred
             float classicW = Mathf.Min(r.width, r.height * classicAspect);
             float classicH = classicW / classicAspect;
-            float right = classicW * 0.5f;          // relative to the box centre
             float bottom = -classicH * 0.5f;
 
-            float h = Mathf.Min(classicH, (classicW + OutfitExtraWidth) / outfitAspect);
+            // free space in the chef box's own units, measured from where the chef rests
+            Rect p = parent.rect;
+            float centre = Mathf.Lerp(p.xMin, p.xMax, (chefRect.anchorMin.x + chefRect.anchorMax.x) * 0.5f) + chefRestX;
+            float left = p.xMin - centre + OutfitMargin;
+            float right = r.width * 0.5f;
+            RectTransform buttons = FindDeep(transform, "Main Buttons") as RectTransform;
+            if (buttons != null)
+            {
+                Vector3[] corners = new Vector3[4];
+                buttons.GetWorldCorners(corners);
+                right = parent.InverseTransformPoint(corners[0]).x - centre - OutfitMargin;
+            }
+
+            float h = Mathf.Min(classicH, Mathf.Max(10f, right - left) / outfitAspect);
             float w = h * outfitAspect;
             rt.sizeDelta = new Vector2(w, h);
-            rt.anchoredPosition = new Vector2(right - w * 0.5f, bottom + h * 0.5f);
+            rt.anchoredPosition = new Vector2((left + right) * 0.5f, bottom + h * 0.5f);
         }
 
         private void SetOutfitSprite(string objectName, Sprite sprite)
