@@ -25,6 +25,9 @@ namespace Watermelon
             {
                 if (chefRect == null)
                     chefRect = FindDeep(transform, "Chef Character") as RectTransform;
+                // tablets and other wide screens use the extra width (phones are left as they are)
+                if (GetComponent<MainMenuTabletLayout>() == null)
+                    gameObject.AddComponent<MainMenuTabletLayout>();
                 ChefProgress.OutfitChanged += ApplyOutfit;
                 if (started)            // re-enabled later; the first time Start does it
                     ApplyOutfit();
