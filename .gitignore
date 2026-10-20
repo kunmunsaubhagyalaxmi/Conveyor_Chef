@@ -111,3 +111,6 @@ ehthumbs.db
 # Source art archives (already unpacked into the project; too big for GitHub)
 Docs/DishArt/*.zip
 Docs/LevelMapArt/*.zip
+
+# Level card archives from the image generator (1-2 GB each, over GitHub's 100 MB limit)
+Docs/LevelCardArt/*.zip
