@@ -186,11 +186,14 @@ namespace Watermelon
             frame = frameImage.rectTransform;
             MenuUI.Place(frame, new Vector2(0f, -30f), new Vector2(FrameWidth, FrameHeight));
 
-            // title ribbon across the top edge, as on the menu panels
-            Image ribbon = MenuUI.Image("Title Ribbon", frame, art.titleRibbon, art.titleRibbon == null ? new Color32(200, 40, 40, 255) : (Color?)null);
-            MenuUI.Anchor(ribbon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(0f, -36f), new Vector2(600f, 161f));
-            TextMeshProUGUI title = MenuUI.OutlinedText("Title", ribbon.transform, "OUT OF POWER-UPS", 54f, new Color32(110, 20, 20, 255));
-            MenuUI.Stretch(title.rectTransform, 103f, 56f, 103f, 39f);
+            // blue title ribbon across the top edge (matches the blue and gold frame)
+            Sprite ribbonSprite = PopupArt.TitleRibbon(art);
+            Image ribbon = MenuUI.Image("Title Ribbon", frame, ribbonSprite, ribbonSprite == null ? new Color32(30, 100, 220, 255) : (Color?)null);
+            Vector2 ribbonSize = new Vector2(600f, 200f);
+            MenuUI.Anchor(ribbon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(0f, -40f), ribbonSize);
+            TextMeshProUGUI title = MenuUI.OutlinedText("Title", ribbon.transform, "OUT OF POWER-UPS", 52f, PopupArt.RibbonOutline);
+            Vector4 inset = PopupArt.RibbonTextInsets;
+            MenuUI.Stretch(title.rectTransform, inset.x * ribbonSize.x, inset.y * ribbonSize.y, inset.z * ribbonSize.x, inset.w * ribbonSize.y);
 
             Image close = MenuUI.Image("Close Button", frame, art.closeButton, art.closeButton == null ? new Color32(220, 60, 50, 255) : (Color?)null);
             MenuUI.Anchor(close.rectTransform, new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-34f, -34f), new Vector2(118f, 118f));
@@ -215,19 +218,20 @@ namespace Watermelon
             MenuUI.Anchor(descriptionText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -344f), new Vector2(580f, 150f));
 
             // BUY for coins, and the way to the Shop for more
-            Button buy = MenuUI.LabelButton("Buy Button", frame, art.buttonOrange, "000", 48f, Buy, art.coin, new Color32(140, 70, 10, 255));
-            MenuUI.Anchor((RectTransform)buy.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 200f), new Vector2(420f, 128f));
+            // glossy gold-rimmed buttons like the main menu's (exact picture proportions: 955x302)
+            Button buy = MenuUI.LabelButton("Buy Button", frame, PopupArt.ButtonOrange(art), "000", 50f, Buy, art.coin, new Color32(140, 60, 10, 255));
+            MenuUI.Anchor((RectTransform)buy.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 200f), new Vector2(420f, 133f));
             priceText = buy.GetComponentInChildren<TextMeshProUGUI>(true);
             priceIcon = buy.transform.Find("Label Row/Icon")?.GetComponent<Image>();
             if (priceIcon == null)
                 priceIcon = MenuUI.Image("Icon", buy.transform, art.coin);
 
-            Button shop = MenuUI.LabelButton("Shop Button", frame, art.buttonPurple, "SHOP", 38f, OpenShop, null, new Color32(70, 20, 110, 255));
-            MenuUI.Anchor((RectTransform)shop.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 92f), new Vector2(300f, 96f));
+            Button shop = MenuUI.LabelButton("Shop Button", frame, PopupArt.ButtonGreen(art), "SHOP", 40f, OpenShop, null, new Color32(30, 90, 20, 255));
+            MenuUI.Anchor((RectTransform)shop.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 84f), new Vector2(300f, 95f));
 
             messageText = MenuUI.OutlinedText("Message", frame, "", 38f, new Color32(120, 20, 20, 255), TextAlignmentOptions.Center,
                 new Color32(255, 120, 100, 255));
-            MenuUI.Anchor(messageText.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 360f), new Vector2(620f, 56f));
+            MenuUI.Anchor(messageText.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 362f), new Vector2(620f, 50f));
 
             root.gameObject.SetActive(false);
         }

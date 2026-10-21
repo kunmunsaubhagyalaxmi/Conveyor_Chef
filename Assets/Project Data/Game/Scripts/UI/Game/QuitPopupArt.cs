@@ -14,7 +14,7 @@ namespace Watermelon
     public sealed class QuitPopupArt : MonoBehaviour
     {
         private const float RibbonWidth = 600f;
-        private const float RibbonHeight = 164f;
+        private const float RibbonHeight = 200f;      // the blue ribbon's proportions (1953x649)
         private const float CloseSize = 110f;
 
         private bool done;
@@ -46,27 +46,28 @@ namespace Watermelon
 
             // title in a ribbon across the drawn top edge
             RectTransform title = panel.Find("Quit Text") as RectTransform;
-            if (art != null && art.titleRibbon != null && title != null)
+            Sprite ribbonSprite = PopupArt.TitleRibbon(art);
+            if (ribbonSprite != null && title != null)
             {
                 RectTransform ribbon = new GameObject("Title Ribbon", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image)).GetComponent<RectTransform>();
                 ribbon.SetParent(panel, false);
                 ribbon.SetSiblingIndex(title.GetSiblingIndex());
                 Image ribbonImage = ribbon.GetComponent<Image>();
-                ribbonImage.sprite = art.titleRibbon;
+                ribbonImage.sprite = ribbonSprite;
                 ribbonImage.preserveAspect = true;
                 ribbonImage.raycastTarget = false;
                 ribbon.anchorMin = ribbon.anchorMax = ribbon.pivot = new Vector2(0.5f, 0.5f);
                 ribbon.sizeDelta = new Vector2(RibbonWidth, RibbonHeight);
                 ribbon.anchoredPosition = new Vector2(centre.x, top - 14f);
 
-                // the words on the ribbon's band (same insets as the menu panels' titles, scaled)
-                float k = RibbonWidth / 760f;
+                // the words on the ribbon's blue band
+                Vector4 inset = PopupArt.RibbonTextInsets;
                 title.SetParent(ribbon, false);
                 title.anchorMin = Vector2.zero;
                 title.anchorMax = Vector2.one;
                 title.pivot = new Vector2(0.5f, 0.5f);
-                title.offsetMin = new Vector2(130f * k, 66f * k);
-                title.offsetMax = new Vector2(-130f * k, -46f * k);
+                title.offsetMin = new Vector2(inset.x * RibbonWidth, inset.y * RibbonHeight);
+                title.offsetMax = new Vector2(-inset.z * RibbonWidth, -inset.w * RibbonHeight);
                 TMPro.TextMeshProUGUI text = title.GetComponent<TMPro.TextMeshProUGUI>();
                 if (text != null)
                 {
