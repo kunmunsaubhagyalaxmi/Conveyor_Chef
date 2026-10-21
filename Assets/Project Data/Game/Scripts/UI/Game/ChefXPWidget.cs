@@ -26,6 +26,8 @@ namespace Watermelon
         [SerializeField] private Image face;
         [SerializeField] private TextMeshProUGUI levelText, xpText, gainText;
         [SerializeField] private CanvasGroup group;
+        [SerializeField] private Image nextPill;
+        [SerializeField] private TextMeshProUGUI nextText;
         [SerializeField] private Color gainColor = new Color32(255, 200, 40, 255);
         [SerializeField] private Color levelUpColor = new Color32(255, 140, 30, 255);
 
@@ -81,11 +83,12 @@ namespace Watermelon
 
         // Bumped whenever the look changes, so a bar saved in the scene with an older look is
         // rebuilt (in the same place).
-        private const int CurrentLayout = 4;
+        private const int CurrentLayout = 6;
         [SerializeField] private int layoutVersion;
         private bool UsesCurrentArt => layoutVersion == CurrentLayout;
 
-        private bool IsComplete => fill != null && face != null && levelText != null && xpText != null && gainText != null && group != null;
+        private bool IsComplete => fill != null && face != null && levelText != null && xpText != null && gainText != null && group != null
+            && nextPill != null && nextText != null;
 
         /// <summary>Makes the strip under <paramref name="parent"/> (also used by the editor menu).</summary>
         public static ChefXPWidget Create(Transform parent, Vector2 position)
@@ -134,11 +137,16 @@ namespace Watermelon
             fill = fillImage.rectTransform;
             Stretch(fill, 0f, 0f, 0f, 0f);
 
+            // the numbers sit in the badge's cream window (17.6-82.4% across, 27-72% down the
+            // picture), so "1150/1250" shrinks to fit instead of running over the gold rim
+            Vector2 badgeSize = new Vector2(230f, 115f);
             Image valueBadge = Img("Value Badge", r, Art("xp_badge"));
             valueBadge.preserveAspect = true;
-            Place(valueBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(236f, -6f), new Vector2(190f, 95f));
+            Place(valueBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(246f, -6f), badgeSize);
             xpText = Txt("XP", valueBadge.transform, "0/100", 34f, Brown);
-            Stretch(xpText.rectTransform, 30f, 22f, 30f, 22f);
+            xpText.textWrappingMode = TextWrappingModes.NoWrap;
+            xpText.fontSizeMin = 12f;
+            Stretch(xpText.rectTransform, 0.176f * badgeSize.x, 0.28f * badgeSize.y, 0.176f * badgeSize.x, 0.27f * badgeSize.y);
 
             Image ring = Img("Ring", r, Art("xp_ring"));
             ring.preserveAspect = true;
@@ -158,6 +166,15 @@ namespace Watermelon
             gainText = Txt("Gain", r, "+0 XP", 46f, gainColor);
             OutlinedText.Apply(gainText, new Color32(120, 36, 8, 255), 0.28f);
             Place(gainText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-25f, 74f), new Vector2(380f, 60f));
+
+            // the next goal on its own dark pill, readable over any part of the banner
+            nextPill = Img("Next Goal", r, MenuUI.Rounded(30, 4, new Color32(70, 36, 12, 240), new Color32(255, 200, 70, 255)));
+            nextPill.type = Image.Type.Sliced;
+            Place(nextPill.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(50f, 76f), new Vector2(520f, 66f));   // clear of the chef ring on the left
+            nextText = Txt("Text", nextPill.transform, "", 34f, Color.white);
+            nextText.textWrappingMode = TextWrappingModes.NoWrap;
+            Stretch(nextText.rectTransform, 24f, 8f, 24f, 8f);
+            nextPill.gameObject.SetActive(false);
         }
 
         private static readonly Color32 Brown = new Color32(92, 52, 24, 255);
@@ -172,6 +189,8 @@ namespace Watermelon
             if (chef != null)
                 face.sprite = chef;
             group.alpha = 0f;
+            gainText.gameObject.SetActive(true);
+            nextPill.gameObject.SetActive(false);
             gainText.color = gainColor;
             gainText.transform.localScale = Vector3.one;
             face.transform.localScale = Vector3.one;
@@ -224,13 +243,12 @@ namespace Watermelon
             if (!string.IsNullOrEmpty(next))
             {
                 yield return Wait(1.4f);
-                gainText.color = nextColor;
-                gainText.text = next;
-                yield return Punch(gainText.transform);
+                gainText.gameObject.SetActive(false);
+                nextText.text = next;
+                nextPill.gameObject.SetActive(true);
+                yield return Punch(nextPill.transform);
             }
         }
-
-        private static readonly Color nextColor = new Color32(120, 230, 255, 255);
 
         /// <summary>
         /// The next unlock: a power-up coming at a later level, otherwise the next chef outfit.
