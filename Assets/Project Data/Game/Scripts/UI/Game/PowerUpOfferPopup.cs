@@ -191,9 +191,20 @@ namespace Watermelon
             Image ribbon = MenuUI.Image("Title Ribbon", frame, ribbonSprite, ribbonSprite == null ? new Color32(30, 100, 220, 255) : (Color?)null);
             Vector2 ribbonSize = new Vector2(600f, 200f);
             MenuUI.Anchor(ribbon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(0f, -40f), ribbonSize);
-            TextMeshProUGUI title = MenuUI.OutlinedText("Title", ribbon.transform, "OUT OF POWER-UPS", 52f, PopupArt.RibbonOutline);
-            Vector4 inset = PopupArt.RibbonTextInsets;
-            MenuUI.Stretch(title.rectTransform, inset.x * ribbonSize.x, inset.y * ribbonSize.y, inset.z * ribbonSize.x, inset.w * ribbonSize.y);
+            Sprite baked = PopupArt.BakedTitle("out_of_powerups");
+            if (baked != null)
+            {
+                // the title with its words painted in (kept clear of the X)
+                ribbon.sprite = baked;
+                ribbon.color = Color.white;
+                ribbon.rectTransform.sizeDelta = new Vector2(620f, 620f * baked.rect.height / baked.rect.width);
+            }
+            else
+            {
+                TextMeshProUGUI title = MenuUI.OutlinedText("Title", ribbon.transform, "OUT OF POWER-UPS", 52f, PopupArt.RibbonOutline);
+                Vector4 inset = PopupArt.RibbonTextInsets;
+                MenuUI.Stretch(title.rectTransform, inset.x * ribbonSize.x, inset.y * ribbonSize.y, inset.z * ribbonSize.x, inset.w * ribbonSize.y);
+            }
 
             Image close = MenuUI.Image("Close Button", frame, art.closeButton, art.closeButton == null ? new Color32(220, 60, 50, 255) : (Color?)null);
             MenuUI.Anchor(close.rectTransform, new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-34f, -34f), new Vector2(118f, 118f));

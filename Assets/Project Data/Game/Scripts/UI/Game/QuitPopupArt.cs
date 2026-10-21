@@ -16,6 +16,7 @@ namespace Watermelon
         private const float RibbonWidth = 600f;
         private const float RibbonHeight = 200f;      // the blue ribbon's proportions (1953x649)
         private const float CloseSize = 110f;
+        private const float BakedWidth = 620f;
 
         private bool done;
 
@@ -46,6 +47,24 @@ namespace Watermelon
 
             // title in a ribbon across the drawn top edge
             RectTransform title = panel.Find("Quit Text") as RectTransform;
+            // the title with its words painted in, when it has been made
+            Sprite baked = PopupArt.BakedTitle("restart_level");
+            if (baked != null && title != null)
+            {
+                RectTransform header = new GameObject("Title", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image)).GetComponent<RectTransform>();
+                header.SetParent(panel, false);
+                header.SetSiblingIndex(title.GetSiblingIndex());
+                Image headerImage = header.GetComponent<Image>();
+                headerImage.sprite = baked;
+                headerImage.preserveAspect = true;
+                headerImage.raycastTarget = false;
+                header.anchorMin = header.anchorMax = header.pivot = new Vector2(0.5f, 0.5f);
+                header.sizeDelta = new Vector2(BakedWidth, BakedWidth * baked.rect.height / baked.rect.width);
+                header.anchoredPosition = new Vector2(centre.x, top - 14f);
+                title.gameObject.SetActive(false);
+                title = null;
+            }
+
             Sprite ribbonSprite = PopupArt.TitleRibbon(art);
             if (ribbonSprite != null && title != null)
             {

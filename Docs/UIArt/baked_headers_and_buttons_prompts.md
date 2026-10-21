@@ -170,3 +170,29 @@ Straight-on view, centred. No text. Transparent background PNG, 512x512.
 
 The language option itself (switching the game's words) comes back with these pictures. Until
 then, the panels keep their current look, so nothing breaks in between.
+
+---
+
+## C. Popup titles: OUT OF POWER-UPS and RESTART LEVEL?
+
+Same style as the SETTINGS title (blue banner, gold scrolls, yellow-gold letters). The game uses
+them as soon as they are in the folder; until then it shows the blank blue ribbon with written text.
+
+- **Size:** 2172 x 724, transparent background
+- **Folder:** `Assets/Project Data/Game/Resources/UI/Panels/`
+- **Reference to attach:** `Assets/Project Data/Game/Images/GameUI/Menu/settings_title.png`
+
+```
+The exact same arched glossy BLUE banner with thick golden border and golden scroll curls as the
+attached SETTINGS title: same shape, same size, same colours, same lighting. Only the words change:
+"[WORDS]" in the same chunky rounded bold yellow-gold letters with the same thick dark-brown
+outline and soft shadow, PERFECTLY CENTRED on the blue band, one line, evenly spaced, as tall as
+the band allows while keeping clear space before the golden scrolls on both sides (make the blue
+band a little wider if needed), spelled exactly as given. No other text, no icons. Transparent
+background PNG, 2172x724.
+```
+
+| File name | [WORDS] | Spelling check |
+|---|---|---|
+| `title_out_of_powerups.png` | OUT OF POWER-UPS | O-U-T  O-F  P-O-W-E-R-hyphen-U-P-S |
+| `title_restart_level.png` | RESTART LEVEL? | R-E-S-T-A-R-T  L-E-V-E-L-? |

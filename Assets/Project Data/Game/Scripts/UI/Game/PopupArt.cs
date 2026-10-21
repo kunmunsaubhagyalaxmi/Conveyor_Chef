@@ -18,6 +18,13 @@ namespace Watermelon
 
         public static Sprite ButtonGreen(MenuPanelArt fallback) => Get(ref buttonGreen, "UI/Buttons/small_green", fallback != null ? fallback.buttonGreen : null);
 
+        /// <summary>
+        /// A popup title with its words painted in (Resources/UI/Panels/title_&lt;key&gt;.png, in the
+        /// style of the SETTINGS title), or null while it has not been made: then the blue ribbon
+        /// with the words written by the game is used.
+        /// </summary>
+        public static Sprite BakedTitle(string key) => Resources.Load<Sprite>("UI/Panels/title_" + key);
+
         /// <summary>Where the words go on the ribbon: insets from left, bottom, right, top as shares of its size.</summary>
         public static readonly Vector4 RibbonTextInsets = new Vector4(0.2f, 0.36f, 0.2f, 0.2f);
 
