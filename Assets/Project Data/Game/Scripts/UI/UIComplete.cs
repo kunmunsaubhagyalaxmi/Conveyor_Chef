@@ -361,17 +361,13 @@ namespace Watermelon
 
         private Vector2 ChefXPPosition() => chefXPPosition;
 
-        // "LEVEL 7" under the LEVEL COMPLETED ribbon. Measured on level_completed_banner (drawn
-        // 900x1198 centred at y 30): its cream area starts at y 151 or lower across the label's
-        // width, so the label takes y 103-149 and the coin row moves down from 66 to 36 (CONTINUE
-        // stays clear below it).
+        // "LEVEL 7" under the LEVEL COMPLETED ribbon, in the coin amount's font and colour.
         private TextMeshProUGUI levelLabel;
         private UIScaleAnimation levelLabelScale;
 
         private void CreateLevelLabel()
         {
             RectTransform reward = rewardLabel.RectTransform;
-            reward.anchoredPosition = new Vector2(reward.anchoredPosition.x, 36f);
 
             var go = new GameObject("Level Number", typeof(RectTransform));
             go.transform.SetParent(transform, false);
@@ -384,18 +380,68 @@ namespace Watermelon
                 levelLabel.color = rewardAmountText.color;
             }
             levelLabel.fontStyle = FontStyles.Bold;
-            levelLabel.fontSize = 48f;
+            levelLabel.fontSize = LevelLabelSize.y * 0.9f;
             levelLabel.enableAutoSizing = true;
-            levelLabel.fontSizeMin = 24f;
-            levelLabel.fontSizeMax = 48f;
+            levelLabel.fontSizeMin = 28f;
+            levelLabel.fontSizeMax = LevelLabelSize.y * 0.9f;
             levelLabel.textWrappingMode = TextWrappingModes.NoWrap;
             levelLabel.alignment = TextAlignmentOptions.Center;
             levelLabel.raycastTarget = false;
             RectTransform r = levelLabel.rectTransform;
             r.anchorMin = r.anchorMax = r.pivot = new Vector2(0.5f, 0.5f);
-            r.anchoredPosition = new Vector2(0f, 126f);
-            r.sizeDelta = new Vector2(300f, 46f);
+            r.sizeDelta = LevelLabelSize;
             levelLabelScale = new UIScaleAnimation(r);
+            LayoutPanel();
+        }
+
+        // ------------------------------------------------------------ panel layout
+        // The banner (level_completed_banner, 1088x1448) is drawn larger and everything inside it is
+        // stacked top to bottom with equal gaps in its cream area, measured on the picture: the cream
+        // starts 40.75% down (just under the LEVEL COMPLETED ribbon, across the label's width) and
+        // ends 86.2% down. The Home button stays on the bottom border where it was (81.3% of the
+        // half height below the centre).
+        private const float PanelWidth = 960f;                         // was 900; the design width is 1080
+        private static readonly Vector2 LevelLabelSize = new Vector2(440f, 84f);
+        private const float CreamTop = 0.4075f, CreamBottom = 0.862f, HomeFromCentre = 0.813f;
+        private const float CoinRowHeight = 130f, ContinueHeight = 157f;
+        private const float XPAbove = 104f, XPBelow = 70f;             // the XP strip's reach above / below its centre
+
+        private void LayoutPanel()
+        {
+            RectTransform holder = levelCompleteLabel.RectTransform;
+            RectTransform frame = holder != null ? holder.Find("Popup Frame") as RectTransform : null;
+            Image frameImage = frame != null ? frame.GetComponent<Image>() : null;
+            if (frameImage == null || frameImage.sprite == null)
+                return;
+
+            float aspect = frameImage.sprite.rect.width / frameImage.sprite.rect.height;
+            float h = PanelWidth / aspect;
+            frame.sizeDelta = new Vector2(PanelWidth, h);
+            float centre = holder.anchoredPosition.y + frame.anchoredPosition.y;     // in the page
+            float top = centre + h * 0.5f;
+            float creamTop = top - CreamTop * h;
+            float creamBottom = top - CreamBottom * h;
+
+            float content = LevelLabelSize.y + CoinRowHeight + ContinueHeight + XPAbove + XPBelow;
+            float gap = Mathf.Max(4f, (creamTop - creamBottom - content) / 5f);
+
+            float y = creamTop - gap;
+            levelLabel.rectTransform.anchoredPosition = new Vector2(0f, y - LevelLabelSize.y * 0.5f);
+            y -= LevelLabelSize.y + gap;
+
+            RectTransform reward = rewardLabel.RectTransform;
+            reward.anchoredPosition = new Vector2(reward.anchoredPosition.x, y - CoinRowHeight * 0.5f);
+            y -= CoinRowHeight + gap;
+
+            RectTransform cont = (RectTransform)noThanksButton.transform;
+            cont.anchoredPosition = new Vector2(cont.anchoredPosition.x, y - ContinueHeight * 0.5f);
+            y -= ContinueHeight + gap;
+
+            chefXPPosition = new Vector2(0f, y - XPAbove);
+
+            Transform home = holder.Find("Home Button (Popup)");
+            if (home is RectTransform homeRect)
+                homeRect.anchoredPosition = new Vector2(homeRect.anchoredPosition.x, centre - HomeFromCentre * h * 0.5f - holder.anchoredPosition.y);
         }
 
         public override void PlayShowAnimation()

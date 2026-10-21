@@ -41,6 +41,7 @@ namespace Watermelon
         {
             if (parent == null)
                 return;
+            Vector2 wanted = position;
 
             // One placed in the scene is used as it is (its position and look are the editor's).
             Transform existing = parent.Find(ObjectName);
@@ -57,6 +58,9 @@ namespace Watermelon
                 }
                 widget = Create(parent, position);
             }
+
+            // the win panel lays itself out, so the strip goes where it is told
+            ((RectTransform)widget.transform).anchoredPosition = wanted;
 
             if (gain.XP <= 0)
             {
