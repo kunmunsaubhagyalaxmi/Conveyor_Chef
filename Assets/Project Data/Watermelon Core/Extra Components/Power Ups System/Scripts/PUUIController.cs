@@ -86,7 +86,7 @@ namespace Watermelon
                     continue;
 
                 PUSettings settings = uiBehavior.Settings;
-                if (settings.RequiredLevel <= levelIndex || PowerUpUnlocks.IsUnlocked(settings))
+                if (PowerUpUnlocks.IsAvailable(settings, levelIndex))
                 {
                     uiBehavior.Activate();
                     // only announced on the level it unlocks at (players already past it just keep it)

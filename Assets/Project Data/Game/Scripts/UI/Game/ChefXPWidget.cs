@@ -270,7 +270,7 @@ namespace Watermelon
                 foreach (PUUIBehavior b in controller.UIBehaviors)
                 {
                     PUSettings s = b != null ? b.Settings : null;
-                    if (s == null || s.RequiredLevel <= played || PowerUpUnlocks.IsUnlocked(s))
+                    if (s == null || PowerUpUnlocks.IsAvailable(s, played + 1))
                         continue;
                     if (soonest == null || s.RequiredLevel < soonest.RequiredLevel)
                         soonest = s;

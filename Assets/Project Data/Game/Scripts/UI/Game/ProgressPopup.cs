@@ -292,6 +292,28 @@ namespace Watermelon
         public static bool IsUnlocked(PUSettings settings) =>
             settings != null && PlayerPrefs.GetInt(Prefix + settings.Type, 0) == 1;
 
+        /// <summary>
+        /// Available while playing <paramref name="levelIndex"/>: that level is at or past its unlock
+        /// level, it was unlocked before, or the player's progress has reached its unlock level (so
+        /// replaying an early level keeps everything already reached).
+        /// </summary>
+        public static bool IsAvailable(PUSettings settings, int levelIndex)
+        {
+            if (settings == null)
+                return false;
+            int required = settings.RequiredLevel;
+            if (required <= levelIndex || IsUnlocked(settings))
+                return true;
+            try
+            {
+                return BusStop.GameProgress.IsLevelCompleted(required - 1) || BusStop.GameProgress.IsLevelCompleted(required);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         /// <summary>Remembers the unlock; true the first time.</summary>
         public static bool MarkUnlocked(PUSettings settings)
         {
