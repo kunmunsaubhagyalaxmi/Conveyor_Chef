@@ -293,6 +293,7 @@ namespace Watermelon
 
             coinsPanelUI.Initialise();
             MakeRoomForChefXP();
+            CreateLevelLabel();
 
             Currency currency = CurrenciesController.GetCurrency(CurrencyType.Coins);
             rewardIconImage.sprite = currency.Icon;
@@ -360,6 +361,43 @@ namespace Watermelon
 
         private Vector2 ChefXPPosition() => chefXPPosition;
 
+        // "LEVEL 7" under the LEVEL COMPLETED ribbon. Measured on level_completed_banner (drawn
+        // 900x1198 centred at y 30): its cream area starts at y 151 or lower across the label's
+        // width, so the label takes y 103-149 and the coin row moves down from 66 to 36 (CONTINUE
+        // stays clear below it).
+        private TextMeshProUGUI levelLabel;
+        private UIScaleAnimation levelLabelScale;
+
+        private void CreateLevelLabel()
+        {
+            RectTransform reward = rewardLabel.RectTransform;
+            reward.anchoredPosition = new Vector2(reward.anchoredPosition.x, 36f);
+
+            var go = new GameObject("Level Number", typeof(RectTransform));
+            go.transform.SetParent(transform, false);
+            go.transform.SetSiblingIndex(reward.GetSiblingIndex());
+            levelLabel = go.AddComponent<TextMeshProUGUI>();
+            if (rewardAmountText != null)
+            {
+                levelLabel.font = rewardAmountText.font;            // the coin amount's font and colour
+                levelLabel.fontSharedMaterial = rewardAmountText.fontSharedMaterial;
+                levelLabel.color = rewardAmountText.color;
+            }
+            levelLabel.fontStyle = FontStyles.Bold;
+            levelLabel.fontSize = 48f;
+            levelLabel.enableAutoSizing = true;
+            levelLabel.fontSizeMin = 24f;
+            levelLabel.fontSizeMax = 48f;
+            levelLabel.textWrappingMode = TextWrappingModes.NoWrap;
+            levelLabel.alignment = TextAlignmentOptions.Center;
+            levelLabel.raycastTarget = false;
+            RectTransform r = levelLabel.rectTransform;
+            r.anchorMin = r.anchorMax = r.pivot = new Vector2(0.5f, 0.5f);
+            r.anchoredPosition = new Vector2(0f, 126f);
+            r.sizeDelta = new Vector2(300f, 46f);
+            levelLabelScale = new UIScaleAnimation(r);
+        }
+
         public override void PlayShowAnimation()
 {
     Debug.Log("[UIComplete] PlayShowAnimation started");
@@ -374,6 +412,14 @@ namespace Watermelon
 
     backgroundFade.Show(duration: 0.3f);
     levelCompleteLabel.Show();
+
+    // which level was just completed, popping in with the banner
+    if (levelLabel != null)
+    {
+        levelLabel.text = Loc.F("LEVEL {0}", LevelController.RealLevelNumber + 1);
+        levelLabelScale.Hide(immediately: true);
+        levelLabelScale.Show();
+    }
 
     PlayConfetti();
 
