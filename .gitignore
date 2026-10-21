@@ -114,3 +114,6 @@ Docs/LevelMapArt/*.zip
 
 # Level card archives from the image generator (1-2 GB each, over GitHub's 100 MB limit)
 Docs/LevelCardArt/*.zip
+
+# Music previews (copies of the tracks, for listening)
+Docs/Music/
