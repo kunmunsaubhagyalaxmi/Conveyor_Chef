@@ -403,8 +403,9 @@ namespace Watermelon
         private const float PanelWidth = 960f;                         // was 900; the design width is 1080
         private static readonly Vector2 LevelLabelSize = new Vector2(440f, 84f);
         private const float CreamTop = 0.4075f, CreamBottom = 0.862f, HomeFromCentre = 0.813f;
-        private const float CoinRowHeight = 130f, ContinueHeight = 157f;
-        private const float XPAbove = 104f, XPBelow = 70f;             // the XP strip's reach above / below its centre
+        // spaced by what is drawn: the coin row shows about 110 of its 130, CONTINUE's picture 140 of 157
+        private const float CoinRowHeight = 110f, ContinueHeight = 140f;
+        private const float XPAbove = 115f, XPBelow = 82f;             // the XP strip's reach: the next-goal line above, the LV badge below
 
         private void LayoutPanel()
         {

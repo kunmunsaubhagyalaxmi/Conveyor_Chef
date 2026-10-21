@@ -87,7 +87,7 @@ namespace Watermelon
 
         // Bumped whenever the look changes, so a bar saved in the scene with an older look is
         // rebuilt (in the same place).
-        private const int CurrentLayout = 6;
+        private const int CurrentLayout = 7;
         [SerializeField] private int layoutVersion;
         private bool UsesCurrentArt => layoutVersion == CurrentLayout;
 
@@ -132,8 +132,10 @@ namespace Watermelon
             // Laid out like the Country Map progress panel (the game's own look): the chef in
             // the gold ring with the level on a gold badge, the blue/green bar, and the numbers
             // on a gold-framed badge at the bar's end.
+            // Symmetric about the panel's middle line (the line CONTINUE sits on): ring at the left,
+            // the bar, the numbers badge at the right; the group spans about -365..+355.
             Image track = Img("Track", r, Art("xp_track"));
-            Place(track.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-25f, -6f), new Vector2(TrackWidth, 116f));
+            Place(track.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-20f, 0f), new Vector2(400f, 110f));
             fillImage = Img("Fill", track.transform, Art("xp_fill"));
             fillImage.type = Image.Type.Filled;
             fillImage.fillMethod = Image.FillMethod.Horizontal;
@@ -143,10 +145,10 @@ namespace Watermelon
 
             // the numbers sit in the badge's cream window (17.6-82.4% across, 27-72% down the
             // picture), so "1150/1250" shrinks to fit instead of running over the gold rim
-            Vector2 badgeSize = new Vector2(230f, 115f);
+            Vector2 badgeSize = new Vector2(220f, 110f);
             Image valueBadge = Img("Value Badge", r, Art("xp_badge"));
             valueBadge.preserveAspect = true;
-            Place(valueBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(246f, -6f), badgeSize);
+            Place(valueBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(265f, 0f), badgeSize);
             xpText = Txt("XP", valueBadge.transform, "0/100", 34f, Brown);
             xpText.textWrappingMode = TextWrappingModes.NoWrap;
             xpText.fontSizeMin = 12f;
@@ -154,27 +156,28 @@ namespace Watermelon
 
             Image ring = Img("Ring", r, Art("xp_ring"));
             ring.preserveAspect = true;
-            Place(ring.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-285f, 8f), new Vector2(140f, 140f));
+            Place(ring.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-305f, 0f), new Vector2(130f, 130f));
             face = Img("Chef", ring.transform, ChefProgress.Avatar(art));
             face.preserveAspect = true;
-            Place(face.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 2f), new Vector2(104f, 104f));
+            Place(face.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 2f), new Vector2(96f, 96f));
             face.transform.SetAsFirstSibling();                 // under the ring
             Image badge = Img("Level Badge", ring.transform, Art("xp_badge"));
             badge.preserveAspect = true;
             // sits on the ring's bottom edge, like a name plate
-            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 14f), new Vector2(124f, 62f));
+            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 12f), new Vector2(116f, 58f));
             levelText = Txt("Level", badge.transform, "LV 1", 28f, Brown);
             Stretch(levelText.rectTransform, 22f, 15f, 22f, 15f);
 
             // "+60 XP" like the gold country name on Country Completed
             gainText = Txt("Gain", r, "+0 XP", 46f, gainColor);
             OutlinedText.Apply(gainText, new Color32(120, 36, 8, 255), 0.28f);
-            Place(gainText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-25f, 74f), new Vector2(380f, 60f));
+            // the line above the bar, centred on the middle line like CONTINUE
+            Place(gainText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 84f), new Vector2(420f, 60f));
 
             // the next goal on its own dark pill, readable over any part of the banner
             nextPill = Img("Next Goal", r, MenuUI.Rounded(30, 4, new Color32(70, 36, 12, 240), new Color32(255, 200, 70, 255)));
             nextPill.type = Image.Type.Sliced;
-            Place(nextPill.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(50f, 76f), new Vector2(520f, 66f));   // clear of the chef ring on the left
+            Place(nextPill.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 84f), new Vector2(460f, 62f));    // clear of the ring and the bar
             nextText = Txt("Text", nextPill.transform, "", 34f, Color.white);
             nextText.textWrappingMode = TextWrappingModes.NoWrap;
             Stretch(nextText.rectTransform, 24f, 8f, 24f, 8f);
