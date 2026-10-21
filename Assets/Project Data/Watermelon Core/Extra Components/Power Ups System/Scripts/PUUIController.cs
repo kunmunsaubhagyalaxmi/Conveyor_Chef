@@ -76,14 +76,38 @@ namespace Watermelon
             if (uiBehaviors == null)
                 return;
 
+            // Power-ups unlock one by one as the levels are reached; once reached they stay, even
+            // when an early level is replayed. The first time, NEW POWER-UP! shows it.
+            var unlockedNow = new System.Collections.Generic.List<PUUIBehavior>();
             for (int i = 0; i < uiBehaviors.Length; i++)
             {
                 PUUIBehavior uiBehavior = uiBehaviors[i];
                 if (uiBehavior == null || uiBehavior.Settings == null)
                     continue;
 
-                if (uiBehavior.Settings.RequiredLevel <= levelIndex)
+                PUSettings settings = uiBehavior.Settings;
+                if (settings.RequiredLevel <= levelIndex || PowerUpUnlocks.IsUnlocked(settings))
+                {
                     uiBehavior.Activate();
+                    // only announced on the level it unlocks at (players already past it just keep it)
+                    if (PowerUpUnlocks.MarkUnlocked(settings) && settings.RequiredLevel > 0 && settings.RequiredLevel == levelIndex)
+                        unlockedNow.Add(uiBehavior);
+                }
+            }
+
+            if (unlockedNow.Count > 0)
+                StartCoroutine(AnnounceUnlocks(unlockedNow));
+        }
+
+        private System.Collections.IEnumerator AnnounceUnlocks(System.Collections.Generic.List<PUUIBehavior> unlocked)
+        {
+            // after the board has appeared, and the button wears its game art
+            for (float t = 0f; t < 0.7f; t += Time.unscaledDeltaTime)
+                yield return null;
+            foreach (PUUIBehavior uiBehavior in unlocked)
+            {
+                if (uiBehavior != null)
+                    ProgressPopup.ShowPowerUp(uiBehavior.Settings, uiBehavior.ButtonPicture);
             }
         }
 

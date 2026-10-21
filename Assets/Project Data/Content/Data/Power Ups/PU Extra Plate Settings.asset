@@ -17,7 +17,7 @@ MonoBehaviour:
   behaviorPrefab: {fileID: 7790535292472644827, guid: c4618686750e489cb3652673b729ac50, type: 3}
   defaultAmount: 2
   description: One more spot on the tray for this level
-  requiredLevel: 9
+  requiredLevel: 8
   visualiseActiveState: 1
   backgroundColor: {r: 0.45, g: 0.75, b: 1, a: 1}
   currencyType: 0

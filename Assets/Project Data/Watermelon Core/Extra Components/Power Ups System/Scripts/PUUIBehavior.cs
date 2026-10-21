@@ -39,6 +39,9 @@ namespace Watermelon
         protected PUSettings settings;
         public PUSettings Settings => settings;
 
+        /// <summary>The picture the button shows (the game's power-up art once the HUD skins it).</summary>
+        public Sprite ButtonPicture => iconImage != null ? iconImage.sprite : null;
+
         private Button button;
 
         private bool isTimerActive;

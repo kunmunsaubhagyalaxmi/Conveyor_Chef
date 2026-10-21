@@ -135,8 +135,9 @@ namespace Watermelon
             // 4. the orders
             yield return Step(Loc.T("tut.orders"),
                 Orders(), Loc.T("tut.next"));
-            // 5. the power-ups, one by one (also marks their later tips as seen)
-            foreach (var tip in PowerUpTips(int.MaxValue))
+            // 5. the power-ups already available (the others unlock later, each with its own
+            //    NEW POWER-UP! moment and tip on the level it unlocks)
+            foreach (var tip in PowerUpTips(0))
             {
                 yield return Step(tip.text, tip.target(), Loc.T("tut.next"));
                 PlayerPrefs.SetInt(KeyPrefix + tip.key, 1);
@@ -207,6 +208,9 @@ namespace Watermelon
         // An explanation the player reads and confirms; the game waits meanwhile.
         private IEnumerator Step(string text, Rect? target, string button)
         {
+            // a NEW POWER-UP! / LEVEL UP! moment first; its tip follows once it is closed
+            while (ProgressPopup.IsOpen)
+                yield return null;
             Show(text, target, interactive: false, button: button);
             advance = false;
             while (!advance)

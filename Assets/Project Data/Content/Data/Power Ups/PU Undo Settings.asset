@@ -17,7 +17,7 @@ MonoBehaviour:
   behaviorPrefab: {fileID: 1263534553345675991, guid: ce69ece84a382034caa6bb0c26aaea5f, type: 3}
   defaultAmount: 3
   description: Undo the last move
-  requiredLevel: 0
+  requiredLevel: 1
   visualiseActiveState: 0
   backgroundColor: {r: 0.95470434, g: 0.6084906, b: 1, a: 1}
   currencyType: 0

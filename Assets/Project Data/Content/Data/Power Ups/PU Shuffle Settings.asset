@@ -17,7 +17,7 @@ MonoBehaviour:
   behaviorPrefab: {fileID: 7790535292472644827, guid: 8e778cfa513e3c1479c851dfaf32ea2c, type: 3}
   defaultAmount: 3
   description: Shuffle characters on the map
-  requiredLevel: 0
+  requiredLevel: 5
   visualiseActiveState: 0
   backgroundColor: {r: 1, g: 0.95722246, b: 0.48584908, a: 1}
   currencyType: 0

@@ -196,3 +196,5 @@ background PNG, 2172x724.
 |---|---|---|
 | `title_out_of_powerups.png` | OUT OF POWER-UPS | O-U-T  O-F  P-O-W-E-R-hyphen-U-P-S |
 | `title_restart_level.png` | RESTART LEVEL? | R-E-S-T-A-R-T  L-E-V-E-L-? |
+| `title_new_powerup.png` | NEW POWER-UP! | N-E-W  P-O-W-E-R-hyphen-U-P-! |
+| `title_level_up.png` | LEVEL UP! | L-E-V-E-L  U-P-! |

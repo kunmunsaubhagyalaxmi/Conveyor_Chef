@@ -213,7 +213,54 @@ namespace Watermelon
                         break;
                     }
                 }
+
+                // the big LEVEL UP! moment: coins, and the new outfit to wear
+                yield return Wait(0.6f);
+                ProgressPopup.ShowChefLevel(gain);
             }
+
+            // always a next goal to play for
+            string next = NextGoal();
+            if (!string.IsNullOrEmpty(next))
+            {
+                yield return Wait(1.4f);
+                gainText.color = nextColor;
+                gainText.text = next;
+                yield return Punch(gainText.transform);
+            }
+        }
+
+        private static readonly Color nextColor = new Color32(120, 230, 255, 255);
+
+        /// <summary>
+        /// The next unlock: a power-up coming at a later level, otherwise the next chef outfit.
+        /// </summary>
+        private static string NextGoal()
+        {
+            int played = BusStop.LevelController.RealLevelNumber;      // index of the level just won
+            PUSettings soonest = null;
+            PUUIController controller = PUController.PowerUpsUIController;
+            if (controller != null && controller.UIBehaviors != null)
+            {
+                foreach (PUUIBehavior b in controller.UIBehaviors)
+                {
+                    PUSettings s = b != null ? b.Settings : null;
+                    if (s == null || s.RequiredLevel <= played || PowerUpUnlocks.IsUnlocked(s))
+                        continue;
+                    if (soonest == null || s.RequiredLevel < soonest.RequiredLevel)
+                        soonest = s;
+                }
+            }
+            if (soonest != null)
+                return Loc.F("NEXT: {0} AT LEVEL {1}", Loc.T(ProgressPopup.PowerUpName(soonest)), soonest.RequiredLevel + 1);
+
+            int chef = ChefProgress.Level;
+            foreach (ChefProgress.Outfit o in ChefProgress.Outfits)
+            {
+                if (o.UnlockLevel > chef && ChefProgress.HasArt(o))
+                    return Loc.F("NEW OUTFIT AT CHEF LV {0}", o.UnlockLevel);
+            }
+            return null;
         }
 
         private int ShowXP(int xp)
