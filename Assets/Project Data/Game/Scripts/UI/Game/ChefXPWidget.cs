@@ -35,9 +35,11 @@ namespace Watermelon
 
         private ChefProgress.Gain pending;
         private bool queued;
+        private System.Action onLevelUpClosed;
 
         /// <param name="position">Centre of the strip, relative to the centre of <paramref name="parent"/>.</param>
-        public static void Show(Transform parent, ChefProgress.Gain gain, Vector2 position)
+        /// <param name="onLevelUpClosed">After the LEVEL UP! popup is closed (the win screen shows its coins then).</param>
+        public static void Show(Transform parent, ChefProgress.Gain gain, Vector2 position, System.Action onLevelUpClosed = null)
         {
             if (parent == null)
                 return;
@@ -72,6 +74,7 @@ namespace Watermelon
             widget.StopAllCoroutines();
             // The win screen is often still hidden at this point: play once it shows.
             widget.pending = gain;
+            widget.onLevelUpClosed = onLevelUpClosed;
             widget.queued = true;
             if (widget.isActiveAndEnabled)
                 widget.OnEnable();
@@ -242,7 +245,7 @@ namespace Watermelon
 
                 // the big LEVEL UP! moment: coins, and the new outfit to wear
                 yield return Wait(0.6f);
-                ProgressPopup.ShowChefLevel(gain);
+                ProgressPopup.ShowChefLevel(gain, onLevelUpClosed);
             }
 
             // always a next goal to play for

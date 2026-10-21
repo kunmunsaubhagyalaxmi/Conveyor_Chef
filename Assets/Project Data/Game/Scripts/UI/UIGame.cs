@@ -303,19 +303,7 @@ namespace Watermelon
 
         private void UpdateLevelNumber()
         {
-            // Get the correct level number
-            LevelSave levelSave = SaveController.GetSaveObject<LevelSave>("level");
-            
-            int displayLevel;
-            if (levelSave != null && levelSave.isPlayingFromLevelSelection)
-            {
-                displayLevel = levelSave.selectedLevelIndex + 1;   // game-wide number, as on Level Selection
-            }
-            else
-            {
-                displayLevel = LevelController.DisplayLevelNumber + 1; // stored 0-based
-            }
-            
+            int displayLevel = LevelController.ShownLevelNumber;   // game-wide number, as on Level Selection
             levelText.text = string.Format("LEVEL {0}", displayLevel);
             
             Debug.Log($"[UIGame] Displaying Level {displayLevel}");

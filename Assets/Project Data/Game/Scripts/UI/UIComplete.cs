@@ -282,6 +282,10 @@ namespace Watermelon
 
         private int currentReward;
         private bool rewardGranted;
+        // Coins from a chef level-up: already added when the level was won, shown on the counter
+        // only when the LEVEL UP! popup (which names them) is closed, so the counter climbs by
+        // exactly the "+N" the win screen shows.
+        private int chefCoinsPending;
 
         public override void Initialise()
         {
@@ -458,15 +462,15 @@ namespace Watermelon
     noThanksText.text = NO_THANKS_TEXT;
 
     backgroundFade.Show(duration: 0.3f);
-    levelCompleteLabel.Show();
+    levelCompleteLabel.Show(onCompleted: StopFollowingBanner);
 
     // which level was just completed, popping in with the banner
     if (levelLabel != null)
     {
-        levelLabel.text = Loc.F("LEVEL {0}", LevelController.RealLevelNumber + 1);
-        levelLabelScale.Hide(immediately: true);
-        levelLabelScale.Show();
+        levelLabel.text = Loc.F("LEVEL {0}", LevelController.ShownLevelNumber);   // the number the HUD showed
+        levelLabelScale.Show(immediately: true);    // pops in with the frame (FollowBanner)
     }
+    FollowBanner();
 
     PlayConfetti();
 
@@ -474,7 +478,14 @@ namespace Watermelon
 
     currentReward = LevelController.CurrentReward;
     rewardGranted = false;
-    ChefXPWidget.Show(transform, ChefProgress.LastGain, ChefXPPosition());
+    chefCoinsPending = ChefProgress.LastGain.LevelUp ? Mathf.Max(0, ChefProgress.LastGain.Coins) : 0;
+    if (chefCoinsPending > 0)
+    {
+        CurrencyUIPanelSimple hud = CoinShower.VisibleCoinCounter(transform);
+        if (hud != null)
+            hud.SetAmount(CurrenciesController.GetCurrency(CurrencyType.Coins).Amount - chefCoinsPending);
+    }
+    ChefXPWidget.Show(transform, ChefProgress.LastGain, ChefXPPosition(), CollectChefCoins);
     Debug.Log($"[UIComplete] Current reward: {currentReward}");
 
     // Buttons appear with the banner; the coin animation below no longer holds them back.
@@ -492,7 +503,7 @@ namespace Watermelon
             // counter shows the old amount and counts up as each coin lands.
             if (rewardGranted)
                 return;                          // already continued: the coins were added
-            int before = CurrenciesController.GetCurrency(CurrencyType.Coins).Amount;
+            int before = CurrenciesController.GetCurrency(CurrencyType.Coins).Amount - chefCoinsPending;
             GrantReward();
             try
             {
@@ -509,15 +520,94 @@ namespace Watermelon
     });
 }
 
+        // The chef's level-up coins fly from the XP strip to the counter once LEVEL UP! is closed.
+        private void CollectChefCoins()
+        {
+            int coins = chefCoinsPending;
+            chefCoinsPending = 0;
+            if (coins <= 0)
+                return;
+            CurrencyUIPanelSimple counter = CoinShower.VisibleCoinCounter(transform);
+            if (counter == null)
+                return;
+            int amount = CurrenciesController.GetCurrency(CurrencyType.Coins).Amount;
+            ChefXPWidget strip = GetComponentInChildren<ChefXPWidget>();
+            if (!isPageDisplayed || strip == null)
+            {
+                counter.SetAmount(amount);           // already continued: just show the real amount
+                return;
+            }
+            try
+            {
+                CoinShower.Play(transform, (RectTransform)strip.transform, counter, amount - coins, coins);
+            }
+            catch (System.Exception exception)
+            {
+                Debug.LogWarning("[UIComplete] Chef coin animation failed: " + exception.Message);
+                counter.SetAmount(amount);
+            }
+        }
+
+        // ------------------------------------------------------------ one pop for the whole panel
+        // The frame pops in by scaling its holder (0 -> 1.1 -> 1 around the holder's centre). The
+        // LEVEL label, the reward and CONTINUE are not children of it, so they used to pop on their
+        // own spots and float outside the still-small frame, then the frame overshot past them.
+        // Until the frame's pop ends they are moved (and the label and CONTINUE scaled) with it.
+        private RectTransform[] followers;
+        private Vector3[] followerRest;
+        private bool[] followerScales;
+        private bool followingBanner;
+
+        private void FollowBanner()
+        {
+            StopFollowingBanner();
+            followers = new[] { levelLabel != null ? levelLabel.rectTransform : null, rewardLabel.RectTransform, (RectTransform)noThanksButton.transform };
+            followerScales = new[] { true, false, true };      // the reward keeps its own coin pop
+            followerRest = new Vector3[followers.Length];
+            for (int i = 0; i < followers.Length; i++)
+                followerRest[i] = followers[i] != null ? followers[i].position : Vector3.zero;
+            followingBanner = true;
+            LateUpdate();
+        }
+
+        private void LateUpdate()
+        {
+            if (!followingBanner)
+                return;
+            RectTransform holder = levelCompleteLabel.RectTransform;
+            float s = holder.localScale.x;
+            Vector3 centre = holder.position;
+            for (int i = 0; i < followers.Length; i++)
+            {
+                if (followers[i] == null)
+                    continue;
+                followers[i].position = centre + (followerRest[i] - centre) * s;
+                if (followerScales[i])
+                    followers[i].localScale = Vector3.one * s;
+            }
+        }
+
+        private void StopFollowingBanner()
+        {
+            if (!followingBanner)
+                return;
+            followingBanner = false;
+            for (int i = 0; i < followers.Length; i++)
+            {
+                if (followers[i] == null)
+                    continue;
+                followers[i].position = followerRest[i];
+                if (followerScales[i])
+                    followers[i].localScale = Vector3.one;
+            }
+        }
+
         // Helper method to show buttons
         private void ShowButtons()
         {
-            // Same timing and pop as levelCompleteLabel.Show(), so the buttons arrive with
-            // the banner instead of appearing in place while it grows.
-            multiplyButtonScale.Hide(immediately: true);
-            noThanksButtonScale.Hide(immediately: true);
-            multiplyButtonScale.Show();
-            noThanksButtonScale.Show();
+            // The buttons come with the banner: they are scaled in with its frame (FollowBanner).
+            multiplyButtonScale.Show(immediately: true);
+            noThanksButtonScale.Show(immediately: true);
 
             multiplyRewardButtonFade.Show(duration: 0.3f);
             multiplyRewardButton.interactable = true;
@@ -570,6 +660,8 @@ namespace Watermelon
                 noThanksAppearTween.Kill();
                 noThanksAppearTween = null;
             }
+
+            StopFollowingBanner();
 
             // Reset button states
             multiplyRewardButton.interactable = false;
@@ -699,7 +791,7 @@ namespace Watermelon
                     {
                         FloatingCloud.SpawnCurrency(coinsHash, rewardLabel.RectTransform, coinsPanelScalable.RectTransform, 10, "", () =>
                         {
-                            CurrenciesController.Add(CurrencyType.Coins, currentReward * rewardMult);
+                            CurrenciesController.Add(CurrencyType.Coins, currentReward * (rewardMult - 1));   // x1 is already added
 
                             noThanksText.text = CONTINUE_TEXT;
 

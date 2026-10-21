@@ -53,6 +53,12 @@ namespace Watermelon.BusStop
 
         public static int RealLevelNumber => levelSave.RealLevelNumber;
 
+        /// <summary>
+        /// The level number the player sees (1-based, game-wide as on Level Selection). The HUD,
+        /// the level text and the win screen all show this one, so they always agree.
+        /// </summary>
+        public static int ShownLevelNumber => DisplayLevelNumber + 1;
+
         public static int CurrentReward => loadedLevelData != null ? loadedLevelData.CoinsReward : -1;
 
         private static ElementTypeMap levelMap;

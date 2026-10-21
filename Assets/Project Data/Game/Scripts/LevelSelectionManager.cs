@@ -444,11 +444,13 @@ namespace Watermelon.BusStop
 
             if (statusText != null)
             {
-                int first = CurrentPage * CardsPerPage + 1;
-                int last = Mathf.Min(first + CardsPerPage - 1, LevelsPerCountry);
+                // game-wide numbers, as on the cards (China 1-30, Japan 31-60...)
+                int first = countryLevelStart + CurrentPage * CardsPerPage + 1;
+                int last = Mathf.Min(first + CardsPerPage - 1, countryLevelStart + LevelsPerCountry);
+                int shown = countryLevelStart + selectedLevel + 1;
                 statusText.text = IsLevelUnlocked(countryLevelStart + selectedLevel)
-                    ? "LEVELS " + first + "\u2013" + last + " OF " + LevelsPerCountry
-                    : "FINISH LEVEL " + selectedLevel + " TO UNLOCK LEVEL " + (selectedLevel + 1);
+                    ? "LEVELS " + first + "\u2013" + last
+                    : "FINISH LEVEL " + (shown - 1) + " TO UNLOCK LEVEL " + shown;
             }
         }
 

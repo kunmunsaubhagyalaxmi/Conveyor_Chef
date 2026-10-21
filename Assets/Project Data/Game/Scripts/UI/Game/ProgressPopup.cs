@@ -27,6 +27,7 @@ namespace Watermelon
             public Sprite picture;
             public Vector2 pictureSize = new Vector2(240f, 240f);
             public System.Action onPrimary;
+            public System.Action onClosed;     // either button
         }
 
         private static ProgressPopup instance;
@@ -65,10 +66,13 @@ namespace Watermelon
         }
 
         /// <summary>The chef reached a new level: the coins earned and any outfit it unlocked.</summary>
-        public static void ShowChefLevel(ChefProgress.Gain gain)
+        public static void ShowChefLevel(ChefProgress.Gain gain, System.Action onClosed = null)
         {
             if (!gain.LevelUp)
+            {
+                onClosed?.Invoke();
                 return;
+            }
 
             ChefProgress.Outfit outfit = null;
             foreach (ChefProgress.Outfit o in ChefProgress.Outfits)
@@ -95,6 +99,7 @@ namespace Watermelon
                 primary = outfit != null ? "WEAR IT" : "GREAT!",
                 secondary = outfit != null ? "LATER" : null,
                 onPrimary = outfit != null ? () => ChefProgress.Select(outfit) : (System.Action)null,
+                onClosed = onClosed,
             });
         }
 
@@ -148,6 +153,8 @@ namespace Watermelon
             Entry done = current;
             if (primary)
                 done?.onPrimary?.Invoke();
+            try { done?.onClosed?.Invoke(); }
+            catch (System.Exception ex) { Debug.LogWarning("[ProgressPopup] " + ex.Message); }
             ShowNext();
         }
 
