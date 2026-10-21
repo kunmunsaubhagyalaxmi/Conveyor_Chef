@@ -400,6 +400,7 @@ namespace Watermelon.BusStop
             levelTutorial.Initialise(TutorialGuide.TeachesLevel(levelIndex) ? new TutorialStep[0] : loadedLevelData.TutorialSteps);
 
             PUController.PowerUpsUIController.OnLevelStarted(levelIndex);
+            MusicDirector.OnLevelStarted();   // gameplay music (again from the start after a win, loss or restart)
             GameplayHelpers.Begin();          // idle hint + tray-almost-full warning
             TutorialGuide.OnLevelStarted(levelIndex);   // level 1 lesson, one-time tips
             DiamondDishes.OnLevelStarted(levelIndex);   // a few dishes carry a diamond

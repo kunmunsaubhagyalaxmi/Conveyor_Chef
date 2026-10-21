@@ -100,6 +100,7 @@ namespace Watermelon
             paused = true;
             timeScaleBeforePause = Time.timeScale > 0f ? Time.timeScale : 1f;
             Time.timeScale = 0f;
+            MusicDirector.Pause();
         }
 
         private void Resume()
@@ -108,6 +109,7 @@ namespace Watermelon
                 return;
             paused = false;
             Time.timeScale = timeScaleBeforePause;
+            MusicDirector.Resume();
         }
 
         private void OnDisable()
@@ -203,6 +205,7 @@ namespace Watermelon
         {
             root.SetActive(false);
             Resume();
+            MusicDirector.Stop();             // leaving the level: no gameplay music on the way out
             PlayClick();
             GameController.ReturnToLevelSelection();
         }

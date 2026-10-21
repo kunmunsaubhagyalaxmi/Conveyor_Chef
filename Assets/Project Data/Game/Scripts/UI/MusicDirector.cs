@@ -18,6 +18,7 @@ namespace Watermelon
         private static readonly string[] SilentScenes = { "Init", "loading" };
 
         private static AudioClip playing;
+        private static bool paused;
         private static AudioClip gameplay;
         private static bool gameplayLoaded;
 
@@ -42,6 +43,8 @@ namespace Watermelon
             if (lobby == null)
                 return;                       // audio not set up yet (a scene opened on its own in the editor)
 
+            paused = false;
+
             // start-up and loading screens: silence (the music starts when the game opens)
             if (System.Array.IndexOf(SilentScenes, scene.name) >= 0)
             {
@@ -59,17 +62,74 @@ namespace Watermelon
             AudioClip wanted = scene.name == GameplayScene && gameplay != null ? gameplay : lobby;
             if (wanted == playing)
                 return;
+            Play(wanted);
+        }
 
+        // ------------------------------------------------------------ moments in a level
+
+        /// <summary>
+        /// A level starts (first time, restart, retry, next level): the gameplay track plays from
+        /// the beginning, unless it is already playing (the level that opened with the scene).
+        /// </summary>
+        public static void OnLevelStarted()
+        {
+            AudioClip wanted = GameplayClip();
+            if (wanted == null || (wanted == playing && !paused))
+                return;
+            Play(wanted);
+        }
+
+        /// <summary>The level is won or lost: the music stops (the win / lose sound plays alone).</summary>
+        public static void Stop()
+        {
+            try { AudioController.ReleaseMusic(); } catch { }
+            playing = null;
+            paused = false;
+        }
+
+        /// <summary>The game is paused (in-game menu): the music pauses where it is.</summary>
+        public static void Pause()
+        {
+            if (playing == null || paused)
+                return;
+            try { AudioController.PauseMusic(); } catch { }
+            paused = true;
+        }
+
+        /// <summary>Back to the level: the music carries on from where it paused.</summary>
+        public static void Resume()
+        {
+            if (!paused)
+                return;
+            try { AudioController.ResumeMusic(); } catch { }
+            paused = false;
+        }
+
+        private static AudioClip GameplayClip()
+        {
+            Music music = AudioController.Music;
+            AudioClip lobby = music != null ? music.gameMusic : null;
+            if (!gameplayLoaded)
+            {
+                gameplay = Resources.Load<AudioClip>(GameplayTrack);
+                gameplayLoaded = true;
+            }
+            return gameplay != null ? gameplay : lobby;
+        }
+
+        private static void Play(AudioClip clip)
+        {
             try
             {
                 AudioController.ReleaseMusic();
-                AudioController.PlayMusic(wanted);
-                playing = wanted;
+                AudioController.PlayMusic(clip);
+                playing = clip;
+                paused = false;
                 MusicSetting.Apply();         // keep MUSIC OFF / SOUND OFF as set
             }
             catch (System.Exception ex)
             {
-                Debug.LogWarning("[Music] Could not switch track: " + ex.Message);
+                Debug.LogWarning("[Music] Could not play track: " + ex.Message);
             }
         }
     }

@@ -145,6 +145,29 @@ namespace Watermelon
             return (!((PrefsSettings.GetFloat(PrefsSettings.Key.Volume) - 0.00005f) < 0));
         }
 
+        /// <summary>Pauses the playing music where it is (ResumeMusic carries on from there).</summary>
+        public static void PauseMusic()
+        {
+            if (instance == null)
+                return;
+            foreach (AudioSource source in instance.activeMusicSources)
+            {
+                if (source != null && source.isPlaying)
+                    source.Pause();
+            }
+        }
+
+        public static void ResumeMusic()
+        {
+            if (instance == null)
+                return;
+            foreach (AudioSource source in instance.activeMusicSources)
+            {
+                if (source != null)
+                    source.UnPause();
+            }
+        }
+
         public static void PlayRandomMusic()
         {
             if (!musicAudioClips.IsNullOrEmpty())

@@ -375,6 +375,7 @@ namespace Watermelon
 
             RaycastController.Disable();
             LivesManager.RemoveLife();
+            MusicDirector.Stop();                     // level failed: the music stops
 
             //UIController.HidePage<UIGame>();
             UIController.ShowPage<UIGameOver>();
@@ -411,6 +412,7 @@ namespace Watermelon
             isGameActive = false;
 
             RaycastController.Disable();
+            MusicDirector.Stop();                     // level completed: the music stops
 
             levelSave.ReplayingLevelAgain = false;
 
