@@ -40,6 +40,15 @@ namespace Watermelon
             instance.Open();
         }
 
+        /// <summary>Opens straight on the language list (the in-game menu's LANGUAGE button).</summary>
+        public static void ShowLanguages()
+        {
+            EnsureInstance();
+            instance.Refresh();
+            instance.ShowPage(language: true);
+            instance.root.SetActive(true);
+        }
+
         public static void Hide()
         {
             if (instance != null)

@@ -79,9 +79,12 @@ namespace Watermelon
     public sealed class DiamondDishMark : MonoBehaviour
     {
         private static readonly Vector3 BadgeOffset = new Vector3(0.34f, 0.5f, -0.02f);
-        private const float BadgeSize = 0.46f;
+        // Width of the badge picture in the dish card's units, whatever its resolution (the old star
+        // was 2.56 units wide at a fixed 0.46 scale, so the diamond is the size the star was).
+        private const float BadgeWidth = 1.17f;
 
         private SpriteRenderer badge;
+        private float badgeScale = 0.46f;
         private float time;
 
         public Vector3 BadgePosition => badge != null ? badge.transform.position : transform.position;
@@ -94,16 +97,17 @@ namespace Watermelon
                 Sprite icon = CurrenciesController.GetCurrency(CurrencyType.Diamonds)?.Icon;
                 if (visual == null || visual.Card == null || icon == null)
                     return;
-                badge = visual.AddBadge("Diamond Badge", icon, BadgeOffset, BadgeSize);
+                badge = visual.AddBadge("Diamond Badge", icon, BadgeOffset, 1f);
                 if (badge == null)
                     return;
+                badgeScale = BadgeWidth / Mathf.Max(0.01f, icon.bounds.size.x);
             }
 
             time += Time.deltaTime;
             float bob = Mathf.Sin(time * 3.2f);
             badge.transform.localPosition = BadgeOffset + new Vector3(0f, bob * 0.05f, 0f);
             float pulse = 1f + 0.08f * Mathf.Max(0f, Mathf.Sin(time * 6.4f));
-            badge.transform.localScale = Vector3.one * BadgeSize * pulse;
+            badge.transform.localScale = Vector3.one * badgeScale * pulse;
         }
 
         public void Remove()

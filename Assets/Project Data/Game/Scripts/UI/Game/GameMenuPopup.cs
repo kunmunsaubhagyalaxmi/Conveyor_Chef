@@ -58,6 +58,8 @@ namespace Watermelon
             Wire(restartButton, Restart);
             Wire(homeButton, Home);
 
+            CreateLanguageButton();
+
             if (root != null)
                 root.SetActive(false);
         }
@@ -116,6 +118,33 @@ namespace Watermelon
         private void OnDestroy()
         {
             Resume();
+        }
+
+        // LANGUAGE, as in Settings: the same painted button, opening the language list.
+        private Button languageButton;
+
+        private void CreateLanguageButton()
+        {
+            SettingsPanelArt art = Resources.Load<SettingsPanelArt>(SettingsPanelArt.ResourcePath);
+            if (art == null || art.languageButton == null || vibrationButton == null)
+                return;
+
+            GameObject go = Instantiate(vibrationButton.gameObject, vibrationButton.transform.parent);
+            go.name = "Language Button";
+            go.transform.SetSiblingIndex(vibrationButton.transform.GetSiblingIndex() + 1);
+            languageButton = go.GetComponent<Button>();
+            languageButton.onClick.RemoveAllListeners();
+            if (languageButton.targetGraphic is Image image)
+                image.sprite = art.languageButton;
+            foreach (TMP_Text text in go.GetComponentsInChildren<TMP_Text>(true))
+                text.gameObject.SetActive(false);      // the words are painted in
+            Wire(languageButton, OpenLanguages);
+        }
+
+        private void OpenLanguages()
+        {
+            PlayClick();
+            ConveyorSettingsPanel.ShowLanguages();
         }
 
         private void ToggleSound()
@@ -178,7 +207,8 @@ namespace Watermelon
         private const float PanelAspect = 768f / 1024f;
         private const float CreamTop = 0.189f, CreamBottom = 0.895f;
         private const float TitleWidth = 620f, TitleFromTop = 0.085f;
-        private const float ButtonWidth = 450f;                 // Continue, Sound, Vibration, Restart
+        private const float ButtonWidth = 450f;                 // Continue, Sound, Vibration, Language, Restart
+        private const float MinGap = 14f;                       // between the buttons; they shrink to keep it
         private const float HomeSize = 130f, HomeFromTop = 0.915f; // round Home over the bottom edge of the cream area
 
         /// <summary>
@@ -217,7 +247,7 @@ namespace Watermelon
                 bottom = Mathf.Max(bottom, homeY + HomeSize * 0.5f);
             }
 
-            RectTransform[] column = { Rect(resumeButton), Rect(soundButton), Rect(vibrationButton), Rect(restartButton) };
+            RectTransform[] column = { Rect(resumeButton), Rect(soundButton), Rect(vibrationButton), Rect(languageButton), Rect(restartButton) };
             float content = 0f;
             int items = 0;
             foreach (RectTransform r in column)
@@ -227,15 +257,23 @@ namespace Watermelon
                 content += ButtonWidth / Aspect(r);
                 items++;
             }
-            float gap = Mathf.Max(8f, (start - bottom - content) / (items + 1));
+
+            // all at one width; a little narrower when they would not fit the cream area with
+            // a clear gap between them (five buttons since LANGUAGE)
+            float space = start - bottom;
+            float width = ButtonWidth;
+            if (content > 0f && content + (items + 1) * MinGap > space)
+                width = ButtonWidth * Mathf.Max(0.5f, (space - (items + 1) * MinGap) / content);
+            content *= width / ButtonWidth;
+            float gap = Mathf.Max(MinGap * 0.5f, (space - content) / (items + 1));
 
             float y = start - gap;
             foreach (RectTransform r in column)
             {
                 if (r == null)
                     continue;
-                float h = ButtonWidth / Aspect(r);
-                Place(r, c.x, y - h * 0.5f, ButtonWidth, h);
+                float h = width / Aspect(r);
+                Place(r, c.x, y - h * 0.5f, width, h);
                 y -= h + gap;
             }
 
