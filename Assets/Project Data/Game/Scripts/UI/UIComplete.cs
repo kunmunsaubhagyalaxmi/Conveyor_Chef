@@ -529,6 +529,8 @@ namespace Watermelon
                 return;
             CurrencyUIPanelSimple counter = CoinShower.VisibleCoinCounter(transform);
             if (counter == null)
+                counter = coinsPanelUI;
+            if (counter == null)
                 return;
             int amount = CurrenciesController.GetCurrency(CurrencyType.Coins).Amount;
             ChefXPWidget strip = GetComponentInChildren<ChefXPWidget>();
