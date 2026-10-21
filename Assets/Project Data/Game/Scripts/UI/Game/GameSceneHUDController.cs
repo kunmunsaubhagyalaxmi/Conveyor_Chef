@@ -54,6 +54,10 @@ namespace Watermelon
 
             if (homeButton != null)
                 homeButton.onClick.AddListener(ReturnToLevelSelection);
+
+            // RESTART LEVEL? in the panel style: title ribbon on the frame, the red X in its corner
+            if (pausePopup != null && pausePopup.GetComponent<QuitPopupArt>() == null)
+                pausePopup.gameObject.AddComponent<QuitPopupArt>();
         }
 
         private void Start()
@@ -93,10 +97,10 @@ namespace Watermelon
             }
         }
 
+        // The coin / diamond "+" opens the game's own Shop, as on every other screen.
         private static void OpenCurrencyStore()
         {
-            AudioController.PlaySound(AudioController.Sounds.buttonSound);
-            UIController.ShowPage<UIIAPStore>();
+            MenuPanel.Show<ShopPanel>();
         }
 
         private void OpenPauseOptions()
@@ -170,6 +174,21 @@ namespace Watermelon
                         badge.color = Color.white;
                         badge.type = Image.Type.Simple;
                         badge.preserveAspect = true;
+                    }
+
+                    // The count was white on the badge's cream centre, so it could not be seen.
+                    // Dark red and bold, fitted inside the cream circle (about half the badge).
+                    TMPro.TextMeshProUGUI count = amountBackground.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
+                    if (count != null)
+                    {
+                        count.color = new Color32(150, 18, 18, 255);
+                        count.fontStyle |= TMPro.FontStyles.Bold;
+                        count.enableAutoSizing = true;
+                        count.fontSizeMin = 12f;
+                        count.fontSizeMax = 34f;
+                        count.textWrappingMode = TMPro.TextWrappingModes.NoWrap;
+                        count.alignment = TMPro.TextAlignmentOptions.Center;
+                        count.margin = new Vector4(13f, 13f, 13f, 13f);
                     }
                 }
             }

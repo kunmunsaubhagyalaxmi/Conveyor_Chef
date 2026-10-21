@@ -128,7 +128,8 @@ namespace Watermelon
             {
                 AudioController.PlaySound(AudioController.Sounds.buttonSound);
 
-                PUController.PowerUpsUIController.PowerUpPurchasePanel.Show(settings);
+                // the game's own offer (panel art like the Shop), with this button's picture
+                PowerUpOfferPopup.Show(settings, iconImage != null ? iconImage.sprite : null);
             }
         }
 

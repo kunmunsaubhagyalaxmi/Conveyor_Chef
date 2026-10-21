@@ -84,7 +84,8 @@ namespace Watermelon
                 }
                 else
                 {
-                    UIController.ShowPage<UIIAPStore>();
+                    // the game's own Shop (coins for diamonds, coin packs), not the template store
+                    MenuPanel.Show<ShopPanel>();
 
                     return false;
                 }

@@ -661,19 +661,10 @@ namespace Watermelon.BusStop
             EnhancedLoadingScreen.LoadViaLoadingScreen("menu");
         }
 
-        private void CoinPlusPressed()
-        {
-            PlayClick();
-            if (statusText != null)
-                statusText.text = "COINS ARE MANAGED FROM THE MAIN MENU SHOP";
-        }
+        // The coin / diamond "+" opens the Shop, as on every screen.
+        private void CoinPlusPressed() => MenuPanel.Show<ShopPanel>();
 
-        private void DiamondPlusPressed()
-        {
-            PlayClick();
-            if (statusText != null)
-                statusText.text = "DIAMONDS ARE MANAGED FROM THE MAIN MENU SHOP";
-        }
+        private void DiamondPlusPressed() => MenuPanel.Show<ShopPanel>();
 
         // Every settings button in the game opens the shared Settings panel.
         private void OpenSettings()

@@ -66,6 +66,10 @@ namespace Watermelon.BusStop
 
         private bool IsRaycastBlockedByUI()
         {
+            // the game's own overlays (Shop and other menu panels, power-up offer, Settings) too
+            if (MenuPanel.AnyOpen || PowerUpOfferPopup.IsOpen || ConveyorSettingsPanel.IsOpen)
+                return true;
+
             return mainMenuPage.NoAdsPopUp.IsOpened || iapStorePage.IsPageDisplayed || storePage.IsPageDisplayed|| AddLivesPanel.IsPanelOpened;
         }
 

@@ -28,6 +28,9 @@ namespace Watermelon
                 // tablets and other wide screens use the extra width (phones are left as they are)
                 if (GetComponent<MainMenuTabletLayout>() == null)
                     gameObject.AddComponent<MainMenuTabletLayout>();
+                // the coin and diamond counters ("+" painted in) open the Shop, as on every screen
+                MakeShopButton("Coin Counter");
+                MakeShopButton("Diamond Counter");
                 ChefProgress.OutfitChanged += ApplyOutfit;
                 if (started)            // re-enabled later; the first time Start does it
                     ApplyOutfit();
@@ -35,6 +38,19 @@ namespace Watermelon
         }
 
         private bool started;
+
+        private void MakeShopButton(string objectName)
+        {
+            Transform target = FindDeep(transform, objectName);
+            Image image = target != null ? target.GetComponent<Image>() : null;
+            if (image == null || target.GetComponent<Button>() != null)
+                return;
+
+            image.raycastTarget = true;
+            Button button = target.gameObject.AddComponent<Button>();
+            button.targetGraphic = image;
+            button.onClick.AddListener(() => MenuPanel.Show<ShopPanel>());
+        }
 
         private void OnDisable()
         {

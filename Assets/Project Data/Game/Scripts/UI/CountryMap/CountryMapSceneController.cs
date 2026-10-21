@@ -589,13 +589,8 @@ namespace Watermelon.BusStop
             EnhancedLoadingScreen.LoadViaLoadingScreen("WorldMap");
         }
 
-        private void CoinPlusPressed()
-        {
-            PlayClick();
-
-            if (statusText != null)
-                statusText.text = "COINS ARE MANAGED FROM THE MAIN MENU SHOP";
-        }
+        // The coin "+" opens the Shop, as on every screen.
+        private void CoinPlusPressed() => MenuPanel.Show<ShopPanel>();
 
         // Every settings button in the game opens the shared Settings panel.
         private void OpenSettings()

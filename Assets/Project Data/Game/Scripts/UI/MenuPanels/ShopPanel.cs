@@ -191,6 +191,8 @@ namespace Watermelon
 
             save.Amount = Mathf.Max(0, save.Amount) + settings.PurchaseAmount;
             SaveNow();
+            // bought during a level: the power-up buttons show the new count at once
+            try { PUController.PowerUpsUIController?.RedrawPanels(); } catch { }
             try { AudioController.PlaySound(AudioController.Sounds.buttonSound); } catch { }
             Toast("+" + settings.PurchaseAmount + " " + Loc.T(index < PowerUpNames.Length ? PowerUpNames[index] : "POWER-UPS"), new Color32(40, 110, 30, 255));
             Refresh();

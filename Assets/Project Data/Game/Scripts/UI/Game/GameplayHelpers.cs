@@ -129,7 +129,9 @@ namespace Watermelon
         private void Update()
         {
             float dt = Time.unscaledDeltaTime;
-            bool playing = RaycastController.IsEnabled && Time.timeScale > 0.01f && LevelController.Dock != null;
+            // nothing over a popup (Shop, power-up offer, Settings): no tray warning, no hint hand
+            bool playing = RaycastController.IsEnabled && Time.timeScale > 0.01f && LevelController.Dock != null
+                && !MenuPanel.AnyOpen && !PowerUpOfferPopup.IsOpen && !ConveyorSettingsPanel.IsOpen;
 
             // the tutorial points at dishes itself: no second (idle) hand while it runs
             UpdateHint(dt, playing && !TutorialGuide.IsRunning);
