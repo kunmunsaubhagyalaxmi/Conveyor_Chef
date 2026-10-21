@@ -141,10 +141,18 @@ namespace Watermelon
             Wire(languageButton, OpenLanguages);
         }
 
+        // One panel at a time: the menu steps aside (the game stays paused) while the language
+        // list is open, and comes back when the list is closed.
         private void OpenLanguages()
         {
             PlayClick();
-            ConveyorSettingsPanel.ShowLanguages();
+            if (root != null)
+                root.SetActive(false);
+            ConveyorSettingsPanel.ShowLanguages(() =>
+            {
+                if (this != null && root != null && paused)
+                    root.SetActive(true);
+            });
         }
 
         private void ToggleSound()

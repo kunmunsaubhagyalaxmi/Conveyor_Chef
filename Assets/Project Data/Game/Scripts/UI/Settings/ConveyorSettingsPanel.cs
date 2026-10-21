@@ -40,14 +40,22 @@ namespace Watermelon
             instance.Open();
         }
 
-        /// <summary>Opens straight on the language list (the in-game menu's LANGUAGE button).</summary>
-        public static void ShowLanguages()
+        /// <summary>
+        /// Opens on the language list alone (the in-game menu's LANGUAGE button): its X, or a tap
+        /// outside, closes the panel (no Settings page) and then calls <paramref name="onClosed"/>.
+        /// </summary>
+        public static void ShowLanguages(System.Action onClosed = null)
         {
             EnsureInstance();
+            instance.languagesOnly = true;
+            instance.languagesClosed = onClosed;
             instance.Refresh();
             instance.ShowPage(language: true);
             instance.root.SetActive(true);
         }
+
+        private bool languagesOnly;
+        private System.Action languagesClosed;
 
         public static void Hide()
         {
@@ -89,6 +97,8 @@ namespace Watermelon
 
         private void Open()
         {
+            languagesOnly = false;
+            languagesClosed = null;
             PlayClick();
             ShowPage(language: false);
             Refresh();
@@ -104,6 +114,12 @@ namespace Watermelon
                 PlayClick();
 
             root.SetActive(false);
+
+            // opened from the in-game menu: hand back to it
+            System.Action closed = languagesClosed;
+            languagesOnly = false;
+            languagesClosed = null;
+            closed?.Invoke();
         }
 
         private void ShowPage(bool language)
@@ -121,6 +137,12 @@ namespace Watermelon
 
         private void BackToSettings()
         {
+            if (languagesOnly)
+            {
+                Close(playSound: true);       // opened on its own: close, never show Settings
+                return;
+            }
+
             PlayClick();
             ShowPage(language: false);
         }

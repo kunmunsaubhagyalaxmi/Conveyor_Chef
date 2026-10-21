@@ -79,9 +79,9 @@ namespace Watermelon
     public sealed class DiamondDishMark : MonoBehaviour
     {
         private static readonly Vector3 BadgeOffset = new Vector3(0.34f, 0.5f, -0.02f);
-        // Width of the badge picture in the dish card's units, whatever its resolution (the old star
-        // was 2.56 units wide at a fixed 0.46 scale, so the diamond is the size the star was).
-        private const float BadgeWidth = 1.17f;
+        // Width of the badge picture in the dish card's units, whatever its resolution: a small
+        // diamond on the plate's corner, clearly smaller than the dish.
+        private const float BadgeWidth = 0.7f;
 
         private SpriteRenderer badge;
         private float badgeScale = 0.46f;
