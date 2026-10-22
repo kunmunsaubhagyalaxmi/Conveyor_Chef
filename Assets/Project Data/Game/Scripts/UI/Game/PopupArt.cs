@@ -44,6 +44,16 @@ namespace Watermelon
         public const float CloseSize = 110f;
         public static readonly Vector2 CloseFromCorner = new Vector2(55f, 58f);   // the X's centre, in from the top-right corner
 
+        // Buttons, as on the in-game MENU: a main action across the cream area, or two
+        // options side by side (SOUND | MUSIC, WEAR IT | LATER, BUY | SHOP).
+        public const float BigButtonWidth = 540f;
+        public const float PairButtonWidth = 290f;
+        public const float PairGap = 16f;
+
+        /// <summary>Width / height of a button picture (3.2 when it has none).</summary>
+        public static float Aspect(Sprite sprite) =>
+            sprite != null ? sprite.rect.width / Mathf.Max(1f, sprite.rect.height) : 3.2f;
+
         /// <summary>Height of a title drawn <see cref="TitleWidth"/> wide.</summary>
         public static float TitleHeight(Sprite title) =>
             title != null ? TitleWidth * title.rect.height / title.rect.width : TitleWidth / 3f;

@@ -207,8 +207,28 @@ namespace Watermelon
             secondaryButton.gameObject.SetActive(two);
             if (two)
                 secondaryLabel.text = Loc.T(e.secondary);
-            // two buttons stack on the cream area's bottom; a single one sits centred under the card
-            ((RectTransform)primaryButton.transform).anchoredPosition = new Vector2(0f, ButtonsBottom + (two ? 190f : 120f));
+
+            // as on the MENU: one main button across the cream area, or two side by side,
+            // centred in the space under the card
+            var main = (RectTransform)primaryButton.transform;
+            float y = ButtonsBottom + 134f;
+            if (two)
+            {
+                float w = PopupArt.PairButtonWidth, x = (w + PopupArt.PairGap) * 0.5f;
+                main.sizeDelta = new Vector2(w, w / PopupArt.Aspect(PopupArt.ButtonOrange(art)));
+                main.anchoredPosition = new Vector2(-x, y);
+                var second = (RectTransform)secondaryButton.transform;
+                second.sizeDelta = new Vector2(w, w / PopupArt.Aspect(PopupArt.ButtonGreen(art)));
+                second.anchoredPosition = new Vector2(x, y);
+                primaryLabel.fontSizeMax = 44f;
+            }
+            else
+            {
+                float w = PopupArt.BigButtonWidth;
+                main.sizeDelta = new Vector2(w, w / PopupArt.Aspect(PopupArt.ButtonOrange(art)));
+                main.anchoredPosition = new Vector2(0f, y);
+                primaryLabel.fontSizeMax = 64f;
+            }
         }
 
         private System.Collections.IEnumerator PopIn()
@@ -284,7 +304,7 @@ namespace Watermelon
             MenuUI.Anchor((RectTransform)primaryButton.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, ButtonsBottom + 190f), new Vector2(420f, 133f));
             primaryLabel = primaryButton.GetComponentInChildren<TextMeshProUGUI>(true);
 
-            secondaryButton = MenuUI.LabelButton("Second Button", frame, PopupArt.ButtonGreen(art), "LATER", 40f, () => Finish(false), null, new Color32(30, 90, 20, 255));
+            secondaryButton = MenuUI.LabelButton("Second Button", frame, PopupArt.ButtonGreen(art), "LATER", 44f, () => Finish(false), null, new Color32(30, 90, 20, 255));
             MenuUI.Anchor((RectTransform)secondaryButton.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, ButtonsBottom + 64f), new Vector2(300f, 95f));
             secondaryLabel = secondaryButton.GetComponentInChildren<TextMeshProUGUI>(true);
 

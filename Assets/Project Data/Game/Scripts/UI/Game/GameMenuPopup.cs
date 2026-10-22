@@ -248,8 +248,8 @@ namespace Watermelon
         private const float PanelAspect = 768f / 1024f;
         private const float CreamTop = 0.189f, CreamBottom = 0.895f;
         private const float TitleWidth = 620f, TitleFromTop = 0.085f;
-        private const float ButtonWidth = 540f;                 // CONTINUE and RESTART, across the cream area
-        private const float PairWidth = 290f, PairGap = 16f;    // SOUND | MUSIC and VIBRATION | LANGUAGE side by side
+        private const float ButtonWidth = PopupArt.BigButtonWidth;   // CONTINUE and RESTART, across the cream area
+        private const float PairWidth = PopupArt.PairButtonWidth, PairGap = PopupArt.PairGap;   // SOUND | MUSIC, VIBRATION | LANGUAGE
         private const float MinGap = 14f;                       // between the buttons; they shrink to keep it
         private const float HomeSize = 130f, HomeFromTop = 0.915f; // round Home over the bottom edge of the cream area
 

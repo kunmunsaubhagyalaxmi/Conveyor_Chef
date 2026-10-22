@@ -232,19 +232,23 @@ namespace Watermelon
             // BUY for coins, and the way to the Shop for more
             // glossy gold-rimmed buttons like the main menu's (exact picture proportions: 955x302)
             Button buy = MenuUI.LabelButton("Buy Button", frame, PopupArt.ButtonOrange(art), "000", 50f, Buy, art.coin, new Color32(140, 60, 10, 255));
+            // BUY | SHOP side by side, as SOUND | MUSIC on the MENU
             float buttonsBottom = FrameHeight * (1f - PopupArt.CreamBottom);
-            MenuUI.Anchor((RectTransform)buy.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, buttonsBottom + 190f), new Vector2(420f, 133f));
+            float pairW = PopupArt.PairButtonWidth, pairX = (pairW + PopupArt.PairGap) * 0.5f, pairY = buttonsBottom + 110f;
+            MenuUI.Anchor((RectTransform)buy.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(-pairX, pairY),
+                new Vector2(pairW, pairW / PopupArt.Aspect(PopupArt.ButtonOrange(art))));
             priceText = buy.GetComponentInChildren<TextMeshProUGUI>(true);
             priceIcon = buy.transform.Find("Label Row/Icon")?.GetComponent<Image>();
             if (priceIcon == null)
                 priceIcon = MenuUI.Image("Icon", buy.transform, art.coin);
 
-            Button shop = MenuUI.LabelButton("Shop Button", frame, PopupArt.ButtonGreen(art), "SHOP", 40f, OpenShop, null, new Color32(30, 90, 20, 255));
-            MenuUI.Anchor((RectTransform)shop.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, buttonsBottom + 64f), new Vector2(300f, 95f));
+            Button shop = MenuUI.LabelButton("Shop Button", frame, PopupArt.ButtonGreen(art), "SHOP", 46f, OpenShop, null, new Color32(30, 90, 20, 255));
+            MenuUI.Anchor((RectTransform)shop.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(pairX, pairY),
+                new Vector2(pairW, pairW / PopupArt.Aspect(PopupArt.ButtonGreen(art))));
 
             messageText = MenuUI.OutlinedText("Message", frame, "", 38f, new Color32(120, 20, 20, 255), TextAlignmentOptions.Center,
                 new Color32(255, 120, 100, 255));
-            MenuUI.Anchor(messageText.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, buttonsBottom + 292f), new Vector2(560f, 46f));
+            MenuUI.Anchor(messageText.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, buttonsBottom + 210f), new Vector2(560f, 46f));
 
             root.gameObject.SetActive(false);
         }

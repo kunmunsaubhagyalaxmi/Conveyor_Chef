@@ -26,6 +26,8 @@ namespace Watermelon
         [Tooltip("One button per GameLanguage, in the enum's order (English, Hinglish, Spanish, ...).")]
         public Sprite[] languages;
         public Sprite languageTick;
+        [Tooltip("The green CONTINUE button (closes Settings, as on the in-game MENU).")]
+        public Sprite continueButton;
         public TMP_FontAsset font;
     }
 }

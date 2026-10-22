@@ -15,7 +15,7 @@ namespace Watermelon
     {
         private const float CardWidth = 560f, CardHeight = 430f;   // the heart and its line
         private const float HeartSize = 300f;
-        private const float ButtonWidth = 380f;
+        private const float ButtonWidth = PopupArt.BigButtonWidth;     // RESTART as big as on the MENU
 
         private bool done;
 

@@ -33,4 +33,5 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2899b41534d240178290e4d71ef8f077, type: 3}
   - {fileID: 21300000, guid: f37cb43bfa654935ba2862b0a2d62808, type: 3}
   languageTick: {fileID: 21300000, guid: d761830169d448499e3ea175be8db7f5, type: 3}
+  continueButton: {fileID: 21300000, guid: 4698d338b0ff4804b8fcaaed5babcce8, type: 3}
   font: {fileID: 11400000, guid: 43bda4895b7e2d940ab8ecb8da000216, type: 2}
