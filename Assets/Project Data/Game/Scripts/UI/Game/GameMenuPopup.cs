@@ -42,6 +42,11 @@ namespace Watermelon
         private bool paused;
         private float timeScaleBeforePause = 1f;
 
+        // Taps on the dishes were on when the menu opened. A level only becomes "active" on its
+        // first tap, so after a restart IsGameActive is still false; closing the menu then left
+        // the board ignoring every tap until the level was restarted again.
+        private bool raycastsWereOn;
+
         private void Awake()
         {
             // The HUD pause button was saved in Game.unity with its Button component switched
@@ -75,6 +80,7 @@ namespace Watermelon
             Layout();
             root.SetActive(true);
             root.transform.SetAsLastSibling();
+            raycastsWereOn = RaycastController.IsEnabled;
             RaycastController.Disable();
             Pause();
 
@@ -90,7 +96,7 @@ namespace Watermelon
             root.SetActive(false);
             Resume();
 
-            if (GameController.IsGameActive)
+            if (GameController.IsGameActive || raycastsWereOn)
                 RaycastController.Enable();
         }
 
@@ -210,7 +216,7 @@ namespace Watermelon
         {
             Resume();
 
-            if (GameController.IsGameActive && (root == null || !root.activeSelf))
+            if ((GameController.IsGameActive || raycastsWereOn) && (root == null || !root.activeSelf))
                 RaycastController.Enable();
         }
 

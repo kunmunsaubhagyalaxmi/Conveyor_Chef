@@ -331,6 +331,29 @@ namespace Watermelon
         //     //Tween.DelayedCall(2f, LivesManager.RemoveLife);
         // }
 
+        /// <summary>
+        /// Out of lives: opens the "more lives" panel of the lives counter on screen (the HUD
+        /// heart). The old main menu page's own panel is hidden in this flow, so tapping with
+        /// no lives used to do nothing at all and the level looked frozen.
+        /// </summary>
+        public static bool ShowAddLivesPanel(SimpleBoolCallback onPanelClosed = null)
+        {
+            foreach (LivesIndicator indicator in Object.FindObjectsByType<LivesIndicator>(FindObjectsSortMode.None))
+            {
+                if (indicator.isActiveAndEnabled && indicator.ShowAddLivesPanel(onPanelClosed))
+                    return true;
+            }
+
+            UIMainMenu mainMenu = UIController.GetPage<UIMainMenu>();
+            if (mainMenu != null && mainMenu.IsPageDisplayed)
+            {
+                mainMenu.ShowAddLivesPanel();
+                return true;
+            }
+
+            return false;
+        }
+
         public static void StartGame()
         {
             // Check if player has lives before starting
@@ -338,12 +361,7 @@ namespace Watermelon
             {
                 Debug.Log("[GameController] Cannot start game - No lives remaining");
 
-                // Show the add lives panel
-                UIMainMenu mainMenu = UIController.GetPage<UIMainMenu>();
-                if (mainMenu != null)
-                {
-                    mainMenu.ShowAddLivesPanel();
-                }
+                ShowAddLivesPanel();
 
                 return; // Don't start the game
             }
@@ -620,13 +638,20 @@ namespace Watermelon
             if (LivesManager.Lives <= 0)
             {
                 Debug.Log("[GameController] Cannot replay level - No lives remaining");
-                UIController.ShowPage<UIMainMenu>();
 
-                UIMainMenu mainMenu = UIController.GetPage<UIMainMenu>();
-                if (mainMenu != null)
+                // The lost board stays behind with taps off, so the player must not be left
+                // there: a life from the panel replays the level, closing it goes back to
+                // Level Selection (the game-over screen only offers REPLAY).
+                bool shown = ShowAddLivesPanel(gotLife =>
                 {
-                    mainMenu.ShowAddLivesPanel();
-                }
+                    if (gotLife && LivesManager.Lives > 0)
+                        ReplayLevel();
+                    else
+                        ReturnToLevelSelection();
+                });
+
+                if (!shown)
+                    ReturnToLevelSelection();
                 return;
             }
 
