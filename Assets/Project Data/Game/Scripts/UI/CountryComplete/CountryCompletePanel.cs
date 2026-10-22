@@ -209,7 +209,9 @@ namespace Watermelon
             AddTo(card, "Next Label", Art(a => a.nextLabel), 0, -258, 320, 107);
 
             Button continueButton = AddButton(Add("Continue Button", Art(a => a.continueButton), 0, -606, 420, 140), Continue);
-            Button homeButton = AddButton(Add("Home Button", Art(a => a.homeButton), 0, -732, 130, 130), Home);
+            // centred on the gold twin-scroll ornament of the frame's bottom border, big enough to
+            // cover it (130 at -732 sat small on its top edge)
+            Button homeButton = AddButton(Add("Home Button", Art(a => a.homeButton), 0, -765, 180, 180), Home);
 
             if (art == null || art.continueButton == null)
                 AddTextTo(continueButton.transform, "Label", "CONTINUE", Color.white, 48f, 0, 0, 380, 110);
