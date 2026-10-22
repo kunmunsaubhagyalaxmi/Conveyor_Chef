@@ -26,7 +26,11 @@ namespace Watermelon
 
             public int Current => Mathf.Min(Progress(), Target);
             public bool Done => Progress() >= Target;
-            public bool Claimed => PlayerStats.GetFlag("achievement_" + Id);
+            // A reward is taken once (the flag); it reads CLAIMED only while the goal is met, so a
+            // flag kept from an earlier save (progress since reset or counted another way) no
+            // longer shows "0 / 1  CLAIMED" - it shows the progress, without a second reward.
+            public bool Taken => PlayerStats.GetFlag("achievement_" + Id);
+            public bool Claimed => Taken && Done;
         }
 
         /// <summary>Every achievement id (their "claimed" flags are part of the cloud save).</summary>
@@ -54,7 +58,7 @@ namespace Watermelon
             Make("serve_500", "Food Rush", "Serve 500 dishes", () => PlayerStats.DishesServed, 500, CurrencyType.Coins, 300, a => a.chefAvatar),
             Make("serve_2000", "Conveyor Legend", "Serve 2,000 dishes", () => PlayerStats.DishesServed, 2000, CurrencyType.Diamonds, 15, a => a.chefAvatar),
             Make("country_1", "Passport Stamp", "Complete a whole country", () => PlayerStats.CountriesCompleted, 1, CurrencyType.Coins, 200, a => a.GetFlag(0)),
-            Make("country_all", "World Tour", "Complete all 5 countries", () => PlayerStats.CountriesCompleted, 5, CurrencyType.Diamonds, 30, a => a.GetFlag(4)),
+            Make("country_all", "World Tour", Loc.F("Complete all {0} countries", CountryCatalog.CountryCount), () => PlayerStats.CountriesCompleted, CountryCatalog.CountryCount, CurrencyType.Diamonds, 30, a => a.GetFlag(4)),
             Make("collect_all", "Gourmet Collector", Loc.F("Discover all {0} dishes", PlayerStats.TotalDishes), () => PlayerStats.DishesDiscovered, PlayerStats.TotalDishes, CurrencyType.Diamonds, 20, a => a.iconCollection),
             Make("power_10", "Helping Hand", "Use 10 power-ups", () => PlayerStats.PowerUpsUsed, 10, CurrencyType.Coins, 100,
                 a => a.powerUpIcons != null && a.powerUpIcons.Length > 1 ? a.powerUpIcons[1] : a.iconShop),
@@ -105,7 +109,7 @@ namespace Watermelon
                 MenuRow.RightPill(card, CurrencyIcon(a.Currency), a.Reward.ToString("N0"), 52f);
                 MenuRow.Button(card, Art.buttonGreen, "CLAIM", () =>
                 {
-                    if (!a.Done || a.Claimed)
+                    if (!a.Done || a.Taken)
                         return;
                     PlayerStats.SetFlag("achievement_" + a.Id);
                     Grant(a.Currency, a.Reward);

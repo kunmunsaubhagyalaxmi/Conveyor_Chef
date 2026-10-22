@@ -225,10 +225,10 @@ namespace Watermelon
 
         // Layout at 1080x1920. Panel: pause_popup_panel.png (768x1024, blue title band at
         // 11%, cream area 19-88% of its height).
-        private const float PanelW = 750f;
-        private const float PanelH = 1000f;
-        private const float CreamTop = 0.19f;
-        private const float CreamBottom = 0.88f;
+        private const float PanelW = PopupArt.PanelWidth;       // the shared popup layout (as MENU)
+        private const float PanelH = PopupArt.PanelHeight;
+        private const float CreamTop = PopupArt.CreamTop;
+        private const float CreamBottom = PopupArt.CreamBottom;
 
         private void Build(SettingsPanelArt panelArt)
         {
@@ -319,17 +319,19 @@ namespace Watermelon
             if (titleSprite != null)
             {
                 Image title = CreateImage("Title", page, titleSprite, Color.white);
-                Place(title.rectTransform, new Vector2(0f, top - PanelH * 0.11f), new Vector2(560f, 168f));
+                Place(title.rectTransform, new Vector2(0f, top - PanelH * PopupArt.TitleFromTop),
+                    new Vector2(PopupArt.TitleWidth, PopupArt.TitleHeight(titleSprite)));
                 title.preserveAspect = true;
             }
             else
             {
                 TMP_Text title = CreateText("Title", page, Loc.T(titleWord), Color.white, 64f);
-                Place(title.rectTransform, new Vector2(0f, top - PanelH * 0.11f), new Vector2(560f, 110f));
+                Place(title.rectTransform, new Vector2(0f, top - PanelH * PopupArt.TitleFromTop), new Vector2(560f, 110f));
             }
 
             Image close = CreateImage("Close Button", page, art != null ? art.closeButton : null, new Color(0.85f, 0.2f, 0.2f));
-            Place(close.rectTransform, new Vector2(PanelW * 0.5f - 55f, top - 58f), new Vector2(110f, 110f));
+            Place(close.rectTransform, new Vector2(PanelW * 0.5f - PopupArt.CloseFromCorner.x, top - PopupArt.CloseFromCorner.y),
+                new Vector2(PopupArt.CloseSize, PopupArt.CloseSize));
             close.preserveAspect = true;
             AddButton(close, onClose);
             return page;

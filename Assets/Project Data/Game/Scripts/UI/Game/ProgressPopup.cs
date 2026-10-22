@@ -17,9 +17,12 @@ namespace Watermelon
     public sealed class ProgressPopup : MonoBehaviour
     {
         private const int SortingOrder = 4300;          // above the scene UI, menu panels and the offer
-        private const float FrameWidth = 800f;
-        private const float FrameHeight = 1060f;
+        // the shared popup layout (as MENU): frame, title on the arch, content in the cream area
+        private const float FrameWidth = PopupArt.PanelWidth;
+        private const float FrameHeight = PopupArt.PanelHeight;
         private const float FrameSliceScale = 1.25f;
+        private const float CardTop = FrameHeight * PopupArt.CreamTop + 14f;            // from the frame's top
+        private const float ButtonsBottom = FrameHeight * (1f - PopupArt.CreamBottom);  // from the frame's bottom
 
         private sealed class Entry
         {
@@ -182,13 +185,13 @@ namespace Watermelon
             if (baked != null)
             {
                 ribbon.sprite = baked;
-                ribbon.rectTransform.sizeDelta = new Vector2(620f, 620f * baked.rect.height / baked.rect.width);
+                ribbon.rectTransform.sizeDelta = new Vector2(PopupArt.TitleWidth, PopupArt.TitleHeight(baked));
                 titleText.gameObject.SetActive(false);
             }
             else
             {
                 ribbon.sprite = PopupArt.TitleRibbon(art);
-                ribbon.rectTransform.sizeDelta = new Vector2(600f, 200f);
+                ribbon.rectTransform.sizeDelta = new Vector2(PopupArt.TitleWidth, PopupArt.TitleHeight(ribbon.sprite));
                 titleText.gameObject.SetActive(true);
                 titleText.text = Loc.T(e.title);
             }
@@ -204,8 +207,8 @@ namespace Watermelon
             secondaryButton.gameObject.SetActive(two);
             if (two)
                 secondaryLabel.text = Loc.T(e.secondary);
-            // a single button sits a little lower, centred in the space under the card
-            ((RectTransform)primaryButton.transform).anchoredPosition = new Vector2(0f, two ? 200f : 150f);
+            // two buttons stack on the cream area's bottom; a single one sits centred under the card
+            ((RectTransform)primaryButton.transform).anchoredPosition = new Vector2(0f, ButtonsBottom + (two ? 190f : 120f));
         }
 
         private System.Collections.IEnumerator PopIn()
@@ -249,37 +252,40 @@ namespace Watermelon
             MenuUI.Stretch(dim.rectTransform);
             dim.raycastTarget = true;
 
-            Image frameImage = MenuUI.Image("Frame", root, art.frame, art.frame == null ? MenuUI.CardFill : (Color?)null, false);
+            Image frameImage = MenuUI.Image("Frame", root, PopupArt.Panel(art), art.frame == null ? MenuUI.CardFill : (Color?)null);
             frameImage.pixelsPerUnitMultiplier = FrameSliceScale;
             frameImage.raycastTarget = true;
             frame = frameImage.rectTransform;
             MenuUI.Place(frame, new Vector2(0f, -30f), new Vector2(FrameWidth, FrameHeight));
 
-            ribbon = MenuUI.Image("Title", frame, PopupArt.TitleRibbon(art));
-            MenuUI.Anchor(ribbon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(0f, -40f), new Vector2(600f, 200f));
+            Sprite ribbonSprite = PopupArt.TitleRibbon(art);
+            Vector2 ribbonSize = new Vector2(PopupArt.TitleWidth, PopupArt.TitleHeight(ribbonSprite));
+            ribbon = MenuUI.Image("Title", frame, ribbonSprite);
+            MenuUI.Anchor(ribbon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 0.5f), new Vector2(0f, -FrameHeight * PopupArt.TitleFromTop), ribbonSize);
             titleText = MenuUI.OutlinedText("Words", ribbon.transform, "", 52f, PopupArt.RibbonOutline);
             Vector4 inset = PopupArt.RibbonTextInsets;
-            MenuUI.Stretch(titleText.rectTransform, inset.x * 600f, inset.y * 200f, inset.z * 600f, inset.w * 200f);
+            MenuUI.Stretch(titleText.rectTransform, inset.x * ribbonSize.x, inset.y * ribbonSize.y, inset.z * ribbonSize.x, inset.w * ribbonSize.y);
 
+            // the picture, name and text on a card in the cream area
             Image card = MenuUI.Image("Card", frame, MenuUI.Rounded(30, 4, MenuUI.CardFill, MenuUI.CardBorder), null, false);
-            MenuUI.Anchor(card.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -150f), new Vector2(640f, 520f));
+            MenuUI.Anchor(card.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -CardTop), new Vector2(560f, 470f));
 
             picture = MenuUI.Image("Picture", card.transform, null);
             MenuUI.Anchor(picture.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -16f), new Vector2(240f, 240f));
 
             nameText = MenuUI.OutlinedText("Name", card.transform, "", 54f, new Color32(110, 52, 10, 255), TextAlignmentOptions.Center,
                 new Color32(255, 200, 45, 255));
-            MenuUI.Anchor(nameText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -284f), new Vector2(580f, 64f));
+            MenuUI.Anchor(nameText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -268f), new Vector2(520f, 60f));
 
             bodyText = MenuUI.Text("Text", card.transform, "", 38f, MenuUI.TextDark, TextAlignmentOptions.Center, true);
-            MenuUI.Anchor(bodyText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -354f), new Vector2(580f, 150f));
+            MenuUI.Anchor(bodyText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -336f), new Vector2(520f, 120f));
 
             primaryButton = MenuUI.LabelButton("Main Button", frame, PopupArt.ButtonOrange(art), "OK", 50f, () => Finish(true), null, new Color32(140, 60, 10, 255));
-            MenuUI.Anchor((RectTransform)primaryButton.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 200f), new Vector2(420f, 133f));
+            MenuUI.Anchor((RectTransform)primaryButton.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, ButtonsBottom + 190f), new Vector2(420f, 133f));
             primaryLabel = primaryButton.GetComponentInChildren<TextMeshProUGUI>(true);
 
             secondaryButton = MenuUI.LabelButton("Second Button", frame, PopupArt.ButtonGreen(art), "LATER", 40f, () => Finish(false), null, new Color32(30, 90, 20, 255));
-            MenuUI.Anchor((RectTransform)secondaryButton.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 84f), new Vector2(300f, 95f));
+            MenuUI.Anchor((RectTransform)secondaryButton.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0.5f), new Vector2(0f, ButtonsBottom + 64f), new Vector2(300f, 95f));
             secondaryLabel = secondaryButton.GetComponentInChildren<TextMeshProUGUI>(true);
 
             root.gameObject.SetActive(false);

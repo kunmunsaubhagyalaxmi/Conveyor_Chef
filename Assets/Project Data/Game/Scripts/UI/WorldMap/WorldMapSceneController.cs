@@ -596,7 +596,7 @@ namespace Watermelon.BusStop
             if (!IsContinentUnlocked(continentIndex))
             {
                 if (statusText != null)
-                    statusText.text = "LOCKED • COMPLETE THE PREVIOUS CONTINENT";
+                    statusText.text = Loc.T("LOCKED • COMPLETE THE PREVIOUS CONTINENT");
 
                 return;
             }

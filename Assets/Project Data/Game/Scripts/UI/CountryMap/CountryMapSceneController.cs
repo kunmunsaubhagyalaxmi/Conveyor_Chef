@@ -281,16 +281,16 @@ namespace Watermelon.BusStop
                 titleText.text = continent.ToUpperInvariant();
 
             if (subtitleText != null)
-                subtitleText.text = "CULINARY JOURNEY";
+                subtitleText.text = Loc.T("CULINARY JOURNEY");
 
             if (infoText != null)
             {
                 WorldCatalog.Continent info = WorldCatalog.GetContinent(selectedContinent);
-                infoText.text = info != null ? info.Info : "Explore the countries and culinary stops of " + continent + ".";
+                infoText.text = info != null ? Loc.T(info.Info) : "Explore the countries and culinary stops of " + continent + ".";
             }
 
             if (guideText != null)
-                guideText.text = "Complete countries to unlock new recipes and levels!";
+                guideText.text = Loc.T("Complete countries to unlock new recipes and levels!");
 
             // The current scene is the authored Asia pack. Never cover the map with
             // a runtime "unsupported continent" modal; unsupported WorldMap choices
@@ -500,7 +500,7 @@ namespace Watermelon.BusStop
                 {
                     if (countryIndex <= 0)
                     {
-                        statusText.text = "COUNTRY LOCKED";
+                        statusText.text = Loc.T("COUNTRY LOCKED");
                     }
                     else
                     {
@@ -509,7 +509,7 @@ namespace Watermelon.BusStop
                             ? countryNodes[countryIndex - 1].CountryName.ToUpperInvariant()
                             : "THE PREVIOUS COUNTRY";
 
-                        statusText.text = "COMPLETE " + previous + " TO UNLOCK";
+                        statusText.text = Loc.F("COMPLETE {0} TO UNLOCK", previous);
                     }
                 }
 

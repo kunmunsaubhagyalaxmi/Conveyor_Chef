@@ -22,7 +22,9 @@ namespace Watermelon
             if (activeElement == null)
                 return false;
 
-            if (LevelController.GetElementType(activeElement.ElementPosition) != LevelElement.Type.Empty)
+            // a pipe refills the spot as soon as a piece leaves it: the pipe takes that piece back
+            if (LevelController.GetElementType(activeElement.ElementPosition) != LevelElement.Type.Empty &&
+                !SpawnerElementBehavior.TakeBackFrom(activeElement.ElementPosition, activeElement.LevelElement.ElementType))
                 return false;
 
             DockBehavior.RemoveLastPicked();

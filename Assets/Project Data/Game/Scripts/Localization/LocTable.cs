@@ -21,6 +21,7 @@ namespace Watermelon
             Panels();
             Menus();
             ArtWords();
+            World();
         }
 
         // ------------------------------------------------------------------ tutorial

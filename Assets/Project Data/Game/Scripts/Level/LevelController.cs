@@ -599,6 +599,23 @@ public static void MarkLevelCompleted(int levelIndex, int starsEarned)
             }
         }
 
+        /// <summary>
+        /// Takes a piece off the board without a map update (a pipe taking its waiting piece back
+        /// for an UNDO). The cell is marked for <paramref name="keepFor"/>, the piece coming back,
+        /// so nothing is spawned into it on the way.
+        /// </summary>
+        public static void TakeOffBoard(LevelElementBehavior element, LevelElement.Type keepFor)
+        {
+            levelElements.Remove(element);
+            highlightedElements.Remove(element);
+            element.Unload();
+            element.DisableEffect();
+            element.Unhighlight();
+            element.gameObject.SetActive(false);
+            if (MapUtils.ValidatePos(element.ElementPosition))
+                levelMap[element.ElementPosition] = keepFor;
+        }
+
         public static void PlaceElementOnMap(LevelElementBehavior levelElementBehavior, ElementPosition elementPosition)
         {
             if (elementPosition.X >= levelWidth || elementPosition.Y >= levelHeight)

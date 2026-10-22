@@ -239,14 +239,16 @@ namespace Watermelon.BusStop
                 countrySubtitleText.text = CountrySubtitle;
 
             if (descriptionText != null && country != null)
-                descriptionText.text = country.Description;
+                descriptionText.text = Loc.T(country.Description);
 
             if (guideText != null)
-                guideText.text = "Complete all " + LevelsPerCountry + " levels\nto master " + countryName +
-                                 (countryName.EndsWith("s") ? "’" : "’s") + " flavors!";
+                guideText.text = Loc.Current == GameLanguage.English
+                    ? "Complete all " + LevelsPerCountry + " levels\nto master " + countryName +
+                      (countryName.EndsWith("s") ? "’" : "’s") + " flavors!"
+                    : Loc.F("ls.guide", LevelsPerCountry, countryName);
 
             if (progressTitleText != null)
-                progressTitleText.text = "COUNTRY PROGRESS";
+                progressTitleText.text = Loc.T("COUNTRY PROGRESS");
 
             // A country's own scene keeps the art set in its Hierarchy.
             if (UsesSceneArt)
@@ -271,6 +273,7 @@ namespace Watermelon.BusStop
                 SetSceneSprite("India Icon", icon);
                 SetSceneSprite("Country Icon", icon);
             }
+            ShowProgressEmblem();
 
             if (countryFlagImage != null)
             {
@@ -278,6 +281,42 @@ namespace Watermelon.BusStop
                 if (flag != null)
                     countryFlagImage.sprite = flag;
             }
+        }
+
+        // The round emblem by COUNTRY PROGRESS was an empty blue circle on every country but India
+        // (its icon object is hidden there). It shows the country's flag now, or its continent's
+        // globe (as on the World Map) where a country has no flag; India keeps its map icon.
+        private void ShowProgressEmblem()
+        {
+            Transform row = progressEmblem != null ? progressEmblem.transform.parent : null;
+            if (row == null)
+                return;
+            Transform iconObject = row.Find("Country Icon");
+            if (iconObject == null)
+                iconObject = row.Find("India Icon");
+            Image icon = iconObject != null ? iconObject.GetComponent<Image>() : null;
+            if (icon == null)
+                return;
+            if (icon.gameObject.activeSelf && icon.sprite != null)
+                return;                                  // a country with its own icon (India)
+
+            Sprite sprite = WorldArt.ForCountry(selectedCountry, WorldArt.LevelSelectIcon, false);
+            if (sprite == null && WorldCatalog.ContinentOfCountry(selectedCountry) == 0)
+            {
+                MenuPanelArt menuArt = Resources.Load<MenuPanelArt>(MenuPanelArt.ResourcePath);
+                sprite = menuArt != null ? menuArt.GetFlag(selectedCountry) : null;
+            }
+            if (sprite == null)
+                sprite = WorldArt.ForCountry(selectedCountry, WorldArt.FlagBadge, false);
+            if (sprite == null)
+                sprite = WorldArt.ForContinent(WorldCatalog.ContinentOfCountry(selectedCountry), WorldArt.ProgressGlobe);
+            if (sprite == null)
+                return;
+
+            icon.sprite = sprite;
+            icon.preserveAspect = true;
+            icon.color = Color.white;
+            icon.gameObject.SetActive(true);
         }
 
         private void SetSceneSprite(string objectName, Sprite sprite)
@@ -439,7 +478,7 @@ namespace Watermelon.BusStop
                 string title = WorldArt.CardTitle(levelIndex) ?? WorldCatalog.GetMissionName(selectedCountry, place);
 
                 card.Refresh(levelIndex, title, thumbnail, unlocked, inCountry == selectedLevel, completed, stars,
-                             completed ? "REPLAY" : "PLAY", levelIndex + 1);   // game-wide number: China 1-30, Japan 31-60...
+                             Loc.T(completed ? "REPLAY" : "PLAY"), levelIndex + 1);   // game-wide number: China 1-30, Japan 31-60...
             }
 
             if (statusText != null)
@@ -449,8 +488,8 @@ namespace Watermelon.BusStop
                 int last = Mathf.Min(first + CardsPerPage - 1, countryLevelStart + LevelsPerCountry);
                 int shown = countryLevelStart + selectedLevel + 1;
                 statusText.text = IsLevelUnlocked(countryLevelStart + selectedLevel)
-                    ? "LEVELS " + first + "\u2013" + last
-                    : "FINISH LEVEL " + (shown - 1) + " TO UNLOCK LEVEL " + shown;
+                    ? Loc.F("LEVELS {0}–{1}", first, last)
+                    : Loc.F("FINISH LEVEL {0} TO UNLOCK LEVEL {1}", shown - 1, shown);
             }
         }
 
