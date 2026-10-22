@@ -39,6 +39,12 @@ namespace Watermelon
         public static Music Music => music;
 
         public static OnVolumeChangedCallback OnVolumeChanged;
+
+        /// <summary>
+        /// Volume of the music, apart from the sound effects' volume (<see cref="SetVolume"/>), so
+        /// SOUND OFF keeps the music and MUSIC OFF keeps the sounds (set by the game's MusicSetting).
+        /// </summary>
+        public static float MusicVolume = 1f;
         public static OnVibrationChangedCallback OnVibrationChanged;
 
         private static AudioListener audioListener;
@@ -321,6 +327,7 @@ namespace Watermelon
             source.volume *= volumePercentage;
             source.Play();
 
+            instance.activeSoundSources.Remove(source);   // a source is either music or a sound
             AddMusic(source);
         }
 
@@ -341,6 +348,7 @@ namespace Watermelon
 
             audioCase.Play();
 
+            instance.activeSoundSources.Remove(source);
             AddMusic(source);
 
             return audioCase;
@@ -373,6 +381,7 @@ namespace Watermelon
             source.pitch = pitch;
             source.Play();
 
+            instance.activeMusicSources.Remove(source);
             AddSound(source);
         }
 
@@ -392,6 +401,7 @@ namespace Watermelon
             AudioCase audioCase = new AudioCase(clip, source, AudioType.Sound);
             audioCase.Play();
 
+            instance.activeMusicSources.Remove(source);
             AddSound(source);
 
             return audioCase;
@@ -449,7 +459,7 @@ namespace Watermelon
             int sourcesAmount = audioSources.Count;
             for (int i = 0; i < sourcesAmount; i++)
             {
-                if (!audioSources[i].isPlaying)
+                if (!audioSources[i].isPlaying && !activeMusicSources.Contains(audioSources[i]))
                 {
                     return audioSources[i];
                 }
@@ -469,10 +479,10 @@ namespace Watermelon
             return audioSource;
         }
 
+        // The sound effects' volume; the music keeps its own (MusicVolume).
         private void SetVolumeForAudioSources(float volume)
         {
             SetSoundsVolume(volume);
-            SetMusicVolume(volume);
 
             for (int i = 0; i < activeCustomSourcesCases.Count; i++)
             {
@@ -543,7 +553,7 @@ namespace Watermelon
 
             source.clip = null;
 
-            source.volume = volume;
+            source.volume = type == AudioType.Music ? MusicVolume : volume;
             source.pitch = 1.0f;
             source.spatialBlend = 0; // 2D Sound
             source.mute = false;

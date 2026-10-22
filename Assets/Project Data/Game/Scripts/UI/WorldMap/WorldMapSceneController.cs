@@ -317,8 +317,10 @@ namespace Watermelon.BusStop
         {
             if (preserveAuthoredStartupVisuals)
             {
+                // The map opens on the continent the player is on now (the furthest one
+                // unlocked), not always on the authored one (Asia): after Asia it shows the next.
                 selectedContinent = Mathf.Clamp(
-                    authoredSelectedContinent,
+                    ProgressContinent(),
                     0,
                     continents != null && continents.Length > 0 ? continents.Length - 1 : 0);
 
@@ -545,6 +547,22 @@ namespace Watermelon.BusStop
             return done;
         }
 
+        /// <summary>The continent the player is on: the furthest one unlocked.</summary>
+        private int ProgressContinent()
+        {
+            int highestUnlocked = 0;
+            if (continents == null)
+                return 0;
+            for (int i = 0; i < continents.Length; i++)
+            {
+                if (IsContinentUnlocked(i))
+                    highestUnlocked = i;
+                else
+                    break;
+            }
+            return highestUnlocked;
+        }
+
         public bool IsContinentUnlocked(int continentIndex)
         {
             if (continentIndex <= 0)
@@ -567,14 +585,7 @@ namespace Watermelon.BusStop
             if (continents == null || continents.Length == 0)
                 return 0;
 
-            int highestUnlocked = 0;
-            for (int i = 0; i < continents.Length; i++)
-            {
-                if (IsContinentUnlocked(i))
-                    highestUnlocked = i;
-                else
-                    break;
-            }
+            int highestUnlocked = ProgressContinent();
 
             int stored = Mathf.Clamp(
                 PlayerPrefs.GetInt(SelectedContinentKey, highestUnlocked),

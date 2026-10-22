@@ -250,6 +250,9 @@ namespace Watermelon.BusStop
             if (progressTitleText != null)
                 progressTitleText.text = Loc.T("COUNTRY PROGRESS");
 
+            // the round emblem by COUNTRY PROGRESS: on every page, the country pages too
+            ShowProgressEmblem();
+
             // A country's own scene keeps the art set in its Hierarchy.
             if (UsesSceneArt)
                 return;
@@ -273,7 +276,6 @@ namespace Watermelon.BusStop
                 SetSceneSprite("India Icon", icon);
                 SetSceneSprite("Country Icon", icon);
             }
-            ShowProgressEmblem();
 
             if (countryFlagImage != null)
             {

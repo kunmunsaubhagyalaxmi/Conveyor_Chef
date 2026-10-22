@@ -58,6 +58,7 @@ namespace Watermelon
             Wire(restartButton, Restart);
             Wire(homeButton, Home);
 
+            CreateMusicButton();
             CreateLanguageButton();
 
             if (root != null)
@@ -120,6 +121,35 @@ namespace Watermelon
         private void OnDestroy()
         {
             Resume();
+        }
+
+        // MUSIC ON / OFF, as in Settings, under SOUND (SOUND is the sound effects only).
+        private Button musicButton;
+        private Sprite musicOnSprite, musicOffSprite;
+
+        private void CreateMusicButton()
+        {
+            SettingsPanelArt art = Resources.Load<SettingsPanelArt>(SettingsPanelArt.ResourcePath);
+            if (art == null || art.musicOn == null || soundButton == null)
+                return;
+
+            musicOnSprite = art.musicOn;
+            musicOffSprite = art.musicOff;
+            GameObject go = Instantiate(soundButton.gameObject, soundButton.transform.parent);
+            go.name = "Music Button";
+            go.transform.SetSiblingIndex(soundButton.transform.GetSiblingIndex() + 1);
+            musicButton = go.GetComponent<Button>();
+            musicButton.onClick.RemoveAllListeners();
+            foreach (TMP_Text text in go.GetComponentsInChildren<TMP_Text>(true))
+                text.gameObject.SetActive(false);      // the words are painted in
+            Wire(musicButton, ToggleMusic);
+        }
+
+        private void ToggleMusic()
+        {
+            MusicSetting.Set(!MusicSetting.On);
+            PlayClick();
+            RefreshLabels();
         }
 
         // LANGUAGE, as in Settings: the same painted button, opening the language list.
@@ -258,7 +288,7 @@ namespace Watermelon
                 bottom = Mathf.Max(bottom, homeY + HomeSize * 0.5f);
             }
 
-            RectTransform[] column = { Rect(resumeButton), Rect(soundButton), Rect(vibrationButton), Rect(languageButton), Rect(restartButton) };
+            RectTransform[] column = { Rect(resumeButton), Rect(soundButton), Rect(musicButton), Rect(vibrationButton), Rect(languageButton), Rect(restartButton) };
             float content = 0f;
             int items = 0;
             foreach (RectTransform r in column)
@@ -318,6 +348,7 @@ namespace Watermelon
             bool vibrationOn = AudioController.IsVibrationEnabled();
 
             SetState(soundButton, soundLabel, soundOn, soundOnSprite, soundOffSprite, "SOUND");
+            SetState(musicButton, null, MusicSetting.On, musicOnSprite, musicOffSprite, "MUSIC");
             SetState(vibrationButton, vibrationLabel, vibrationOn, vibrationOnSprite, vibrationOffSprite, "VIBRATION");
         }
 

@@ -125,9 +125,10 @@ namespace Watermelon
                 return;
             }
 
-            // The full loading screen only for the first level of a session (the heavy Game
-            // scene); every other hop is a quick fade, so the player isn't shown it over and over.
-            bool firstLevel = targetSceneName == "Game" && !gameShownThisSession;
+            // Every hop inside the game, the first level too, switches straight to the next
+            // scene (QuickSceneTransition: no loading screen, no blue cover). The loading
+            // screen is only the start-up one.
+            bool firstLevel = false;
             if (!firstLevel && Application.CanStreamedLevelBeLoaded(targetSceneName))
             {
                 if (QuickSceneTransition.IsRunning)
