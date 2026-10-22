@@ -9,5 +9,5 @@ attribution required; the files may not be sold or shared on their own).
 | Levels | `Assets/Project Data/Game/Resources/Audio/music_gameplay.mp3` | Puzzle Game Loop - Bright Casual Video Game Music | Cyberwave-Orchestra | https://pixabay.com/music/main-title-puzzle-game-loop-bright-casual-video-game-music-249201/ |
 
 Kept, not used: `Casual Game Music 11.wav` (the earlier menu track), `kitchen_bounce_synth.wav`
-(the synthesized level track) and `cooking_funk_show.mp3` (Cooking Funk Show by AlexGuz), both in `Assets/Project Data/Game/Audio/Music/`. Other candidates
+(the synthesized level track) and `cooking_funk_show.mp3` (Cooking Funk Show by AlexGuz), all in `Assets/Project Data/Game/Audio/Music/`. Other candidates
 downloaded for listening are in `Docs/Music/pixabay/` and `Docs/Music/pixabay/gameplay/` (git-ignored).
