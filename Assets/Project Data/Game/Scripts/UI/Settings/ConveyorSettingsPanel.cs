@@ -257,40 +257,25 @@ namespace Watermelon
             Stretch(dim.rectTransform);
             AddButton(dim, () => Close(playSound: true)).transition = Selectable.Transition.None;
 
-            // SETTINGS, laid out like the in-game MENU: SOUND | MUSIC and VIBRATION | LANGUAGE side by
-            // side, the green CONTINUE across the cream area under them, the version at the bottom.
+            // SETTINGS: four buttons spread over the cream area, the version under them.
             RectTransform page = BuildPage("Settings Page", rootRect, art != null ? art.title : null, "SETTINGS",
                 () => Close(playSound: true));
             settingsPage = page.gameObject;
 
-            float pairW = PopupArt.PairButtonWidth, pairX = (pairW + PopupArt.PairGap) * 0.5f;
-            Vector2 pairSize = new Vector2(pairW, pairW / PopupArt.Aspect(art != null ? art.soundOn : null));
-            Vector2 bigSize = new Vector2(PopupArt.BigButtonWidth, PopupArt.BigButtonWidth / PopupArt.Aspect(art != null ? art.continueButton : null));
-            float versionY = PanelH * 0.5f - PanelH * CreamBottom + 36f;
-            float creamTopY = PanelH * 0.5f - PanelH * CreamTop;
-            float space = creamTopY - (versionY + 24f);
-            float gap = Mathf.Max(14f, (space - 2f * pairSize.y - bigSize.y) / 4f);
-            float row1 = creamTopY - gap - pairSize.y * 0.5f;
-            float row2 = row1 - pairSize.y - gap;
-            float row3 = row2 - pairSize.y * 0.5f - gap - bigSize.y * 0.5f;
-
-            soundImage = CreateToggle("Sound Button", page, new Vector2(-pairX, row1), pairSize, out soundLabel);
+            Vector2 toggleSize = new Vector2(430f, 146f);
+            soundImage = CreateToggle("Sound Button", page, new Vector2(0f, Row(0, 4)), toggleSize, out soundLabel);
             AddButton(soundImage, ToggleSound);
-            musicImage = CreateToggle("Music Button", page, new Vector2(pairX, row1), pairSize, out musicLabel);
+            musicImage = CreateToggle("Music Button", page, new Vector2(0f, Row(1, 4)), toggleSize, out musicLabel);
             AddButton(musicImage, ToggleMusic);
-            vibrationImage = CreateToggle("Vibration Button", page, new Vector2(-pairX, row2), pairSize, out vibrationLabel);
+            vibrationImage = CreateToggle("Vibration Button", page, new Vector2(0f, Row(2, 4)), toggleSize, out vibrationLabel);
             AddButton(vibrationImage, ToggleVibration);
 
-            Image language = CreateToggle("Language Button", page, new Vector2(pairX, row2), pairSize, out TMP_Text languageLabel);
+            Image language = CreateToggle("Language Button", page, new Vector2(0f, Row(3, 4)), toggleSize, out TMP_Text languageLabel);
             SetArt(language, languageLabel, art != null ? art.languageButton : null, "LANGUAGE", new Color(0.2f, 0.45f, 0.8f));
             AddButton(language, OpenLanguages);
 
-            Image done = CreateToggle("Continue Button", page, new Vector2(0f, row3), bigSize, out TMP_Text doneLabel);
-            SetArt(done, doneLabel, art != null ? art.continueButton : null, "CONTINUE", new Color(0.3f, 0.7f, 0.2f));
-            AddButton(done, () => Close(playSound: true));
-
             versionText = CreateText("Version", page, "VERSION " + Application.version, new Color32(35, 48, 70, 255), 32f);
-            Place(versionText.rectTransform, new Vector2(0f, versionY), new Vector2(500f, 48f));
+            Place(versionText.rectTransform, new Vector2(0f, PanelH * 0.5f - PanelH * CreamBottom + 36f), new Vector2(500f, 48f));
 
             // LANGUAGE: the eight languages in two columns, a tick on the chosen one.
             page = BuildPage("Language Page", rootRect, art != null ? art.languageTitle : null, "LANGUAGE", BackToSettings);

@@ -125,10 +125,9 @@ namespace Watermelon
                 return;
             }
 
-            // Every hop inside the game, the first level too, switches straight to the next
-            // scene (QuickSceneTransition: no loading screen, no blue cover). The loading
-            // screen is only the start-up one.
-            bool firstLevel = false;
+            // PLAY (going into a level) always shows the loading screen; every other hop
+            // switches straight to the next scene (QuickSceneTransition: no cover, no fades).
+            bool firstLevel = targetSceneName == "Game";
             if (!firstLevel && Application.CanStreamedLevelBeLoaded(targetSceneName))
             {
                 if (QuickSceneTransition.IsRunning)
