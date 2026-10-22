@@ -248,7 +248,8 @@ namespace Watermelon
         private const float PanelAspect = 768f / 1024f;
         private const float CreamTop = 0.189f, CreamBottom = 0.895f;
         private const float TitleWidth = 620f, TitleFromTop = 0.085f;
-        private const float ButtonWidth = 450f;                 // Continue, Sound, Vibration, Language, Restart
+        private const float ButtonWidth = 540f;                 // CONTINUE and RESTART, across the cream area
+        private const float PairWidth = 290f, PairGap = 16f;    // SOUND | MUSIC and VIBRATION | LANGUAGE side by side
         private const float MinGap = 14f;                       // between the buttons; they shrink to keep it
         private const float HomeSize = 130f, HomeFromTop = 0.915f; // round Home over the bottom edge of the cream area
 
@@ -288,34 +289,58 @@ namespace Watermelon
                 bottom = Mathf.Max(bottom, homeY + HomeSize * 0.5f);
             }
 
-            RectTransform[] column = { Rect(resumeButton), Rect(soundButton), Rect(musicButton), Rect(vibrationButton), Rect(languageButton), Rect(restartButton) };
-            float content = 0f;
-            int items = 0;
-            foreach (RectTransform r in column)
+            // CONTINUE across the top, SOUND | MUSIC and VIBRATION | LANGUAGE side by side, RESTART
+            // across the bottom: the cream area is filled edge to edge instead of one narrow
+            // column of six. A row whose partner is missing shows its button alone, full width.
+            RectTransform[][] rows =
             {
-                if (r == null)
-                    continue;
-                content += ButtonWidth / Aspect(r);
-                items++;
+                new[] { Rect(resumeButton) },
+                new[] { Rect(soundButton), Rect(musicButton) },
+                new[] { Rect(vibrationButton), Rect(languageButton) },
+                new[] { Rect(restartButton) },
+            };
+            var used = new System.Collections.Generic.List<RectTransform[]>();
+            foreach (RectTransform[] row in rows)
+            {
+                var present = new System.Collections.Generic.List<RectTransform>();
+                foreach (RectTransform r in row)
+                    if (r != null)
+                        present.Add(r);
+                if (present.Count > 0)
+                    used.Add(present.ToArray());
             }
 
-            // all at one width; a little narrower when they would not fit the cream area with
-            // a clear gap between them (five buttons since LANGUAGE)
+            float RowWidth(RectTransform[] row) => row.Length > 1 ? PairWidth : ButtonWidth;
+            float RowHeight(RectTransform[] row, float k)
+            {
+                float h = 0f;
+                foreach (RectTransform r in row)
+                    h = Mathf.Max(h, RowWidth(row) * k / Aspect(r));
+                return h;
+            }
+
+            // everything a little smaller when the rows would not fit with a clear gap
             float space = start - bottom;
-            float width = ButtonWidth;
-            if (content > 0f && content + (items + 1) * MinGap > space)
-                width = ButtonWidth * Mathf.Max(0.5f, (space - (items + 1) * MinGap) / content);
-            content *= width / ButtonWidth;
-            float gap = Mathf.Max(MinGap * 0.5f, (space - content) / (items + 1));
+            float content = 0f;
+            foreach (RectTransform[] row in used)
+                content += RowHeight(row, 1f);
+            float scale = 1f;
+            if (content > 0f && content + (used.Count + 1) * MinGap > space)
+                scale = Mathf.Max(0.5f, (space - (used.Count + 1) * MinGap) / content);
+            content *= scale;
+            float gap = Mathf.Max(MinGap * 0.5f, (space - content) / (used.Count + 1));
 
             float y = start - gap;
-            foreach (RectTransform r in column)
+            foreach (RectTransform[] row in used)
             {
-                if (r == null)
-                    continue;
-                float h = width / Aspect(r);
-                Place(r, c.x, y - h * 0.5f, width, h);
-                y -= h + gap;
+                float w = RowWidth(row) * scale;
+                float rowH = RowHeight(row, scale);
+                for (int i = 0; i < row.Length; i++)
+                {
+                    float x = row.Length > 1 ? (i == 0 ? -1f : 1f) * (w + PairGap * scale) * 0.5f : 0f;
+                    Place(row[i], c.x + x, y - rowH * 0.5f, w, w / Aspect(row[i]));
+                }
+                y -= rowH + gap;
             }
 
             // Home sits on the frame in front of the panel

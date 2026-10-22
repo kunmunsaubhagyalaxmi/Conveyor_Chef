@@ -90,7 +90,7 @@ namespace Watermelon
 
         // Bumped whenever the look changes, so a bar saved in the scene with an older look is
         // rebuilt (in the same place).
-        private const int CurrentLayout = 7;
+        private const int CurrentLayout = 8;
         [SerializeField] private int layoutVersion;
         private bool UsesCurrentArt => layoutVersion == CurrentLayout;
 
@@ -126,7 +126,7 @@ namespace Watermelon
             var r = (RectTransform)transform;
             r.anchorMin = r.anchorMax = new Vector2(0.5f, 0.5f);
             r.anchoredPosition = position;
-            r.sizeDelta = new Vector2(740f, 150f);
+            r.sizeDelta = new Vector2(680f, 150f);
             layoutVersion = CurrentLayout;
             group = gameObject.AddComponent<CanvasGroup>();
             group.alpha = 0f;
@@ -136,9 +136,10 @@ namespace Watermelon
             // the gold ring with the level on a gold badge, the blue/green bar, and the numbers
             // on a gold-framed badge at the bar's end.
             // Symmetric about the panel's middle line (the line CONTINUE sits on): ring at the left,
-            // the bar, the numbers badge at the right; the group spans about -365..+355.
+            // the bar, the numbers badge at the right; the group spans about -330..+335, inside the
+            // banner's cream area (-377..+374 at this height) with a clear margin on both sides.
             Image track = Img("Track", r, Art("xp_track"));
-            Place(track.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-20f, 0f), new Vector2(400f, 110f));
+            Place(track.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-30f, 0f), new Vector2(330f, 100f));
             fillImage = Img("Fill", track.transform, Art("xp_fill"));
             fillImage.type = Image.Type.Filled;
             fillImage.fillMethod = Image.FillMethod.Horizontal;
@@ -148,10 +149,10 @@ namespace Watermelon
 
             // the numbers sit in the badge's cream window (17.6-82.4% across, 27-72% down the
             // picture), so "1150/1250" shrinks to fit instead of running over the gold rim
-            Vector2 badgeSize = new Vector2(220f, 110f);
+            Vector2 badgeSize = new Vector2(190f, 95f);
             Image valueBadge = Img("Value Badge", r, Art("xp_badge"));
             valueBadge.preserveAspect = true;
-            Place(valueBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(265f, 0f), badgeSize);
+            Place(valueBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(240f, 0f), badgeSize);
             xpText = Txt("XP", valueBadge.transform, "0/100", 34f, Brown);
             xpText.textWrappingMode = TextWrappingModes.NoWrap;
             xpText.fontSizeMin = 12f;
@@ -159,15 +160,15 @@ namespace Watermelon
 
             Image ring = Img("Ring", r, Art("xp_ring"));
             ring.preserveAspect = true;
-            Place(ring.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-305f, 0f), new Vector2(130f, 130f));
+            Place(ring.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-270f, 0f), new Vector2(120f, 120f));
             face = Img("Chef", ring.transform, ChefProgress.Avatar(art));
             face.preserveAspect = true;
-            Place(face.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 2f), new Vector2(96f, 96f));
+            Place(face.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 2f), new Vector2(88f, 88f));
             face.transform.SetAsFirstSibling();                 // under the ring
             Image badge = Img("Level Badge", ring.transform, Art("xp_badge"));
             badge.preserveAspect = true;
             // sits on the ring's bottom edge, like a name plate
-            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 12f), new Vector2(116f, 58f));
+            Place(badge.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 10f), new Vector2(106f, 53f));
             levelText = Txt("Level", badge.transform, "LV 1", 28f, Brown);
             Stretch(levelText.rectTransform, 22f, 15f, 22f, 15f);
 
