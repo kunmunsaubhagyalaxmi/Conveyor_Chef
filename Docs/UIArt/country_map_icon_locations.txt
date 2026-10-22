@@ -1,0 +1,38 @@
+COUNTRY MAP ICONS - 34 FILES
+1024 x 1024 transparent PNGs
+Generated with built-in image generation using country_map_icons_prompts.md and the supplied India reference.
+
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\asia\china\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\asia\japan\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\asia\south_korea\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\asia\thailand\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\north_america\usa\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\north_america\mexico\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\north_america\canada\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\north_america\cuba\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\north_america\jamaica\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\south_america\brazil\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\south_america\argentina\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\south_america\peru\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\south_america\colombia\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\south_america\chile\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\europe\italy\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\europe\france\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\europe\spain\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\europe\greece\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\europe\germany\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\africa\morocco\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\africa\egypt\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\africa\nigeria\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\africa\ethiopia\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\africa\south_africa\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\oceania\australia\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\oceania\new_zealand\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\oceania\fiji\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\oceania\samoa\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\oceania\tonga\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\antarctica\peninsula\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\antarctica\weddell_sea\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\antarctica\ross_shelf\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\antarctica\mcmurdo\levelselect_icon.png
+E:\Game Development\Conveyor Chef\Assets\Project Data\Game\Resources\World\antarctica\south_pole\levelselect_icon.png
