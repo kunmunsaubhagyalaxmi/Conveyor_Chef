@@ -332,36 +332,28 @@ namespace Watermelon
         // }
 
         /// <summary>
-        /// Out of lives: opens the "more lives" panel of the lives counter on screen (the HUD
-        /// heart). The old main menu page's own panel is hidden in this flow, so tapping with
-        /// no lives used to do nothing at all and the level looked frozen.
+        /// No lives in a level: OUT OF LIVES over the board. A life (timer, video or purchase)
+        /// runs <paramref name="onLifeGained"/>; closing it goes back to Level Selection, so the
+        /// player is never left on a board that ignores every tap.
         /// </summary>
-        public static bool ShowAddLivesPanel(SimpleBoolCallback onPanelClosed = null)
+        private static void ShowOutOfLives(System.Action onLifeGained)
         {
-            foreach (LivesIndicator indicator in Object.FindObjectsByType<LivesIndicator>(FindObjectsSortMode.None))
-            {
-                if (indicator.isActiveAndEnabled && indicator.ShowAddLivesPanel(onPanelClosed))
-                    return true;
-            }
-
-            UIMainMenu mainMenu = UIController.GetPage<UIMainMenu>();
-            if (mainMenu != null && mainMenu.IsPageDisplayed)
-            {
-                mainMenu.ShowAddLivesPanel();
-                return true;
-            }
-
-            return false;
+            RaycastController.Disable();
+            OutOfLivesPopup.Show(onLifeGained, ReturnToLevelSelection);
         }
 
         public static void StartGame()
         {
             // Check if player has lives before starting
-            if (LivesManager.Lives <= 0)
+            if (LivesManager.CurrentLives <= 0)
             {
                 Debug.Log("[GameController] Cannot start game - No lives remaining");
 
-                ShowAddLivesPanel();
+                ShowOutOfLives(() =>
+                {
+                    RaycastController.Enable();
+                    StartGame();
+                });
 
                 return; // Don't start the game
             }
@@ -395,12 +387,19 @@ namespace Watermelon
             LivesManager.RemoveLife();
             MusicDirector.Stop();                     // level failed: the music stops
 
-            //UIController.HidePage<UIGame>();
-            UIController.ShowPage<UIGameOver>();
-
+            levelSave.ReplayingLevelAgain = true;
             AudioController.PlaySound(AudioController.Sounds.failSound);
 
-            levelSave.ReplayingLevelAgain = true;
+            // the last life is gone: OUT OF LIVES instead of the game-over screen (its only
+            // button is REPLAY, which needs a life)
+            if (LivesManager.CurrentLives <= 0)
+            {
+                ShowOutOfLives(ReplayLevel);
+                return;
+            }
+
+            //UIController.HidePage<UIGame>();
+            UIController.ShowPage<UIGameOver>();
         }
 
         // public static void WinGame()
@@ -635,23 +634,12 @@ namespace Watermelon
             isGameActive = false;
 
             // Check lives before replaying
-            if (LivesManager.Lives <= 0)
+            if (LivesManager.CurrentLives <= 0)
             {
                 Debug.Log("[GameController] Cannot replay level - No lives remaining");
 
-                // The lost board stays behind with taps off, so the player must not be left
-                // there: a life from the panel replays the level, closing it goes back to
-                // Level Selection (the game-over screen only offers REPLAY).
-                bool shown = ShowAddLivesPanel(gotLife =>
-                {
-                    if (gotLife && LivesManager.Lives > 0)
-                        ReplayLevel();
-                    else
-                        ReturnToLevelSelection();
-                });
-
-                if (!shown)
-                    ReturnToLevelSelection();
+                // the lost board stays behind with taps off: a life replays the level
+                ShowOutOfLives(ReplayLevel);
                 return;
             }
 

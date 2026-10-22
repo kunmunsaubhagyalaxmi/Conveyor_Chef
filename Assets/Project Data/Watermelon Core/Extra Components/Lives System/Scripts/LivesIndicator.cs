@@ -156,16 +156,6 @@ namespace Watermelon
             Debug.Log($"[LivesIndicator] {gameObject.name} - Initialized with maxLives: {data.maxLivesCount}");
         }
 
-        /// <summary>Opens this indicator's "more lives" panel; false when it has none.</summary>
-        public bool ShowAddLivesPanel(SimpleBoolCallback onPanelClosed = null)
-        {
-            if (addLivesPanel == null || AddLivesPanel.IsPanelOpened)
-                return addLivesPanel != null;
-
-            addLivesPanel.Show(onPanelClosed);
-            return true;
-        }
-
         public void SetInfinite(bool isInfinite)
         {
             Debug.Log($"[LivesIndicator] {gameObject.name} - SetInfinite: {isInfinite}");

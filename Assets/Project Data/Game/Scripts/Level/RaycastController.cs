@@ -51,7 +51,7 @@ namespace Watermelon.BusStop
                                 clickableObject.OnObjectClicked();
                             } else 
                             {
-                                GameController.ShowAddLivesPanel();
+                                GameController.StartGame();   // no lives: OUT OF LIVES
                             }
 
                             
@@ -67,7 +67,7 @@ namespace Watermelon.BusStop
         private bool IsRaycastBlockedByUI()
         {
             // the game's own overlays (Shop and other menu panels, power-up offer, Settings) too
-            if (MenuPanel.AnyOpen || PowerUpOfferPopup.IsOpen || ConveyorSettingsPanel.IsOpen || ProgressPopup.IsOpen)
+            if (MenuPanel.AnyOpen || PowerUpOfferPopup.IsOpen || OutOfLivesPopup.IsOpen || ConveyorSettingsPanel.IsOpen || ProgressPopup.IsOpen)
                 return true;
 
             return mainMenuPage.NoAdsPopUp.IsOpened || iapStorePage.IsPageDisplayed || storePage.IsPageDisplayed|| AddLivesPanel.IsPanelOpened;

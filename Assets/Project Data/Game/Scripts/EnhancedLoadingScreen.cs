@@ -125,6 +125,14 @@ namespace Watermelon
                 return;
             }
 
+            // No lives: the level does not open. OUT OF LIVES offers the timer, an ad or a
+            // purchase, and the level opens as soon as there is a life again.
+            if (targetSceneName == "Game" && SceneManager.GetActiveScene().name != "Game" && LivesManager.CurrentLives <= 0)
+            {
+                OutOfLivesPopup.Show(() => LoadViaLoadingScreen(targetSceneName), null);
+                return;
+            }
+
             // PLAY (going into a level) always shows the loading screen; every other hop
             // switches straight to the next scene (QuickSceneTransition: no cover, no fades).
             bool firstLevel = targetSceneName == "Game";

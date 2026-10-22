@@ -23,6 +23,12 @@ namespace Watermelon
             Add("COMING SOON", "COMING SOON", "", "PRÓXIMAMENTE", "EM BREVE", "SEGERA HADIR", "BIENTÔT", "BALD VERFÜGBAR", "YAKINDA");
             Add("Not enough coins", "Not enough coins", "", "No tienes suficientes monedas", "Moedas insuficientes", "Koin tidak cukup", "Pas assez de pièces", "Nicht genug Münzen", "Yeterli altın yok");
             Add("Not enough diamonds", "Not enough diamonds", "", "No tienes suficientes diamantes", "Diamantes insuficientes", "Berlian tidak cukup", "Pas assez de diamants", "Nicht genug Diamanten", "Yeterli elmas yok");
+            // ---- OUT OF LIVES
+            Add("OUT OF LIVES", "OUT OF LIVES", "", "SIN VIDAS", "SEM VIDAS", "NYAWA HABIS", "PLUS DE VIES", "KEINE LEBEN", "CAN KALMADI");
+            Add("Next life in {0}", "Next life in {0}", "", "Próxima vida en {0}", "Próxima vida em {0}", "Nyawa berikutnya dalam {0}", "Prochaine vie dans {0}", "Nächstes Leben in {0}", "Sonraki can {0} sonra");
+            Add("No lives left! Wait or refill now.", "No lives left! Wait or refill now.", "", "¡Sin vidas! Espera o recarga ahora.", "Sem vidas! Espere ou recarregue agora.", "Nyawa habis! Tunggu atau isi sekarang.", "Plus de vies ! Attends ou recharge.", "Keine Leben! Warte oder fülle auf.", "Can kalmadı! Bekle ya da doldur.");
+            Add("BUY LIFE", "BUY LIFE", "", "COMPRAR VIDA", "COMPRAR VIDA", "BELI NYAWA", "ACHETER VIE", "LEBEN KAUFEN", "CAN AL");
+            Add("REFILL ALL", "REFILL ALL", "", "RELLENAR TODO", "RECARREGAR", "ISI PENUH", "TOUT REMPLIR", "AUFFÜLLEN", "HEPSİNİ DOLDUR");
             Add("+{0} COINS", "+{0} COINS", "", "+{0} MONEDAS", "+{0} MOEDAS", "+{0} KOIN", "+{0} PIÈCES", "+{0} MÜNZEN", "+{0} ALTIN");
             Add("+{0} DIAMONDS", "+{0} DIAMONDS", "", "+{0} DIAMANTES", "+{0} DIAMANTES", "+{0} BERLIAN", "+{0} DIAMANTS", "+{0} DIAMANTEN", "+{0} ELMAS");
             Add("{0} selected", "{0} selected", "", "{0} elegido", "{0} escolhido", "{0} dipilih", "{0} choisi", "{0} gewählt", "{0} seçildi");

@@ -329,10 +329,111 @@ namespace Watermelon
 
         public static bool IsMaxLives => Lives == instance.data.maxLivesCount;
 
+        // The lives data of the last LivesManager (only the Game scene has one), so lives can be
+        // read and bought on the maps too; the defaults match Content/Data/Lives Data.
+        private static LivesData cachedData;
+        private static LivesData Data
+        {
+            get
+            {
+                if (instance != null && instance.data != null)
+                    return instance.data;
+                if (cachedData == null)
+                    cachedData = ScriptableObject.CreateInstance<LivesData>();
+                return cachedData;
+            }
+        }
+
         private void Awake()
         {
             instance = this;
+            if (data != null)
+                cachedData = data;
         }
+
+        #region Any scene (Out of Lives popup)
+
+        public static int MaxLivesCount => Data.maxLivesCount;
+
+        /// <summary>Lives right now, with the ones the timer has given back, in any scene.</summary>
+        public static int CurrentLives
+        {
+            get
+            {
+                if (!EnsureSave())
+                    return Data.maxLivesCount;
+                ApplyElapsedTime();
+                return save.infiniteLives ? Data.maxLivesCount : save.livesCount;
+            }
+        }
+
+        /// <summary>Time until the timer gives the next life (zero when lives are full).</summary>
+        public static TimeSpan TimeToNextLife
+        {
+            get
+            {
+                if (!EnsureSave() || save.infiniteLives)
+                    return TimeSpan.Zero;
+                ApplyElapsedTime();
+                if (save.livesCount >= Data.maxLivesCount)
+                    return TimeSpan.Zero;
+                TimeSpan left = TimeSpan.FromSeconds(Data.oneLifeRestorationDuration) - (DateTime.Now - save.date);
+                return left > TimeSpan.Zero ? left : TimeSpan.Zero;
+            }
+        }
+
+        /// <summary>Adds lives (up to the maximum) in any scene, e.g. bought or from an ad.</summary>
+        public static void GiveLives(int amount)
+        {
+            if (amount <= 0 || !EnsureSave())
+                return;
+            ApplyElapsedTime();
+            SetLifes(Mathf.Min(Data.maxLivesCount, save.livesCount + amount));
+        }
+
+        public static void RefillLives() => GiveLives(Data.maxLivesCount);
+
+        // Outside the Game scene the save is loaded here (the scene's LivesManager does it in Start).
+        private static bool EnsureSave()
+        {
+            if (save != null)
+                return true;
+            try
+            {
+                if (!SaveController.IsSaveLoaded)
+                    return false;
+                save = SaveController.GetSaveObject<LivesSave>("Lives");
+                save.Init(Data);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning("[LivesManager] Lives save not available: " + ex.Message);
+                save = null;
+                return false;
+            }
+        }
+
+        // The lives the timer has given back since the last one (LivesCoroutine only runs while
+        // the Game scene is open). Moving the date on keeps the two from counting a life twice.
+        private static void ApplyElapsedTime()
+        {
+            if (save.infiniteLives || save.livesCount >= Data.maxLivesCount)
+                return;
+
+            TimeSpan oneLifeSpan = TimeSpan.FromSeconds(Data.oneLifeRestorationDuration);
+            int lives = save.livesCount;
+            while (DateTime.Now - save.date >= oneLifeSpan && lives < Data.maxLivesCount)
+            {
+                save.date += oneLifeSpan;
+                lives++;
+            }
+
+            if (lives != save.livesCount)
+                SetLifes(lives);
+        }
+
+        #endregion
 
         private void Start()
         {
